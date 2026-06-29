@@ -100,6 +100,21 @@ def main():
             print(f"  {a['name']}({a['id']}): {a['xp']} → {total}")
             fixed["xp_fixed"] += 1
 
+    # ===== #10: 日志去重 =====
+    print("\n=== #10: 日志去重 ===")
+    logs = db.execute("SELECT * FROM logs ORDER BY id").fetchall()
+    seen = {}
+    dup_count = 0
+    for l in logs:
+        key = f"{l['time']}|{l['agent']}|{l['text']}"
+        if key in seen:
+            db.execute("DELETE FROM logs WHERE id=?", (l["id"],))
+            dup_count += 1
+        else:
+            seen[key] = True
+    print(f"  删除重复日志: {dup_count} 条")
+    fixed["logs_deduped"] = dup_count
+
     db.commit()
 
     print(f"\n=== 修复汇总 ===")
@@ -107,6 +122,7 @@ def main():
     print(f"  补建scores: {fixed['scores_created']}")
     print(f"  孤儿文件: {fixed['orphan_files']} (保留在磁盘)")
     print(f"  分数重算: {fixed['xp_fixed']}")
+    print(f"  日志去重: {fixed.get('logs_deduped', 0)} 条")
     db.close()
 
 if __name__ == "__main__":
