@@ -115,6 +115,24 @@ def main():
     print(f"  删除重复日志: {dup_count} 条")
     fixed["logs_deduped"] = dup_count
 
+    # ===== 脏output清理 =====
+    print("\n=== 脏output清理 ===")
+    dirty = 0
+    for t in tasks.values():
+        out = t["output"] or ""
+        if out in ("僵尸任务清理", "", "(无产出文件)") or out.startswith("⚠"):
+            continue  # 已经规范
+        # 检查是否是不规范的值
+        fname = out.replace("\\", "/").split("/")[-1]
+        if not fname or fname == out:
+            continue  # 可能已经是纯文件名
+        # 如果有路径前缀，规范化为纯文件名
+        if "/" in out or "\\" in out:
+            db.execute("UPDATE tasks SET output=? WHERE id=?", (fname, t["id"]))
+            dirty += 1
+    print(f"  规范化output: {dirty} 条")
+    fixed["output_cleaned"] = dirty
+
     db.commit()
 
     print(f"\n=== 修复汇总 ===")
@@ -123,6 +141,7 @@ def main():
     print(f"  孤儿文件: {fixed['orphan_files']} (保留在磁盘)")
     print(f"  分数重算: {fixed['xp_fixed']}")
     print(f"  日志去重: {fixed.get('logs_deduped', 0)} 条")
+    print(f"  脏output清理: {fixed.get('output_cleaned', 0)} 条")
     db.close()
 
 if __name__ == "__main__":

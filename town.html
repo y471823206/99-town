@@ -514,6 +514,24 @@ function renderSidebar() {
   ).join('');
 }
 
+// Unified output link renderer — single source of truth
+function renderOutputLinks(fileList, assets) {
+  if (!fileList || !fileList.length) return '';
+  const links = [];
+  for (const f of fileList) {
+    if (!f || typeof f !== 'string') continue;
+    // Extract filename from path
+    const fname = f.replace(/\\/g, '/').split('/').pop();
+    // Skip dirty/non-filename values
+    if (!fname || fname.includes('僵尸') || fname.includes('无产出') || fname.includes('缺文件')) continue;
+    // Try assets match first, then /outputs/ fallback
+    const asset = assets.find(a => a.file === fname || a.file === f);
+    const url = asset ? asset.url : ('/outputs/' + encodeURIComponent(fname));
+    links.push('<a href=\"' + url + '\" target=_blank style=\"color:var(--accent-teal);font-size:11px;text-decoration:underline;margin-right:10px\">' + fname + '</a>');
+  }
+  return links.length ? '<div style=\"margin-top:6px\">' + links.join('') + '</div>' : '';
+}
+
 function renderModal() {
   const tasks = townState.tasks || [];
   const quests = townState.quests || [];
@@ -561,13 +579,7 @@ function renderModal() {
         }
         return task.output ? [task.output] : [];
       })();
-      const outLinks = outputs.length > 0
-        ? '<div style=margin-top:6px>' + outputs.map(f => {
-            const a = assets.find(x => x.file === f || x.file === f.split('/').pop());
-            const url = a ? a.url : ('/outputs/' + encodeURIComponent(f.split('/').pop()));
-            return `<a href="${url}" target=_blank style=color:var(--accent-teal);font-size:11px;text-decoration:underline;margin-right:10px>${f.split('/').pop()}</a>`;
-          }).join('') + '</div>'
-        : '';
+      const outLinks = renderOutputLinks(outputs, assets);
       return `<div class="quest-item">
         <div class="q-status done"></div>
         <div class="q-info">
@@ -620,11 +632,7 @@ function renderModal() {
   document.getElementById('tab-explore').innerHTML = exploreTasks.reverse().map(t => {
     const ag = agents.find(a=>a.id===t.assignee);
     const outs = t.outputs || [];
-    const links = outs.map(f => {
-      const a = assets.find(x => x.file === f);
-      const url = a ? a.url : ('/outputs/' + encodeURIComponent(f.split('/').pop()));
-      return `<a href="${url}" target=_blank style="color:var(--accent-teal);font-size:11px;text-decoration:underline;margin-right:8px;">${f.split('/').pop()}</a>`;
-    }).join('');
+    const links = renderOutputLinks(outs, assets);
     return `<div class="quest-item">
       <div class="q-status ${t.status}"></div>
       <div class="q-info">
