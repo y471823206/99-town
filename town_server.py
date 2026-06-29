@@ -223,8 +223,21 @@ class TownHandler(BaseHTTPRequestHandler):
 
         elif path == "/api/complete":
             tid = body.get("task_id", "")
+            output_file = body.get("output", "")  # cron agent 传入的产出文件名
             task = query("SELECT * FROM tasks WHERE id=?", (tid,), one=True)
             if not task: return self._send_json({"error":"not found"}, 404)
+
+            # 规范化 output: 去路径前缀，只留文件名
+            if output_file:
+                fname = output_file.replace("\\", "/").split("/")[-1]
+                # 验证文件存在
+                if (OUTPUT_DIR / fname).exists():
+                    execute("UPDATE tasks SET output=? WHERE id=?", (fname, tid))
+                else:
+                    execute("UPDATE tasks SET output=? WHERE id=?", (f"⚠缺文件:{fname}", tid))
+            elif not task["output"] or task["output"] in ("僵尸任务清理", ""):
+                execute("UPDATE tasks SET output=? WHERE id=?", ("(无产出文件)", tid))
+
             execute("UPDATE tasks SET status='done',completed=? WHERE id=?", (now(), tid))
             decisions = []
             if task["assignee"]:
@@ -239,6 +252,17 @@ class TownHandler(BaseHTTPRequestHandler):
                         decisions.append(f"{agent['name']}自主购买了技能探索（-30G）")
                     else:
                         execute("UPDATE agents SET last_decision=? WHERE id=?", (time.time(), task["assignee"]))
+
+            # 自动刷新 assets 索引
+            execute("DELETE FROM assets")
+            for i, f in enumerate(sorted(OUTPUT_DIR.glob("*"), key=lambda x: x.stat().st_mtime)):
+                if f.is_file() and not f.name.startswith("."):
+                    aid = hashlib.md5(f.name.encode()).hexdigest()[:8]
+                    ext = f.suffix.lower()
+                    typ = "图片" if ext in [".png",".jpg",".jpeg",".gif",".svg"] else "文案" if ext in [".md",".txt"] else "页面" if ext in [".html"] else "其他"
+                    execute("INSERT OR REPLACE INTO assets VALUES(?,?,?,?,?,?)",
+                        (aid, f.name, typ, f.stat().st_size, time.strftime("%m-%d %H:%M", time.localtime(f.stat().st_mtime)), f"/file/{i}"))
+
             self._send_json({"success": True, "decisions": decisions})
 
         elif path == "/api/buy":
