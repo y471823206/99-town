@@ -182,7 +182,7 @@ class TownHandler(BaseHTTPRequestHandler):
                 # 获取奏折内容用于匹配agent
                 sugg = query("SELECT * FROM suggestions WHERE id=?", (sid,), one=True)
                 title = f"奏折任务: {sid}"
-                desc = (sugg["title"] + " " + sugg["desc"]) if sugg else ""
+                desc = (sugg["title"] + " " + (sugg["description"] or "")) if sugg else ""
                 # 关键词匹配分配agent
                 agent_map = {
                     "designer": ["设计", "海报", "视觉", "配色", "排版", "绘图"],
@@ -212,10 +212,10 @@ class TownHandler(BaseHTTPRequestHandler):
             agent_id = body.get("agent", "")
             agent = query("SELECT * FROM agents WHERE id=? AND id!='mayor'", (agent_id,), one=True)
             if not agent: return self._send_json({"decisions": []})
-            if time.time() - (agent.get("last_decision") or 0) < 300:
+            if time.time() - (agent["last_decision"] or 0) < 300:
                 return self._send_json({"decisions": [], "cooldown": True})
             decisions = []
-            if agent["coins"] >= 30 and not json.loads(agent.get("equipped_skills") or "[]"):
+            if agent["coins"] >= 30 and not json.loads(agent["equipped_skills"] or "[]"):
                 decisions.append(f"购买了技能探索（-30G）")
                 execute("UPDATE agents SET coins=coins-30 WHERE id=?", (agent_id,))
             execute("UPDATE agents SET last_decision=? WHERE id=?", (time.time(), agent_id))
