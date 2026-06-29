@@ -609,7 +609,7 @@ function renderModal() {
       <div class="q-status ${s.status==='pending'?'processing':'done'}"></div>
       <div class="q-info">
         <div class="q-title">${s.period} · ${s.title}</div>
-        <div style="font-size:12px;opacity:0.5;">${s.desc} &nbsp; ${st} &nbsp; ${s.created_at}</div>
+        <div style="font-size:12px;opacity:0.5;">${s.description || s.desc || '(无描述)'} &nbsp; ${st} &nbsp; ${s.created_at}</div>
         ${review}${btns}
       </div>
     </div>`;
