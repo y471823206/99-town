@@ -152,10 +152,37 @@ class TownHandler(BaseHTTPRequestHandler):
         if path == "/api/publish":
             title = body.get("title", "").strip()
             if not title: return self._send_json({"error":"empty title"}, 400)
+
+            # Agent 匹配: 1) 人名前缀 2) 关键词 3) 留空
+            agent_names = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm"}
+            matched = ""
+            for name, aid in agent_names.items():
+                if title.startswith(name) or title.startswith("@" + name):
+                    matched = aid
+                    break
+            if not matched:
+                agent_map = {
+                    "designer": ["设计","海报","视觉","配色","排版","绘图","漫画","画"],
+                    "writer": ["文案","推文","日报","写作","撰稿","谐音梗","晨报","写"],
+                    "reviewer": ["审核","品质","检查","报告","复盘"],
+                    "engineer": ["代码","bug","技术","修复","架构","性能"],
+                    "pm": ["产品","体验","用户","需求","规划","功能"],
+                }
+                for aid, keywords in agent_map.items():
+                    if any(kw in title for kw in keywords):
+                        matched = aid
+                        break
+
             tid = f"task_{int(time.time())}"
-            execute("INSERT INTO tasks(id,title,status,created) VALUES(?,?,'pending',?)", (tid, title, now()))
-            execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,'','',?)", (tid, now()))
-            self._send_json({"success": True, "task_id": tid})
+            execute("INSERT INTO tasks(id,title,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?)",
+                (tid, title, matched, "", "pending", 10, 5, now()))
+            if matched:
+                execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
+                    (tid, matched, title, now()))
+            else:
+                execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
+                    (tid, "", title, now()))
+            self._send_json({"success": True, "task_id": tid, "agent": matched or "待匹配"})
 
         elif path == "/api/rate":
             qid = body.get("quest_id", "")
