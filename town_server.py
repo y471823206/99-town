@@ -166,11 +166,11 @@ class TownHandler(BaseHTTPRequestHandler):
                 (rating, review, bonus, qid))
             execute("UPDATE tasks SET rating=?,review=? WHERE id=? OR title=(SELECT title FROM scores WHERE quest_id=?)",
                 (rating, review, qid, qid))
-            # 更新agent总分
-            q = query("SELECT agent FROM scores WHERE quest_id=?", (qid,), one=True)
+            # 经济结算: 更新agent总分 + 发放金币
+            q = query("SELECT agent,coins FROM scores WHERE quest_id=?", (qid,), one=True)
             if q:
                 total = sum(s["total_score"] or 0 for s in query("SELECT total_score FROM scores WHERE agent=? AND rating!=''", (q["agent"],)))
-                execute("UPDATE agents SET xp=? WHERE id=?", (total, q["agent"]))
+                execute("UPDATE agents SET xp=?,coins=coins+? WHERE id=?", (total, bonus, q["agent"]))
             self._send_json({"success": True})
 
         elif path == "/api/approve":
@@ -179,8 +179,29 @@ class TownHandler(BaseHTTPRequestHandler):
             review = body.get("review", "")
             execute("UPDATE suggestions SET status=?,review=? WHERE id=?", (action, review, sid))
             if action == "approved":
-                execute("INSERT INTO tasks(id,title,status,created) VALUES(?,?,'pending',?)",
-                    (f"task_{int(time.time())}", f"奏折任务: {sid}", now()))
+                # 获取奏折内容用于匹配agent
+                sugg = query("SELECT * FROM suggestions WHERE id=?", (sid,), one=True)
+                title = f"奏折任务: {sid}"
+                desc = (sugg["title"] + " " + sugg["desc"]) if sugg else ""
+                # 关键词匹配分配agent
+                agent_map = {
+                    "designer": ["设计", "海报", "视觉", "配色", "排版", "绘图"],
+                    "writer": ["文案", "推文", "日报", "写作", "撰稿", "谐音梗", "晨报"],
+                    "reviewer": ["审核", "品质", "检查", "报告", "复盘"],
+                    "engineer": ["代码", "bug", "技术", "修复", "架构", "性能"],
+                    "pm": ["产品", "体验", "用户", "需求", "规划", "功能"],
+                }
+                matched = ""
+                for aid, keywords in agent_map.items():
+                    if any(kw in desc for kw in keywords):
+                        matched = aid
+                        break
+                tid = f"task_{int(time.time())}"
+                execute("INSERT INTO tasks(id,title,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?)",
+                    (tid, title, matched, "", "pending", 10, 5, now()))
+                if matched:
+                    execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
+                        (tid, matched, title, now()))
             self._send_json({"success": True})
 
         elif path == "/api/clear_dispatch":
@@ -205,11 +226,20 @@ class TownHandler(BaseHTTPRequestHandler):
             task = query("SELECT * FROM tasks WHERE id=?", (tid,), one=True)
             if not task: return self._send_json({"error":"not found"}, 404)
             execute("UPDATE tasks SET status='done',completed=? WHERE id=?", (now(), tid))
+            decisions = []
             if task["assignee"]:
                 execute("UPDATE agents SET xp=xp+?,coins=coins+? WHERE id=?", (task["xp"], task["coins"], task["assignee"]))
                 execute("INSERT OR REPLACE INTO scores(quest_id,title,agent,agent_name,status,xp,coins,completed) VALUES(?,?,?,?,?,?,?,?)",
                     (tid, task["title"], task["assignee"], task["assignee_name"], "done", task["xp"], task["coins"], now()))
-            self._send_json({"success": True})
+                # 自动触发决策引擎
+                agent = query("SELECT * FROM agents WHERE id=? AND id!='mayor'", (task["assignee"],), one=True)
+                if agent and time.time() - (agent["last_decision"] or 0) >= 300:
+                    if agent["coins"] >= 30 and not json.loads(agent["equipped_skills"] or "[]"):
+                        execute("UPDATE agents SET coins=coins-30,last_decision=? WHERE id=?", (time.time(), task["assignee"]))
+                        decisions.append(f"{agent['name']}自主购买了技能探索（-30G）")
+                    else:
+                        execute("UPDATE agents SET last_decision=? WHERE id=?", (time.time(), task["assignee"]))
+            self._send_json({"success": True, "decisions": decisions})
 
         elif path == "/api/buy":
             agent_id = body.get("agent_id", "")
