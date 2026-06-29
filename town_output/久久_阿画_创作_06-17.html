@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>久久小镇 · 温暖像素风</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #faf7f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Courier New', 'Menlo', 'Monaco', 'Andale Mono', monospace;
+      padding: 20px;
+    }
+
+    /* 像素风格主海报 —— typography-first */
+    .poster {
+      max-width: 800px;
+      width: 100%;
+      background-color: #faf7f2;
+      border: 4px solid #1a1a1a;
+      box-shadow: 12px 12px 0 #c4553b;
+      padding: 2.5rem 2rem 2rem;
+      position: relative;
+      transition: box-shadow 0.2s ease;
+    }
+
+    /* 模拟像素锯齿 (微装饰) */
+    .poster::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 8px;
+      width: calc(100% - 16px);
+      height: 8px;
+      background: repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 4px, transparent 4px, transparent 8px);
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    /* ------ TYPOGRAPHY 主结构 ------ */
+
+    /* 主标题 —— 久久说过的一句话 */
+    .hero-quote {
+      font-size: 52px;
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      word-break: break-word;
+      text-shadow: 4px 4px 0 #e8dccc;
+      border-left: 10px solid #c4553b;
+      padding-left: 24px;
+      transition: text-shadow 0.2s;
+    }
+
+    .hero-quote::selection {
+      background: #c4553b;
+      color: #faf7f2;
+    }
+
+    /* 副标题：小镇今日状态卡片区 (两行混合) */
+    .state-card {
+      background: #f0ebe0;
+      border: 3px solid #1a1a1a;
+      padding: 1rem 1.8rem;
+      margin: 1.8rem 0 2rem 0;
+      display: inline-block;
+      box-shadow: 6px 6px 0 #c4553b;
+      font-size: 28px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: 1px;
+    }
+
+    .state-card span {
+      background: #1a1a1a;
+      color: #faf7f2;
+      padding: 0 12px;
+      margin-right: 6px;
+      font-size: 22px;
+      display: inline-block;
+      line-height: 1.6;
+      vertical-align: middle;
+    }
+
+    .state-card .highlight {
+      background: #c4553b;
+      color: #faf7f2;
+      padding: 0 8px;
+    }
+
+    /* 正文 / 描述 (用于居民区介绍) */
+    .body-copy {
+      font-size: 18px;
+      color: #1a1a1a;
+      line-height: 1.5;
+      letter-spacing: 0.3px;
+      margin: 0.5rem 0 1.5rem 0;
+      border-bottom: 2px dashed #c4553b;
+      padding-bottom: 0.75rem;
+    }
+
+    /* ----- 居民像素头像网格 (4个) ----- */
+    .residents-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px 12px;
+      margin: 24px 0 32px 0;
+    }
+
+    .resident {
+      background: #f5efe4;
+      border: 3px solid #1a1a1a;
+      box-shadow: 4px 4px 0 #1a1a1a;
+      text-align: center;
+      padding: 14px 6px 10px 6px;
+      transition: transform 0.1s ease;
+    }
+
+    .resident:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 #c4553b;
+    }
+
+    /* 像素头像 (纯css像素角色 32x32放大) */
+    .pixel-avatar {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 8px auto;
+      image-rendering: pixelated;
+      background: #ddd2c0;
+      border: 2px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px; /* fallback emoji */
+      color: #1a1a1a;
+    }
+
+    /* 像素图形 —— 采用box-shadow像素画 (4个不同角色) */
+    .avatar-pixel-art {
+      display: block;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      image-rendering: crisp-edges;
+      margin: 0 auto;
+    }
+
+    /* 居民名字 + 小对话 */
+    .resident-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: 0.5px;
+      border-top: 2px solid #c4553b;
+      padding-top: 6px;
+      margin-top: 4px;
+    }
+
+    .resident-desc {
+      font-size: 13px;
+      color: #3a2a1a;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    /* 底部签名 */
+    .signature {
+      font-size: 18px;
+      color: #1a1a1a;
+      border-top: 3px double #c4553b;
+      padding-top: 1.2rem;
+      margin-top: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      letter-spacing: 0.8px;
+    }
+
+    .signature .left {
+      font-weight: 600;
+      background: #1a1a1a;
+      color: #faf7f2;
+      padding: 0 10px;
+    }
+
+    .signature .right {
+      font-style: italic;
+      font-size: 20px;
+      color: #c4553b;
+    }
+
+    /* 像素点缀小元素 */
+    .pixel-deco {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: #c4553b;
+      margin-right: 6px;
+      box-shadow: 0px 0px 0 1px #1a1a1a;
+    }
+
+    /* 自适应 */
+    @media (max-width: 600px) {
+      .poster {
+        padding: 1.8rem 1.2rem 1.5rem;
+      }
+      .hero-quote {
+        font-size: 36px;
+        padding-left: 16px;
+        border-left-width: 6px;
+      }
+      .state-card {
+        font-size: 20px;
+        padding: 0.6rem 1rem;
+      }
+      .state-card span {
+        font-size: 18px;
+      }
+      .residents-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .pixel-avatar {
+        width: 64px;
+        height: 64px;
+      }
+      .signature {
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .hero-quote {
+        font-size: 28px;
+      }
+    }
+
+    /* 自定义像素头像 —— 经典rpg风 */
+    .pixel-art-1 { /* 铁匠 阿鲁 */
+      background: #b89b7a;
+      box-shadow: 
+        4px 0 #1a1a1a, 8px 0 #1a1a1a, 12px 0 #1a1a1a, 16px 0 #1a1a1a, 20px 0 #1a1a1a, 24px 0 #1a1a1a, 28px 0 #1a1a1a,
+        0px 4px #1a1a1a, 4px 4px #c4553b, 8px 4px #c4553b, 12px 4px #c4553b, 16px 4px #c4553b, 20px 4px #c4553b, 24px 4px #c4553b, 28px 4px #1a1a1a,
+        0px 8px #1a1a1a, 4px 8px #fabc7a, 8px 8px #1a1a1a, 12px 8px #1a1a1a, 16px 8px #1a1a1a, 20px 8px #1a1a1a, 24px 8px #fabc7a, 28px 8px #1a1a1a,
+        0px 12px #1a1a1a, 4px 12px #fabc7a, 8px 12px #1a1a1a, 12px 12px #3a2a1a, 16px 12px #3a2a1a, 20px 12px #1a1a1a, 24px 12px #fabc7a, 28px 12px #1a1a1a,
+        0px 16px #1a1a1a, 4px 16px #fabc7a, 8px 16px #1a1a1a, 12px 16px #1a1a1a, 16px 16px #1a1a1a, 20px 16px #1a1a1a, 24px 16px #fabc7a, 28px 16px #1a1a1a,
+        0px 20px #1a1a1a, 4px 20px #c4553b, 8px 20px #1a1a1a, 12px 20px #c4553b, 16px 20px #c4553b, 20px 20px #1a1a1a, 24px 20px #c4553b, 28px 20px #1a1a1a,
+        0px 24px #1a1a1a, 4px 24px #1a1a1a, 8px 24px #1a1a1a, 12px 24px #1a1a1a, 16px 24px #1a1a1a, 20px 24px #1a1a1a, 24px 24px #1a1a1a, 28px 24px #1a1a1a;
+    }
+
+    .pixel-art-2 { /* 花店 小满 */
+      background: #bbd9b0;
+      box-shadow:
+        4px 0 #1a1a1a, 8px 0 #1a1a1a, 12px 0 #1a1a1a, 16px 0 #1a1a1a, 20px 0 #1a1a1a, 24px 0 #1a1a1a, 28px 0 #1a1a1a,
+        0px 4px #1a1a1a, 4px 4px #f7c9c9, 8px 4px #f7c9c9, 12px 4px #f7c9c9, 16px 4px #f7c9c9, 20px 4px #f7c9c9, 24px 4px #f7c9c9, 28px 4px #1a1a1a,
+        0px 8px #1a1a1a, 4px 8px #ffe0b0, 8px 8px #1a1a1a, 12px 8px #1a1a1a, 16px 8px #1a1a1a, 20px 8px #1a1a1a, 24px 8px #ffe0b0, 28px 8px #1a1a1a,
+        0px 12px #1a1a1a, 4px 12px #ffe0b0, 8px 12px #1a1a1a, 12px 12px #b3875a, 16px 12px #b3875a, 20px 12px #1a1a1a, 24px 12px #ffe0b0, 28px 12px #1a1a1a,
+        0px 16px #1a1a1a, 4px 16px #ffe0b0, 8px 16px #ffe0b0, 12px 16px #ffe0b0, 16px 16px #ffe0b0, 20px 16px #ffe0b0, 24px 16px #ffe0b0, 28px 16px #1a1a1a,
+        0px 20px #1a1a1a, 4px 20px #c4553b, 8px 20px #1a1a1a, 12px 20px #1a1a1a, 16px 20px #1a1a1a, 20px 20px #1a1a1a, 24px 20px #c4553b, 28px 20px #1a1a1a,
+        0px 24px #1a1a1a, 4px 24px #1a1a1a, 8px 24px #1a1a1a, 12px 24px #1a1a1a, 16px 24px #1a1a1a, 20px 24px #1a1a1a, 24px 24px #1a1a1a, 28px 24px #1a1a1a;
+    }
+
+    .pixel-art-3 { /* 猎人 青枣 */
+      background: #b0c7d9;
+      box-shadow:
+        4px 0 #1a1a1a, 8px 0 #1a1a1a, 12px 0 #1a1a1a, 16px 0 #1a1a1a, 20px 0 #1a1a1a, 24px 0 #1a1a1a, 28px 0 #1a1a1a,
+        0px 4px #1a1a1a, 4px 4px #c4a882, 8px 4px #c4a882, 12px 4px #1a1a1a, 16px 4px #1a1a1a, 20px 4px #c4a882, 24px 4px #c4a882, 28px 4px #1a1a1a,
+        0px 8px #1a1a1a, 4px 8px #f5e6d3, 8px 8px #1a1a1a, 12px 8px #1a1a1a, 16px 8px #1a1a1a, 20px 8px #1a1a1a, 24px 8px #f5e6d3, 28px 8px #1a1a1a,
+        0px 12px #1a1a1a, 4px 12px #f5e6d3, 8px 12px #1a1a1a, 12px 12px #2a6f4a, 16px 12px #2a6f4a, 20px 12px #1a1a1a, 24px 12px #f5e6d3, 28px 12px #1a1a1a,
+        0px 16px #1a1a1a, 4px 16px #f5e6d3, 8px 16px #1a1a1a, 12px 16px #1a1a1a, 16px 16px #1a1a1a, 20px 16px #1a1a1a, 24px 16px #

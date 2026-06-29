@@ -1,0 +1,381 @@
+这是为您生成的“久久小镇日报”HTML代码。它是一份以纯排版为核心的像素风小镇报纸，采用米白、炭黑与陶土红色调，记录了小镇的天气、居民动态与温馨趣事。
+```html
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>久久小镇 · 日报</title>
+  <style>
+    /* 全局重置 + 字体优先 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #f4efe6;   /* 米白底 暖灰调 */
+      font-family: 'Georgia', 'Times New Roman', '宋体', 'Songti SC', serif;
+      color: #2c2b26;              /* 炭黑 微暖 */
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+      line-height: 1.5;
+    }
+
+    /* 主报纸容器 — 像素风温暖框 */
+    .newsletter {
+      max-width: 780px;
+      width: 100%;
+      background-color: #fcf8f2;   /* 更柔米白 */
+      border: 2px solid #2c2b26;
+      padding: 2rem 2rem 2.5rem;
+      box-shadow: 12px 12px 0 #b64b2e20;   /* 陶土红透明阴影 */
+      transition: box-shadow 0.2s;
+      position: relative;
+    }
+
+    /* 像素装饰小标 (点线) */
+    .newsletter::before {
+      content: "✦ ✦ ✦";
+      display: block;
+      text-align: center;
+      font-size: 0.8rem;
+      letter-spacing: 6px;
+      color: #b64b2e;            /* 陶土红 */
+      margin-bottom: 0.2rem;
+      opacity: 0.5;
+    }
+
+    /* 报头 */
+    .header {
+      border-bottom: 2px dashed #b64b2e;
+      margin-bottom: 1.8rem;
+      padding-bottom: 0.8rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: #2c2b26;
+      text-shadow: 1px 1px 0 #b64b2e55;
+      font-family: 'Times New Roman', 'Songti SC', serif;
+      margin-bottom: 0.1rem;
+      word-break: keep-all;
+    }
+
+    .header .sub {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #5f4c3b;
+      background: #ede3d5;
+      display: inline-block;
+      padding: 0.1rem 1.2rem;
+      border-radius: 40px;
+      margin-top: 0.2rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .header .date {
+      font-size: 0.9rem;
+      color: #6a5e4f;
+      margin-top: 0.5rem;
+      border-top: 1px dotted #c7b5a0;
+      padding-top: 0.4rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    /* 两栏/三栏网格 — typography 优先，干净 */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.8rem 1.2rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem 0.8rem;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    /* 卡片——纯文字+极简装饰 */
+    .card {
+      background: transparent;
+      padding: 0.2rem 0 0.2rem 0.8rem;
+      border-left: 3px solid #b64b2e;
+      margin-bottom: 0.3rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #2c2b26;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .card h3 small {
+      font-weight: normal;
+      font-size: 0.7rem;
+      color: #b64b2e;
+      background: #f0e3d8;
+      padding: 0 6px;
+      border-radius: 12px;
+    }
+
+    .card p, .story-snippet {
+      font-size: 0.9rem;
+      color: #2c2b26e0;
+      margin-bottom: 0.2rem;
+      line-height: 1.6;
+    }
+
+    .card .meta {
+      font-size: 0.7rem;
+      color: #836b58;
+      margin-top: 0.2rem;
+      font-style: italic;
+      display: block;
+    }
+
+    /* 引语 / 口述 */
+    .quote {
+      font-style: italic;
+      background: #f3ece3;
+      padding: 0.8rem 1rem;
+      border-radius: 0 20px 20px 20px;
+      margin: 1rem 0 0.8rem;
+      border-left: 6px solid #b64b2e;
+      color: #2c2b26;
+      font-size: 0.95rem;
+      box-shadow: 3px 3px 0 #d9c6b4;
+    }
+
+    .quote::before {
+      content: "“";
+      font-size: 1.8rem;
+      color: #b64b2e;
+      margin-right: 0.2rem;
+      vertical-align: middle;
+      line-height: 0;
+    }
+
+    .quote span {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.7rem;
+      text-align: right;
+      color: #5f4c3b;
+    }
+
+    /* 列表 —— 居民动态 */
+    .dynamic-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.6rem 0 0.2rem;
+    }
+
+    .dynamic-list li {
+      font-size: 0.9rem;
+      padding: 0.3rem 0 0.3rem 1.2rem;
+      position: relative;
+      border-bottom: 1px dotted #d6c9bb;
+    }
+
+    .dynamic-list li::before {
+      content: "•";
+      color: #b64b2e;
+      font-weight: bold;
+      position: absolute;
+      left: 0.2rem;
+    }
+
+    .dynamic-list li strong {
+      color: #2c2b26;
+      font-weight: 600;
+    }
+
+    .dynamic-list li small {
+      font-size: 0.7rem;
+      color: #7a6a59;
+      margin-left: 0.4rem;
+    }
+
+    /* 特别栏目——小镇改变/公告 */
+    .notice-box {
+      background: #f6eee7;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0 0.5rem;
+      border: 1px solid #b64b2e40;
+      border-radius: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.4rem 1.2rem;
+    }
+
+    .notice-box h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #b64b2e;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: inline;
+      border-right: 1px solid #b64b2e60;
+      padding-right: 1rem;
+    }
+
+    .notice-box p {
+      font-size: 0.9rem;
+      display: inline;
+      color: #2c2b26da;
+    }
+
+    .notice-box p i {
+      font-style: italic;
+      background: #fff5ec;
+      padding: 0 4px;
+    }
+
+    /* 分隔符 像素小元素 */
+    .divider {
+      text-align: center;
+      margin: 1.2rem 0;
+      font-size: 0.6rem;
+      letter-spacing: 8px;
+      color: #b64b2e80;
+      border-top: 1px dashed #dccfc1;
+      padding-top: 0.5rem;
+    }
+
+    /* 投票/互动 */
+    .mini-poll {
+      background-color: #efe7dd;
+      padding: 0.7rem 1rem;
+      margin: 1rem 0 0.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 30px;
+      border: 1px solid #b64b2e30;
+    }
+
+    .mini-poll span {
+      font-size: 0.85rem;
+    }
+
+    .mini-poll .highlight {
+      color: #b64b2e;
+      font-weight: 600;
+      background: #f4e1d4;
+      padding: 0.1rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    /* 响应式排版 */
+    @media (max-width: 600px) {
+      .newsletter {
+        padding: 1.5rem 1rem;
+      }
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      .grid-2col {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .grid-3col {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .grid-3col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 像素风点缀 — 陶土红小标记 */
+    .pixel-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #b64b2e;
+      margin-right: 6px;
+      image-rendering: pixelated;
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      border-top: 2px dotted #b64b2e;
+      padding-top: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #4f4237;
+    }
+
+    .footer-note a {
+      color: #b64b2e;
+      text-decoration: none;
+      border-bottom: 1px dotted #b64b2e;
+    }
+
+    .tag {
+      background: #b64b2e10;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid #b64b2e30;
+      font-size: 0.7rem;
+    }
+
+    /* 保留的像素手写感 */
+    hr {
+      border: none;
+      border-top: 1px dashed #b64b2e70;
+      margin: 1.2rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="newsletter">
+  <!-- 报头 -->
+  <div class="header">
+    <h1>久久小镇日报</h1>
+    <div class="sub">✦ 温暖像素风 · 居民专递 ✦</div>
+    <div class="date">
+      <span>🌾 丰收季 · 第47期</span>
+      <span>📅 2025.04.12</span>
+    </div>
+  </div>
+
+  <!-- 天气+小镇变化 两栏 -->
+  <div class="grid-2col">
+    <div class="card">
+      <h3>☁️ 小镇天气 <small>晨间播报</small></h3>
+      <p>雾气散尽，阳光穿过像素云层。气温16°C，东南风2级。幸福大街的梧桐开始飘絮，像细小的棉花糖粒。</p>
+      <span class="meta">—— 气象员·阿栗</span>
+    </div>
+    <div class="card">
+      <h3>🏘️ 小镇变化 <small>建设日志</small></h3>
+      <p>南街磨坊新增了风车观景台，可以俯瞰整片麦田。木匠铺门前的信箱换成了陶土红，据说能带来好运气。路牌全部刷新了像素描边。</p>
+      <span class="meta">✨ 变化记录员·小文</span>
+    </div>
+  </div>
+
+  <!-- 居民动态 用列表呈现 -->
+  <h3 style="font-weight: 500; letter-spacing: 1px; margin:

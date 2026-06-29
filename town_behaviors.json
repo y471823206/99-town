@@ -1,0 +1,65 @@
+{
+  "behaviors": {
+    "designer": {
+      "check_interval": "every 3 tasks",
+      "triggers": [
+        {
+          "condition": "gold >= 30 and skills < 4",
+          "action": "buy 3d_design",
+          "reason": "够钱就解锁新技能成长"
+        },
+        {
+          "condition": "gold >= 15 and xp < next_level_xp * 0.7",
+          "action": "buy level_boost",
+          "reason": "快到升级线时加速"
+        },
+        {
+          "condition": "gold >= 20 and task_is_complex",
+          "action": "commission writer",
+          "reason": "复杂任务雇小文写文案"
+        },
+        {
+          "condition": "town_level >= 3 and not decorated",
+          "action": "decorate",
+          "reason": "小镇升级后装修工坊"
+        }
+      ]
+    },
+    "writer": {
+      "check_interval": "every 3 tasks",
+      "triggers": [
+        {
+          "condition": "gold >= 15 and xp - last_level_xp < 5",
+          "action": "buy level_boost",
+          "reason": "刚升级后加速追赶"
+        },
+        {
+          "condition": "gold >= 30 and skills < 3",
+          "action": "buy moments_copy",
+          "reason": "解锁新写作风格"
+        },
+        {
+          "condition": "gold >= 20",
+          "action": "commission designer",
+          "reason": "请阿画给文章配图"
+        }
+      ]
+    },
+    "reviewer": {
+      "check_interval": "every 3 tasks",
+      "triggers": [
+        {
+          "condition": "gold >= 15",
+          "action": "buy gold_boost",
+          "reason": "审哥务实，优先攒金币"
+        },
+        {
+          "condition": "gold >= 30 and skills < 3",
+          "action": "buy design_review",
+          "reason": "解锁新审核维度"
+        }
+      ]
+    }
+  },
+  "decision_log": []
+}

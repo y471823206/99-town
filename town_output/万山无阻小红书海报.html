@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>万山无阻</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --ink: #1a1a1a;
+    --accent: #c4553b;
+    --muted: #8a8278;
+    --line: #e5e0d8;
+    --card-bg: #f0ece5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", -apple-system, sans-serif;
+    background: #e8e4dd;
+    display: flex;
+    justify-content: center;
+    padding: 60px 24px;
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .poster {
+    width: 1080px;
+    background: var(--bg);
+    box-shadow: 0 4px 60px rgba(0,0,0,0.10);
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    padding: 120px 100px 80px;
+    text-align: center;
+  }
+
+  .hero .book-title {
+    font-size: 120px;
+    font-weight: 900;
+    letter-spacing: 16px;
+    line-height: 1.1;
+    margin-bottom: 32px;
+  }
+
+  .hero .contributors {
+    font-size: 28px;
+    color: var(--muted);
+    letter-spacing: 4px;
+    margin-bottom: 64px;
+  }
+
+  /* ===== Card Preview ===== */
+  .card-preview {
+    display: inline-block;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    padding: 48px 60px;
+    text-align: left;
+    max-width: 700px;
+    width: 100%;
+  }
+  .card-preview .label {
+    font-size: 22px;
+    letter-spacing: 8px;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .card-preview .card-title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .card-preview .card-desc {
+    font-size: 28px;
+    color: var(--muted);
+  }
+
+  /* ===== Divider ===== */
+  .divider {
+    margin: 0 100px;
+    border: none;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* ===== Story ===== */
+  .story {
+    padding: 80px 100px;
+  }
+
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 56px;
+  }
+
+  .story-col h4 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .story-col .stat {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .story-col p {
+    font-size: 28px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ===== Promise ===== */
+  .promise {
+    padding: 0 100px 80px;
+    text-align: center;
+  }
+  .promise p {
+    font-size: 52px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .promise .strong {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ===== CTA ===== */
+  .cta {
+    padding: 80px 100px;
+    background: var(--ink);
+    color: var(--bg);
+    text-align: center;
+  }
+  .cta h2 {
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: 4px;
+  }
+
+  /* ===== Tags ===== */
+  .tags {
+    padding: 48px 100px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+  }
+  .tags span {
+    font-size: 24px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  /* ===== Footer ===== */
+  .poster-footer {
+    padding: 40px 100px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+  .poster-footer p {
+    font-size: 24px;
+    color: var(--muted);
+    letter-spacing: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1 class="book-title">万山无阻</h1>
+    <p class="contributors">52位联合作者 &nbsp;·&nbsp; 一人一张实战卡片</p>
+
+    <div class="card-preview">
+      <p class="label">本书卡片之一</p>
+      <p class="card-title">品牌主理人批量赋能合伙人<br>IP流量获客全链路</p>
+      <p class="card-desc">翻开照着做，5分钟出结果。</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Story -->
+  <section class="story">
+    <div class="story-grid">
+      <div class="story-col">
+        <h4>痛点</h4>
+        <p>品牌跑通IP获客全链路，10个城市合伙人却是零基础。一人教4小时，10人占满整周。</p>
+      </div>
+      <div class="story-col">
+        <h4>解法</h4>
+        <p>用AI做标准化IP赋能体系，把IP逻辑提炼成可填空模板，AI一键生成定制方案。</p>
+      </div>
+      <div class="story-col">
+        <h4>结果</h4>
+        <div class="stat">半天</div>
+        <p>教会一个合伙人<br>一周10人全部搞定<br>最快3天出第一条内容</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promise -->
+  <section class="promise">
+    <p>翻开照着做，<span class="strong">5分钟出结果。</span></p>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>想一百遍，不如跑一遍。</h2>
+  </section>
+
+  <!-- Tags -->
+  <section class="tags">
+    <span># 万山无阻</span>
+    <span># 52张模板把AI变成执行队</span>
+    <span># 茶品牌</span>
+    <span># IP获客</span>
+  </section>
+
+  <!-- Footer -->
+  <footer class="poster-footer">
+    <p>《万山无阻》· 52位联合作者 · 一人一张实战卡片</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>万山无阻 · 小红书推广海报</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --ink: #1a1a1a;
+    --accent: #c4553b;
+    --muted: #8a8278;
+    --line: #e5e0d8;
+    --card: #f0ece5;
+    --tag-bg: #eeddd6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", -apple-system, sans-serif;
+    background: #e8e4dd;
+    display: flex;
+    justify-content: center;
+    padding: 48px 24px 80px;
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .poster {
+    width: 1080px;
+    background: var(--bg);
+    box-shadow: 0 4px 80px rgba(0,0,0,0.10);
+    overflow: hidden;
+  }
+
+  /* ── Section: Hero ── */
+  .hero {
+    padding: 110px 100px 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  /* 顶部装饰线 */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+  }
+
+  .hero .kicker {
+    font-size: 22px;
+    letter-spacing: 12px;
+    color: var(--accent);
+    margin-bottom: 48px;
+    font-weight: 500;
+  }
+
+  .hero .book-title {
+    font-size: 136px;
+    font-weight: 900;
+    letter-spacing: 20px;
+    line-height: 1.05;
+    margin-bottom: 36px;
+    /* 文字压痕效果 */
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.04);
+  }
+
+  .hero .book-title .accent-dot {
+    color: var(--accent);
+    font-size: 96px;
+    vertical-align: middle;
+    margin: 0 8px;
+  }
+
+  .hero .subtitle {
+    font-size: 30px;
+    color: var(--muted);
+    letter-spacing: 6px;
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+
+  .hero .subtitle .highlight {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── Section: Card Preview ── */
+  .card-section {
+    padding: 0 100px 80px;
+    text-align: center;
+  }
+
+  .card-preview {
+    display: inline-block;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 56px 64px;
+    text-align: left;
+    max-width: 740px;
+    width: 100%;
+    position: relative;
+  }
+
+  /* 卡片角标 */
+  .card-preview::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 56px;
+    width: 40px;
+    height: 4px;
+    background: var(--accent);
+  }
+
+  .card-preview .card-label {
+    font-size: 20px;
+    letter-spacing: 10px;
+    color: var(--accent);
+    margin-bottom: 28px;
+    font-weight: 500;
+  }
+
+  .card-preview .card-main {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+
+  .card-preview .card-tagline {
+    font-size: 26px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── Section: Big Statement ── */
+  .statement {
+    padding: 0 100px 72px;
+    text-align: center;
+  }
+
+  .statement blockquote {
+    font-size: 48px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ink);
+    position: relative;
+    display: inline-block;
+    max-width: 800px;
+  }
+
+  .statement blockquote .em {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* 引号装饰 */
+  .statement .quote-mark {
+    font-size: 140px;
+    color: var(--line);
+    line-height: 0;
+    display: block;
+    margin-bottom: -20px;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  /* ── Section: Divider ── */
+  .divider-section {
+    padding: 0 100px 72px;
+    text-align: center;
+  }
+
+  .divider-section .ornament {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    color: var(--muted);
+    font-size: 18px;
+    letter-spacing: 6px;
+  }
+
+  .divider-section .ornament::before,
+  .divider-section .ornament::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* ── Section: Feature Grid ── */
+  .features {
+    padding: 0 100px 80px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 52px;
+  }
+
+  .feature-item {
+    text-align: center;
+  }
+
+  .feature-item .feat-num {
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+  }
+
+  .feature-item h4 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+
+  .feature-item p {
+    font-size: 22px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── Section: CTA Banner ── */
+  .cta-banner {
+    margin: 0 100px 72px;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 64px 80px;
+    text-align: center;
+  }
+
+  .cta-banner h2 {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+
+  .cta-banner p {
+    font-size: 24px;
+    color: rgba(250,247,242,0.6);
+    letter-spacing: 4px;
+  }
+
+  /* ── Section: Hashtags ── */
+  .hashtags {
+    padding: 0 100px 64px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .hashtag {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--accent);
+    font-size: 22px;
+    padding: 10px 28px;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+
+  /* ── Footer ── */
+  .poster-footer {
+    padding: 40px 100px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+
+  .poster-footer p {
+    font-size: 22px;
+    color: var(--muted);
+    letter-spacing: 4px;
+  }
+
+  .poster-footer .separator {
+    color: var(--line);
+    margin: 0 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="kicker">新 书 上 架</p>
+    <h1 class="book-title">万山无阻</h1>
+    <p class="subtitle">
+      <span class="highlight">52位联合作者</span> · 一人一张实战卡片
+    </p>
+  </section>
+
+  <!-- Card Preview -->
+  <section class="card-section">
+    <div class="card-preview">
+      <p class="card-label">实战卡片 #001</p>
+      <p class="card-main">
+        品牌主理人批量赋能合伙人<br>
+        IP流量获客全链路
+      </p>
+      <p class="card-tagline">
+        翻开照着做，5分钟出结果。<br>
+        想一百遍，不如跑一遍。
+      </p>
+    </div>
+  </section>
+
+  <!-- Big Statement -->
+  <section class="statement">
+    <span class="quote-mark">"</span>
+    <blockquote>
+      翻开照着做，<span class="em">5分钟出结果。</span>
+    </blockquote>
+  </section>
+
+  <!-- Divider -->
+  <section class="divider-section">
+    <div class="ornament">核 心 卖 点</div>
+  </section>
+
+  <!-- Three Features -->
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-item">
+        <p class="feat-num">01</p>
+        <h4>全链路覆盖</h4>
+        <p>品牌主理人批量赋能合伙人，从IP定位到流量获客，一步到位。</p>
+      </div>
+      <div class="feature-item">
+        <p class="feat-num">02</p>
+        <h4>开箱即用</h4>
+        <p>52张实战卡片，翻开照着做，5分钟就能跑出第一条结果。</p>
+      </div>
+      <div class="feature-item">
+        <p class="feat-num">03</p>
+        <h4>AI实战化</h4>
+        <p>52张模板把AI变成执行队，不是理论，是直接可落地的打法。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="cta-banner">
+    <h2>想一百遍，不如跑一遍。</h2>
+    <p>立即入手，开启你的IP获客之路</p>
+  </section>
+
+  <!-- Hashtags -->
+  <section class="hashtags">
+    <span class="hashtag"># 万山无阻</span>
+    <span class="hashtag"># 52张模板把AI变成执行队</span>
+    <span class="hashtag"># 茶品牌</span>
+    <span class="hashtag"># IP获客</span>
+  </section>
+
+  <!-- Footer -->
+  <footer class="poster-footer">
+    <p>
+      《万山无阻》<span class="separator">|</span>
+      52位联合作者<span class="separator">|</span>
+      一人一张实战卡片
+    </p>
+  </footer>
+
+</div>
+
+</body>
+</html>

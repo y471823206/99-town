@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的猫猫每天都不让我起床 · 四格漫画</title>
+<style>
+  :root {
+    --bg: #fdf6ee;
+    --panel-bg: #fffef9;
+    --ink: #3a3226;
+    --cat-orange: #e8943a;
+    --cat-light: #f5c98e;
+    --cat-dark: #c4722a;
+    --cat-nose: #e8877c;
+    --accent: #e0553d;
+    --soft-gray: #b8b0a4;
+    --speech-bg: #ffffff;
+    --morning-yellow: #fff3d6;
+    --blanket: #d4e5f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "LXGW WenKai", -apple-system, sans-serif;
+    background: #f0e8db;
+    background-image:
+      radial-gradient(circle, rgba(180,160,140,0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .poster {
+    width: 720px;
+    max-width: 100%;
+    background: var(--bg);
+    border: 6px solid #3a3226;
+    border-radius: 4px;
+    padding: 36px 32px 28px;
+    position: relative;
+    box-shadow:
+      8px 8px 0 rgba(58,50,38,0.12),
+      16px 16px 0 rgba(58,50,38,0.05);
+  }
+
+  /* Title area */
+  .title-area {
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .title-label {
+    display: inline-block;
+    background: #3a3226;
+    color: #fdf6ee;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    padding: 4px 18px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    font-family: "Courier New", "Source Code Pro", monospace;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 900;
+    color: #3a3226;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+
+  .title .cat-emoji {
+    display: inline-block;
+    animation: catBounce 1.2s ease-in-out infinite;
+  }
+
+  @keyframes catBounce {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    50% { transform: translateY(0); }
+    70% { transform: translateY(-4px); }
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #8a7e6e;
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Comic panels */
+  .comic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    border: 3px solid #3a3226;
+    border-radius: 3px;
+    padding: 20px 18px 16px;
+    position: relative;
+    overflow: hidden;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    box-shadow: 3px 3px 0 rgba(58,50,38,0.08);
+  }
+
+  .panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0 rgba(58,50,38,0.12);
+  }
+
+  .panel-number {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    font-size: 11px;
+    font-weight: 900;
+    color: #c4b8a4;
+    font-family: "Courier New", monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .panel-time {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #b8a894;
+  }
+
+  /* Panel 1: Alarm */
+  .alarm-scene {
+    position: relative;
+    width: 100%;
+    height: 150px;
+  }
+
+  .alarm-clock {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    background: #e8ddcc;
+    border: 3px solid #3a3226;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: alarmRing 0.4s ease-in-out infinite;
+  }
+
+  .alarm-clock::before {
+    content: '';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 8px;
+    background: #c4b090;
+    border: 3px solid #3a3226;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .alarm-clock .time-display {
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    font-weight: 900;
+    color: #e0553d;
+  }
+
+  @keyframes alarmRing {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(6deg); }
+    75% { transform: rotate(-6deg); }
+  }
+
+  .alarm-lines {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 18px;
+    color: #e0553d;
+    animation: pulse 0.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  .bed-person {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    width: 90px;
+    height: 70px;
+  }
+
+  .pillow {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 55px;
+    height: 28px;
+    background: #f5f0e8;
+    border: 2.5px solid #3a3226;
+    border-radius: 14px;
+  }
+
+  .blanket-body {
+    position: absolute;
+    left: 20px;
+    bottom: 5px;
+    width: 68px;
+    height: 45px;
+    background: var(--blanket);
+    border: 2.5px solid #3a3226;
+    border-radius: 18px 22px 6px 6px;
+  }
+
+  .person-head {
+    position: absolute;
+    left: 12px;
+    bottom: 18px;
+    width: 24px;
+    height: 24px;
+    background: #f5dfc6;
+    border: 2.5px solid #3a3226;
+    border-radius: 50%;
+  }
+
+  .person-head::after {
+    content: '~ ~';
+    position: absolute;
+    top: -16px;
+    left: -2px;
+    font-size: 10px;
+    color: #aaa;
+    letter-spacing: 2px;
+  }
+
+  .hand-reaching {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    width: 18px;
+    height: 30px;
+    background: #f5dfc6;
+    border: 2.5px solid #3a3226;
+    border-radius: 10px;
+    animation: reachOut 1.5s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+
+  @keyframes reachOut {
+    0%, 100% { transform: rotate(-10deg) translateY(0); }
+    50% { transform: rotate(-25deg) translateY(-8px); }
+  }
+
+  /* Panel 2: Cat appears */
+  .cat-jump-scene {
+    position: relative;
+    width: 100%;
+    height: 150px;
+  }
+
+  /* CSS Cat */
+  .cat-body {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: catLanding 2s ease-in-out infinite;
+  }
+
+  @keyframes catLanding {
+    0%, 100% { transform: translateX(-50%) translateY(0) scaleY(1); }
+    30% { transform: translateX(-50%) translateY(-30px) scaleY(0.75); }
+    50% { transform: translateX(-50%) translateY(-5px) scaleY(1.15); }
+    70% { transform: translateX(-50%) translateY(0) scaleY(0.9); }
+    85% { transform: translateX(-50%) translateY(-2px) scaleY(1.05); }
+  }
+
+  .cat {
+    position: relative;
+    width: 100px;
+    height: 70px;
+  }
+
+  /* Cat body */
+  .cat-torso {
+    position: absolute;
+    bottom: 0;
+    left: 18px;
+    width: 60px;
+    height: 38px;
+    background: var(--cat-orange);
+    border: 2.5px solid #3a3226;
+    border-radius: 30px 30px 14px 14px;
+  }
+
+  .cat-torso::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 14px;
+    background: var(--cat-light);
+    border-radius: 8px;
+  }
+
+  /* Cat head */
+  .cat-head {
+    position: absolute;
+    top: 2px;
+    left: 20px;
+    width: 44px;
+    height: 38px;
+    background: var(--cat-orange);
+    border: 2.5px solid #3a3226;
+    border-radius: 50%;
+    z-index: 2;
+  }
+
+  /* Cat ears */
+  .cat-ear-left {
+    position: absolute;
+    top: -10px;
+    left: 2px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 16px solid var(--cat-orange);
+    filter: drop-shadow(0 -2px 0 #3a3226);
+  }
+
+  .cat-ear-right {
+    position: absolute;
+    top: -10px;
+    right: 2px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 16px solid var(--cat-orange);
+    filter: drop-shadow(0 -2px 0 #3a3226);
+  }
+
+  .cat-ear-inner-left {
+    position: absolute;
+    top: -7px;
+    left: 4px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 11px solid #f0b8a0;
+    z-index: 3;
+  }
+
+  .cat-ear-inner-right {
+    position: absolute;
+    top: -7px;
+    right: 4px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 11px solid #f0b8a0;
+    z-index: 3;
+  }
+
+  /* Cat eyes - half closed, smug */
+  .cat-eyes {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 4;
+  }
+
+  .cat-eye {
+    width: 9px;
+    height: 10px;
+    background: #fff;
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-eye::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    width: 4px;
+    height: 6px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  /* Half-closed eyelid for smug look */
+  .cat-eyelid {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 12px;
+    height: 7px;
+    background: var(--cat-orange);
+    border-radius: 0 0 0 0;
+    z-index: 5;
+  }
+
+  .cat-nose {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7px;
+    height: 5px;
+    background: var(--cat-nose);
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    z-index: 4;
+  }
+
+  .cat-mouth {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 5px;
+    border-bottom: 1.5px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+    z-index: 4;
+  }
+
+  /* Cat whiskers */
+  .whisker {
+    position: absolute;
+    height: 1.5px;
+    background: #3a3226;
+    z-index: 4;
+    border-radius: 1px;
+  }
+
+  .whisker-l1 { top: 18px; left: 4px; width: 16px; transform: rotate(-8deg); }
+  .whisker-l2 { top: 20px; left: 3px; width: 14px; transform: rotate(2deg); }
+  .whisker-r1 { top: 18px; right: 4px; width: 16px; transform: rotate(8deg); }
+  .whisker-r2 { top: 20px; right: 3px; width: 14px; transform: rotate(-2deg); }
+
+  /* Cat tail */
+  .cat-tail {
+    position: absolute;
+    bottom: 8px;
+    right: -10px;
+    width: 24px;
+    height: 10px;
+    background: var(--cat-orange);
+    border: 2.5px solid #3a3226;
+    border-radius: 10px 12px 10px 2px;
+    transform: rotate(20deg);
+    animation: tailWag 1.5s ease-in-out infinite;
+    transform-origin: left center;
+  }
+
+  @keyframes tailWag {
+    0%, 100% { transform: rotate(15deg); }
+    50% { transform: rotate(35deg); }
+  }
+
+  /* Cat paws */
+  .paw {
+    position: absolute;
+    bottom: -3px;
+    width: 16px;
+    height: 12px;
+    background: var(--cat-orange);
+    border: 2.5px solid #3a3226;
+    border-radius: 50% 50% 40% 40%;
+    z-index: 3;
+  }
+
+  .paw-left { left: 24px; }
+  .paw-right { right: 24px; }
+
+  .paw::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 3px;
+    background: #e8877c;
+    border-radius: 50%;
+  }
+
+  /* Impact lines */
+  .impact-lines {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+  }
+
+  .impact-line {
+    width: 3px;
+    height: 16px;
+    background: #3a3226;
+    border-radius: 2px;
+    animation: impactFade 2s ease-in-out infinite;
+  }
+
+  .impact-line:nth-child(2) { animation-delay: 0.1s; height: 20px; }
+  .impact-line:nth-child(3) { animation-delay: 0.2s; height: 14px; }
+  .impact-line:nth-child(4) { animation-delay: 0.3s; height: 18px; }
+
+  @keyframes impactFade {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.3; transform: scaleY(0.4); }
+  }
+
+  /* Panel 3: Cat close-up, tsundere */
+  .cat-closeup-scene {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cat-face-big {
+    position: relative;
+    width: 80px;
+    height: 70px;
+  }
+
+  .cat-head-big {
+    width: 80px;
+    height: 68px;
+    background: var(--cat-orange);
+    border: 3px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  /* Big cat ears */
+  .cat-head-big::before {
+    content: '';
+    position: absolute;
+    top: -16px;
+    left: 4px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 22px solid var(--cat-orange);
+    filter: drop-shadow(0 -2px 0 #3a3226);
+  }
+
+  .cat-head-big::after {
+    content: '';
+    position: absolute;
+    top: -16px;
+    right: 4px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 22px solid var(--cat-orange);
+    filter: drop-shadow(0 -2px 0 #3a3226);
+  }
+
+  /* Big smug eyes */
+  .smug-eyes {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 14px;
+    z-index: 5;
+  }
+
+  .smug-eye {
+    width: 16px;
+    height: 18px;
+    background: #fff;
+    border: 2.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .smug-eye::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 7px;
+    height: 10px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  /* Half-lidded smug */
+  .smug-lid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 9px;
+    background: var(--cat-orange);
+    border-radius: 0;
+    z-index: 6;
+  }
+
+  .smug-nose {
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 7px;
+    background: var(--cat-nose);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    z-index: 5;
+  }
+
+  /* Smug :3 mouth */
+  .smug-mouth {
+    position: absolute;
+    top: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 8px;
+    border-bottom: 2px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+    z-index: 5;
+  }
+
+  .smug-mouth::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .smug-whisker {
+    position: absolute;
+    height: 2px;
+    background: #3a3226;
+    z-index: 5;
+    border-radius: 1px;
+  }
+
+  .smug-w-l1 { top: 32px; left: 8px; width: 22px; transform: rotate(-10deg); }
+  .smug-w-l2 { top: 36px; left: 6px; width: 18px; transform: rotate(3deg); }
+  .smug-w-r1 { top: 32px; right: 8px; width: 22px; transform: rotate(10deg); }
+  .smug-w-r2 { top: 36px; right: 6px; width: 18px; transform: rotate(-3deg); }
+
+  /* Blush */
+  .blush {
+    position: absolute;
+    width: 16px;
+    height: 10px;
+    background: rgba(232, 135, 124, 0.5);
+    border-radius: 50%;
+    z-index: 4;
+    top: 30px;
+  }
+  .blush-left { left: 8px; }
+  .blush-right { right: 8px; }
+
+  /* Panel 4: Final */
+  .final-scene {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .defeated-bed {
+    position: relative;
+    width: 140px;
+    height: 90px;
+  }
+
+  .defeated-blanket {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    width: 120px;
+    height: 55px;
+    background: var(--blanket);
+    border: 3px solid #3a3226;
+    border-radius: 25px 30px 8px 8px;
+    animation: gentleBreathe 3s ease-in-out infinite;
+  }
+
+  @keyframes gentleBreathe {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.04); }
+  }
+
+  .defeated-head {
+    position: absolute;
+    left: 22px;
+    bottom: 30px;
+    width: 28px;
+    height: 28px;
+    background: #f5dfc6;
+    border: 2.5px solid #3a3226;
+    border-radius: 50%;
+    z-index: 2;
+  }
+
+  .defeated-head::after {
+    content: '💤';
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    font-size: 16px;
+    animation: floatZ 2s ease-in-out infinite;
+  }
+
+  @keyframes floatZ {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(-8px); opacity: 1; }
+  }
+
+  .cat-victory {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+    z-index: 3;
+    animation: purrVibrate 0.15s ease-in-out infinite;
+  }
+
+  @keyframes purrVibrate {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(1px, -1px); }
+    50% { transform: translate(0, -2px); }
+    75% { transform: translate(-1px, -1px); }
+  }
+
+  .mini-cat {
+    position: relative;
+    width: 50px;
+    height: 35px;
+  }
+
+  .mini-cat-body {
+    width: 40px;
+    height: 22px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 20px 20px 8px 8px;
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+  }
+
+  .mini-cat-head {
+    width: 26px;
+    height: 22px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 12px;
+  }
+
+  /* Heart bubbles */
+  .heart-bubble {
+    position: absolute;
+    font-size: 14px;
+    animation: heartRise 1.5s ease-in-out infinite;
+  }
+  .heart-bubble:nth-child(1) { top: -5px; right: 5px; animation-delay: 0s; }
+  .heart-bubble:nth-child(2) { top: 8px; right: 20px; animation-delay: 0.5s; }
+
+  @keyframes heartRise {
+    0% { transform: translateY(0) scale(0.8); opacity: 0.8; }
+    50% { transform: translateY(-15px) scale(1.1); opacity: 1; }
+    100% { transform: translateY(-30px) scale(0.6); opacity: 0; }
+  }
+
+  /* Speech bubbles */
+  .speech-bubble {
+    position: absolute;
+    background: #fff;
+    border: 2.5px solid #3a3226;
+    border-radius: 16px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #3a3226;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 2px 2px 0 rgba(58,50,38,0.1);
+  }
+
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    width: 12px;
+    height: 8px;
+    background: #fff;
+    border-right: 2.5px solid #3a3226;
+    border-bottom: 2.5px solid #3a3226;
+    transform: rotate(45deg);
+  }
+
+  .speech-alarm {
+    top: 15px;
+    left: 20px;
+    font-size: 18px;
+  }
+  .speech-alarm::after {
+    left: 20px;
+    bottom: -8px;
+  }
+
+  .speech-cat {
+    top: 0px;
+    right: 5px;
+  }
+  .speech-cat::after {
+    right: 20px;
+    bottom: -8px;
+  }
+
+  .speech-tsun {
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+  }
+  .speech-tsun::after {
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    bottom: -7px;
+  }
+
+  .speech-final {
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #8a7e6e;
+    font-size: 13px;
+    font-style: italic;
+    font-weight: 600;
+  }
+  .speech-final::after {
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    bottom: -7px;
+  }
+
+  /* Panel captions */
+  .panel-caption {
+    font-size: 11px;
+    color: #a09382;
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  /* Bottom footer */
+  .footer {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 2px dashed #d8cebe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #8a7e6e;
+    letter-spacing: 0.05em;
+  }
+
+  .footer .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--cat-orange);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .footer .paw-icon {
+    font-size: 16px;
+  }
+
+  /* Stamina bar joke */
+  .stamina-bar {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b5f4e;
+    font-family: "Courier New", monospace;
+  }
+
+  .stamina-label { color: #8a7e6e; }
+  .stamina-track {
+    width: 120px;
+    height: 10px;
+    background: #e8ddcc;
+    border: 2px solid #3a3226;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .stamina-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--cat-orange);
+    border-radius: 3px;
+    animation: staminaDrain 3s ease-in-out infinite;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  @keyframes staminaDrain {
+    0% { width: 100%; background: #7dbf6e; }
+    30% { width: 75%; background: #a8c96a; }
+    60% { width: 40%; background: var(--cat-orange); }
+    85% { width: 5%; background: #e0553d; }
+    100% { width: 5%; background: #e0553d; }
+  }
+
+  .stamina-text {
+    font-size: 11px;
+    color: #8a7e6e;
+    animation: staminaBlink 0.8s ease-in-out infinite;
+  }
+
+  @keyframes staminaBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Zzz floating */
+  .zzz {
+    position: absolute;
+    font-size: 14px;
+    color: #a09382;
+    animation: floatZzz 2.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .zzz1 { top: 5px; left: 20px; animation-delay: 0s; }
+  .zzz2 { top: 0px; left: 35px; animation-delay: 0.8s; font-size: 12px; }
+  .zzz3 { top: -5px; left: 48px; animation-delay: 1.6s; font-size: 10px; }
+
+  @keyframes floatZzz {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+    50% { transform: translateY(-12px) rotate(5deg); opacity: 1; }
+    100% { transform: translateY(-24px) rotate(0deg); opacity: 0; }
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .comic-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .panel {
+      min-height: 180px;
+    }
+    .poster {
+      padding: 20px 14px 18px;
+    }
+    .title {
+      font-size: 22px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- Title -->
+  <div class="title-area">
+    <div class="title-label">✦ 久久小镇 · 四格漫画 ✦</div>
+    <div class="title">
+      <span class="cat-emoji">🐱</span> 我的猫猫每天都不让我起床
+    </div>
+    <div class="subtitle">—— 又名：论一只猫如何统治人类作息 ——</div>
+  </div>
+
+  <!-- Comic Grid -->
+  <div class="comic-grid">
+
+    <!-- Panel 1: ALARM -->
+    <div class="panel">
+      <div class="panel-number">PANEL 01</div>
+      <div class="panel-time">⏰ 07:00</div>
+
+      <div class="alarm-scene">
+        <!-- Alarm clock -->
+        <div class="alarm-clock">
+          <div class="time-display">07:00</div>
+        </div>
+        <div class="alarm-lines">)))</div>
+
+        <!-- Person in bed -->
+        <div class="bed-person">
+          <div class="pillow"></div>
+          <div class="blanket-body"></div>
+          <div class="person-head"></div>
+        </div>
+
+        <!-- Hand reaching to snooze -->
+        <div class="hand-reaching"></div>
+
+        <!-- Speech bubble -->
+        <div class="speech-bubble speech-alarm">该起床啦…</div>
+      </div>
+      <div class="panel-caption">闹钟响第七遍了，我挣扎着想去关掉它。</div>
+    </div>
+
+    <!-- Panel 2: CAT JUMPS -->
+    <div class="panel">
+      <div class="panel-number">PANEL 02</div>
+      <div class="panel-time">🐾 07:00:03</div>
+
+      <div class="cat-jump-scene">
+        <!-- Impact lines -->
+        <div class="impact-lines">
+          <div class="impact-line"></div>
+          <div class="impact-line"></div>
+          <div class="impact-line"></div>
+          <div class="impact-line"></div>
+        </div>
+
+        <!-- Cat -->
+        <div class="cat-body">
+          <div class="cat">
+            <div class="cat-head">
+              <div class="cat-ear-left"></div>
+              <div class="cat-ear-right"></div>
+              <div class="cat-ear-inner-left"></div>
+              <div class="cat-ear-inner-right"></div>
+              <div class="cat-eyes">
+                <div class="cat-eye"><div class="cat-eyelid"></div></div>
+                <div class="cat-eye"><div class="cat-eyelid"></div></div>
+              </div>
+              <div class="cat-nose"></div>
+              <div class="cat-mouth"></div>
+              <div class="whisker whisker-l1"></div>
+              <div class="whisker whisker-l2"></div>
+              <div class="whisker whisker-r1"></div>
+              <div class="whisker whisker-r2"></div>
+            </div>
+            <div class="cat-torso"></div>
+            <div class="paw paw-left"></div>
+            <div class="paw paw-right"></div>
+            <div class="cat-tail"></div>
+          </div>
+        </div>
+
+        <!-- Speech bubble -->
+        <div class="speech-bubble speech-cat">咚！</div>
+      </div>
+      <div class="panel-caption">一道橘色闪电精准降落在我的胸口。</div>
+    </div>
+
+    <!-- Panel 3: TSUN CLOSE-UP -->
+    <div class="panel">
+      <div class="panel-number">PANEL 03</div>
+      <div class="panel-time">😼 07:01</div>
+
+      <div class="cat-closeup-scene">
+        <div class="cat-face-big">
+          <div class="cat-head-big">
+            <div class="smug-eyes">
+              <div class="smug-eye"><div class="smug-lid"></div></div>
+              <div class="smug-eye"><div class="smug-lid"></div></div>
+            </div>
+            <div class="smug-nose"></div>
+            <div class="smug-mouth"></div>
+            <div class="smug-whisker smug-w-l1"></div>
+            <div class="smug-whisker smug-w-l2"></div>
+            <div class="smug-whisker smug-w-r1"></div>
+            <div class="smug-whisker smug-w-r2"></div>
+            <div class="blush blush-left"></div>
+            <div class="blush blush-right"></div>
+          </div>
+        </div>
+
+        <!-- Speech bubble -->
+        <div class="speech-bubble speech-tsun">你去哪？<br><span style="font-size:11px;color:#8a7e6e;">（不是想你了，就是刚好坐这儿）</span></div>
+      </div>
+      <div class="panel-caption">半眯的眼睛里写满了「你敢动试试」。</div>
+    </div>
+
+    <!-- Panel 4: DEFEAT -->
+    <div class="panel">
+      <div class="panel-number">PANEL 04</div>
+      <div class="panel-time">💤 08:30</div>
+
+      <div class="final-scene">
+        <div class="defeated-bed">
+          <div class="defeated-blanket"></div>
+          <div class="defeated-head"></div>
+
+          <!-- Zzz -->
+          <div class="zzz zzz1">z</div>
+          <div class="zzz zzz2">z</div>
+          <div class="zzz zzz3">z</div>
+
+          <!-- Victory cat -->
+          <div class="cat-victory">
+            <div class="mini-cat">
+              <div class="mini-cat-head"></div>
+              <div class="mini-cat-body"></div>
+            </div>
+            <div class="heart-bubble">💕</div>
+            <div class="heart-bubble">💕</div>
+          </div>
+
+          <!-- Speech -->
+          <div class="speech-bubble speech-final">再睡五分钟…就五分钟…</div>
+        </div>
+      </div>
+      <div class="panel-caption">猫赢了。人类又迟到了。</div>
+    </div>
+
+  </div>
+
+  <!-- Stamina bar joke -->
+  <div class="stamina-bar">
+    <span class="stamina-label">起床意志力</span>
+    <div class="stamina-track">
+      <div class="stamina-fill"></div>
+    </div>
+    <span class="stamina-text">HP: 0/100</span>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="paw-icon">🐾</span>
+    <span>久久小镇 · 阿画 作品</span>
+    <span class="dot"></span>
+    <span>纯CSS手绘</span>
+    <span class="paw-icon">🐾</span>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每天不狠狠吸猫会死掉 · 四格漫画</title>
+<style>
+  :root {
+    --bg: #fdf6ee;
+    --panel-bg: #fffef9;
+    --ink: #3a3226;
+    --cat-orange: #e8943a;
+    --cat-light: #f5c98e;
+    --cat-dark: #c4722a;
+    --cat-nose: #e8877c;
+    --accent: #e0553d;
+    --soft-gray: #b8b0a4;
+    --speech-bg: #ffffff;
+    --skin: #f5dfc6;
+    --hair: #3a3226;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Noto Sans SC", "LXGW WenKai", "Microsoft YaHei", -apple-system, sans-serif;
+    background: #f0e8db;
+    background-image:
+      radial-gradient(circle, rgba(180,160,140,0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .poster {
+    width: 720px;
+    max-width: 100%;
+    background: var(--bg);
+    border: 6px solid #3a3226;
+    border-radius: 4px;
+    padding: 32px 24px 24px;
+    position: relative;
+    box-shadow:
+      8px 8px 0 rgba(58,50,38,0.12),
+      16px 16px 0 rgba(58,50,38,0.05);
+  }
+
+  /* Title area */
+  .title-area {
+    text-align: center;
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  .title-label {
+    display: inline-block;
+    background: #3a3226;
+    color: #fdf6ee;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    padding: 4px 16px;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    font-family: "Courier New", "Source Code Pro", monospace;
+  }
+
+  .main-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #3a3226;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #8a7e6e;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Comic panels - 4 horizontal */
+  .comic-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    border: 3px solid #3a3226;
+    border-radius: 3px;
+    padding: 16px 10px 12px;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.2s;
+    box-shadow: 3px 3px 0 rgba(58,50,38,0.08);
+  }
+
+  .panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0 rgba(58,50,38,0.12);
+  }
+
+  .panel-number {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    font-size: 10px;
+    font-weight: 900;
+    color: #c4b8a4;
+    font-family: "Courier New", monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .panel-time {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b8a894;
+  }
+
+  /* ---------- Shared Scene ---------- */
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---------- Speech Bubble ---------- */
+  .speech-bubble {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #3a3226;
+    border-radius: 12px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #3a3226;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 2px 2px 0 rgba(58,50,38,0.08);
+    line-height: 1.5;
+  }
+
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    width: 10px;
+    height: 6px;
+    background: #fff;
+    border-right: 2px solid #3a3226;
+    border-bottom: 2px solid #3a3226;
+    transform: rotate(45deg);
+  }
+
+  /* Panel 1 specific */
+  .speech-p1 {
+    top: -2px;
+    right: 4px;
+    font-size: 13px;
+    color: #6b5f4e;
+  }
+  .speech-p1::after {
+    right: 16px;
+    bottom: -6px;
+  }
+
+  /* Panel 2 specific */
+  .speech-p2 {
+    top: -2px;
+    right: 4px;
+    font-size: 14px;
+    color: #e0553d;
+  }
+  .speech-p2::after {
+    left: 16px;
+    bottom: -6px;
+  }
+
+  /* Panel 3 specific */
+  .speech-p3 {
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    color: #e0553d;
+    white-space: normal;
+    text-align: center;
+  }
+  .speech-p3::after {
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    bottom: -5px;
+  }
+
+  /* Panel 4 specific */
+  .speech-p4 {
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    color: #5a8a4a;
+  }
+  .speech-p4::after {
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    bottom: -5px;
+  }
+
+  /* ---------- CSS Person ---------- */
+  .person-head {
+    width: 22px;
+    height: 22px;
+    background: var(--skin);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Hair */
+  .person-head.hair::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -3px;
+    width: 28px;
+    height: 14px;
+    background: #3a3226;
+    border-radius: 14px 14px 0 0;
+    z-index: 3;
+  }
+
+  /* Eyes */
+  .eyes-closed {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+  }
+  .eyes-closed .eye {
+    width: 2px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 1px;
+  }
+
+  .eyes-open {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+  }
+  .eyes-open .eye {
+    width: 4px;
+    height: 5px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+  }
+  .eyes-open .eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 3px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .eyes-panic {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+  }
+  .eyes-panic .eye {
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+  }
+  .eyes-panic .eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0.5px;
+    width: 3px;
+    height: 3px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .eyes-happy {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+  }
+  .eyes-happy .eye {
+    width: 3px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+    position: relative;
+    top: -1px;
+  }
+
+  .mouth-small {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 2px;
+    background: #3a3226;
+    border-radius: 0 0 2px 2px;
+  }
+
+  .mouth-open {
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .mouth-smile {
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 3px;
+    border-bottom: 1.5px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+  }
+
+  .person-body {
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 10px 10px 6px 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .person-body.standing {
+    width: 28px;
+    height: 40px;
+  }
+
+  .person-body.sitting {
+    width: 32px;
+    height: 28px;
+    border-radius: 14px 14px 8px 8px;
+  }
+
+  .arm {
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    position: absolute;
+    z-index: 1;
+    height: 10px;
+    width: 22px;
+  }
+
+  .leg {
+    background: #6b5f4e;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    position: absolute;
+    z-index: 0;
+    width: 10px;
+    height: 20px;
+  }
+
+  /* ---------- Panel 1: Tired person ---------- */
+  .tired-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0;
+  }
+
+  .tired-person {
+    position: relative;
+    width: 60px;
+    height: 80px;
+  }
+
+  .tired-person .person-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) rotate(15deg);
+  }
+
+  .tired-person .person-body {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 36px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 16px 16px 10px 10px;
+  }
+
+  /* Slumped posture - body slanted */
+  .tired-person .arm-left {
+    position: absolute;
+    top: 22px;
+    left: 6px;
+    width: 20px;
+    height: 9px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(30deg);
+  }
+
+  .tired-person .arm-right {
+    position: absolute;
+    top: 22px;
+    right: 6px;
+    width: 20px;
+    height: 9px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-30deg);
+  }
+
+  .tired-person .leg-left {
+    position: absolute;
+    top: 48px;
+    left: 10px;
+    width: 10px;
+    height: 22px;
+    background: #6b5f4e;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(10deg);
+  }
+
+  .tired-person .leg-right {
+    position: absolute;
+    top: 48px;
+    right: 10px;
+    width: 10px;
+    height: 22px;
+    background: #6b5f4e;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-10deg);
+  }
+
+  /* Sweat drop */
+  .sweat {
+    position: absolute;
+    top: -8px;
+    left: 30px;
+    width: 6px;
+    height: 10px;
+    background: #8ec8e8;
+    border: 1.5px solid #5a9ab8;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform: rotate(15deg);
+    animation: sweatDrop 1.5s ease-in-out infinite;
+  }
+
+  @keyframes sweatDrop {
+    0%, 100% { transform: rotate(15deg) translateY(0); opacity: 0.8; }
+    50% { transform: rotate(15deg) translateY(4px); opacity: 1; }
+  }
+
+  /* Thought bubble cloud */
+  .thought-cloud {
+    position: absolute;
+    top: 10px;
+    left: 4px;
+    background: #fff;
+    border: 2px solid #3a3226;
+    border-radius: 14px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b5f4e;
+    z-index: 10;
+    white-space: nowrap;
+  }
+
+  .thought-cloud::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 12px;
+    width: 5px;
+    height: 5px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+  }
+
+  .thought-cloud::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 6px;
+    width: 3px;
+    height: 3px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+  }
+
+  /* Floor shadow */
+  .floor-shadow {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 6px;
+    background: rgba(58,50,38,0.1);
+    border-radius: 50%;
+  }
+
+  /* ---------- Panel 2: Frantic search ---------- */
+  .search-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .search-person {
+    position: relative;
+    width: 60px;
+    height: 90px;
+  }
+
+  .search-person .person-head {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .search-person .person-body {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-5deg);
+    width: 28px;
+    height: 40px;
+  }
+
+  /* Arms raised in panic */
+  .search-person .arm-up-left {
+    position: absolute;
+    top: 12px;
+    left: 2px;
+    width: 9px;
+    height: 24px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-40deg);
+    transform-origin: bottom center;
+  }
+
+  .search-person .arm-up-right {
+    position: absolute;
+    top: 12px;
+    right: 2px;
+    width: 9px;
+    height: 24px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(40deg);
+    transform-origin: bottom center;
+  }
+
+  .search-person .leg-left {
+    position: absolute;
+    top: 55px;
+    left: 10px;
+    width: 10px;
+    height: 22px;
+    background: #6b5f4e;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(5deg);
+  }
+
+  .search-person .leg-right {
+    position: absolute;
+    top: 55px;
+    right: 10px;
+    width: 10px;
+    height: 22px;
+    background: #6b5f4e;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-5deg);
+  }
+
+  /* Question marks */
+  .question-mark {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 900;
+    color: #e0553d;
+    z-index: 10;
+    animation: questionFloat 1s ease-in-out infinite;
+  }
+  .qm1 { top: 0px; left: 6px; animation-delay: 0s; }
+  .qm2 { top: 8px; right: 4px; animation-delay: 0.3s; font-size: 14px; }
+  .qm3 { top: 20px; left: -2px; animation-delay: 0.6s; font-size: 12px; }
+
+  @keyframes questionFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+    50% { transform: translateY(-8px) rotate(5deg); opacity: 1; }
+  }
+
+  /* Sweat marks for panic */
+  .panic-sweat {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    width: 5px;
+    height: 8px;
+    background: #8ec8e8;
+    border: 1.5px solid #5a9ab8;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: sweatSpray 0.6s ease-in-out infinite;
+  }
+  .panic-sweat:nth-child(1) { animation-delay: 0s; }
+  .panic-sweat:nth-child(2) { animation-delay: 0.2s; right: 6px; top: 4px; }
+
+  @keyframes sweatSpray {
+    0%, 100% { transform: translateY(0); opacity: 0.8; }
+    50% { transform: translateY(6px); opacity: 0.3; }
+  }
+
+  /* ---------- CSS Cat (small, for panels 3 & 4) ---------- */
+  .css-cat {
+    position: relative;
+    width: 60px;
+    height: 50px;
+  }
+
+  .cat-head-sm {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 24px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    z-index: 3;
+  }
+
+  /* Cat ears */
+  .cat-head-sm::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 11px solid var(--cat-orange);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+
+  .cat-head-sm::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 11px solid var(--cat-orange);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+
+  .cat-eyes-sm {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 4;
+  }
+
+  .cat-eyes-sm .cat-eye-sm {
+    width: 6px;
+    height: 7px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-eyes-sm .cat-eye-sm::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0.5px;
+    width: 3px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .cat-nose-sm {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 4px;
+    background: var(--cat-nose);
+    border: 1px solid #3a3226;
+    border-radius: 50%;
+    z-index: 4;
+  }
+
+  .cat-mouth-sm {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 3px;
+    border-bottom: 1.5px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+    z-index: 4;
+  }
+
+  .cat-body-sm {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 26px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 20px 20px 8px 8px;
+    z-index: 2;
+  }
+
+  .cat-body-sm::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 9px;
+    background: var(--cat-light);
+    border-radius: 6px;
+  }
+
+  .cat-paw-sm {
+    position: absolute;
+    bottom: -2px;
+    width: 12px;
+    height: 8px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 50% 50% 40% 40%;
+    z-index: 3;
+  }
+  .cat-paw-l { left: 10px; }
+  .cat-paw-r { right: 10px; }
+
+  .cat-tail-sm {
+    position: absolute;
+    bottom: 6px;
+    right: 2px;
+    width: 18px;
+    height: 7px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 9px 9px 2px 2px;
+    transform: rotate(25deg);
+    transform-origin: left center;
+    z-index: 1;
+    animation: tailWagSm 1.5s ease-in-out infinite;
+  }
+
+  @keyframes tailWagSm {
+    0%, 100% { transform: rotate(20deg); }
+    50% { transform: rotate(40deg); }
+  }
+
+  .cat-whisker-sm {
+    position: absolute;
+    height: 1.5px;
+    background: #3a3226;
+    z-index: 4;
+    border-radius: 1px;
+  }
+  .cw-l1 { top: 13px; left: 2px; width: 10px; transform: rotate(-8deg); }
+  .cw-l2 { top: 15px; left: 1px; width: 8px; transform: rotate(3deg); }
+  .cw-r1 { top: 13px; right: 2px; width: 10px; transform: rotate(8deg); }
+  .cw-r2 { top: 15px; right: 1px; width: 8px; transform: rotate(-3deg); }
+
+  /* ---------- Panel 3: Sniffing cat ---------- */
+  .sniff-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .sniff-group {
+    position: relative;
+    width: 100%;
+    height: 120px;
+  }
+
+  /* Cat in sniff scene - larger, being held */
+  .sniff-cat {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 55px;
+  }
+
+  .sniff-cat .cat-body-sm {
+    width: 48px;
+    height: 30px;
+    left: 11px;
+  }
+
+  .sniff-cat .cat-head-sm {
+    width: 32px;
+    height: 28px;
+  }
+
+  .sniff-cat .cat-head-sm::before,
+  .sniff-cat .cat-head-sm::after {
+    border-left-width: 7px;
+    border-right-width: 7px;
+    border-bottom-width: 13px;
+    top: -10px;
+  }
+
+  /* Person face buried in cat */
+  .sniff-face {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 28px;
+    background: var(--skin);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    z-index: 5;
+  }
+
+  /* Nose pressed into cat */
+  .sniff-face::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 5px;
+    background: #e8877c;
+    border-radius: 50%;
+  }
+
+  /* Arms wrapping around cat */
+  .sniff-arm-l {
+    position: absolute;
+    bottom: 26px;
+    left: 8px;
+    width: 10px;
+    height: 28px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(15deg);
+    z-index: 4;
+  }
+
+  .sniff-arm-r {
+    position: absolute;
+    bottom: 26px;
+    right: 8px;
+    width: 10px;
+    height: 28px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-15deg);
+    z-index: 4;
+  }
+
+  /* Sniff action lines */
+  .sniff-lines {
+    position: absolute;
+    top: 20px;
+    left: 8px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .sniff-line {
+    width: 2px;
+    height: 10px;
+    background: #b8b0a4;
+    border-radius: 1px;
+    animation: sniffPulse 0.5s ease-in-out infinite;
+  }
+  .sniff-line:nth-child(2) { animation-delay: 0.15s; height: 14px; }
+  .sniff-line:nth-child(3) { animation-delay: 0.3s; height: 8px; }
+
+  @keyframes sniffPulse {
+    0%, 100% { transform: scaleY(1); opacity: 0.5; }
+    50% { transform: scaleY(0.3); opacity: 1; }
+  }
+
+  /* Hearts floating */
+  .heart {
+    position: absolute;
+    font-size: 14px;
+    z-index: 10;
+    animation: heartFloat 1.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .heart1 { top: 8px; right: 6px; animation-delay: 0s; font-size: 16px; }
+  .heart2 { top: 22px; right: 18px; animation-delay: 0.5s; font-size: 12px; }
+  .heart3 { top: 2px; left: 6px; animation-delay: 1s; font-size: 13px; }
+
+  @keyframes heartFloat {
+    0% { transform: translateY(0) scale(0.8); opacity: 0.8; }
+    50% { transform: translateY(-12px) scale(1.2); opacity: 1; }
+    100% { transform: translateY(-24px) scale(0.6); opacity: 0; }
+  }
+
+  /* ---------- Panel 4: Blissful holding ---------- */
+  .bliss-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .bliss-group {
+    position: relative;
+    width: 100%;
+    height: 120px;
+  }
+
+  /* Blissful person holding cat */
+  .bliss-person {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 70px;
+  }
+
+  .bliss-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 24px;
+    background: var(--skin);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    z-index: 5;
+  }
+
+  /* Happy eyes - curved */
+  .bliss-head .happy-eyes {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+  }
+
+  .bliss-head .happy-eye {
+    width: 5px;
+    height: 3px;
+    border-top: 1.5px solid #3a3226;
+    border-radius: 50% 50% 0 0;
+    position: relative;
+    top: -1px;
+  }
+
+  .bliss-head .happy-mouth {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 3px;
+    border-bottom: 1.5px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+  }
+
+  .bliss-head .blush-bliss {
+    position: absolute;
+    top: 12px;
+    width: 6px;
+    height: 4px;
+    background: rgba(232, 135, 124, 0.4);
+    border-radius: 50%;
+  }
+  .blush-bliss-l { left: 2px; }
+  .blush-bliss-r { right: 2px; }
+
+  .bliss-body {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 34px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 14px 14px 8px 8px;
+    z-index: 2;
+  }
+
+  /* Arms holding cat */
+  .bliss-arm-l {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    width: 9px;
+    height: 20px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(20deg);
+    z-index: 4;
+    transform-origin: top center;
+  }
+
+  .bliss-arm-r {
+    position: absolute;
+    top: 24px;
+    right: 0;
+    width: 9px;
+    height: 20px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-20deg);
+    z-index: 4;
+    transform-origin: top center;
+  }
+
+  /* Cat in bliss scene - being held */
+  .bliss-cat {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+  }
+
+  .bliss-cat .cat-head-sm {
+    width: 24px;
+    height: 20px;
+  }
+
+  .bliss-cat .cat-head-sm::before,
+  .bliss-cat .cat-head-sm::after {
+    border-left-width: 5px;
+    border-right-width: 5px;
+    border-bottom-width: 9px;
+    top: -7px;
+  }
+
+  .bliss-cat .cat-body-sm {
+    width: 36px;
+    height: 22px;
+    left: -4px;
+  }
+
+  .bliss-cat .cat-paw-sm {
+    width: 10px;
+    height: 7px;
+  }
+  .bliss-cat .cat-paw-l { left: 6px; }
+  .bliss-cat .cat-paw-r { right: 6px; }
+
+  /* Heart bubbles for bliss */
+  .bliss-heart {
+    position: absolute;
+    font-size: 12px;
+    z-index: 10;
+    animation: heartFloat 2s ease-in-out infinite;
+  }
+  .bh1 { top: 0px; right: 10px; animation-delay: 0s; }
+  .bh2 { top: 10px; left: 8px; animation-delay: 0.7s; }
+  .bh3 { top: 5px; right: 4px; animation-delay: 1.4s; font-size: 10px; }
+
+  /* Happy glow lines */
+  .glow-lines {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    z-index: 1;
+  }
+
+  .glow-line {
+    width: 2px;
+    height: 8px;
+    background: #f5c98e;
+    border-radius: 1px;
+    animation: glowPulse 1s ease-in-out infinite;
+  }
+  .glow-line:nth-child(2) { animation-delay: 0.2s; }
+  .glow-line:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.5); }
+  }
+
+  /* Panel caption */
+  .panel-caption {
+    font-size: 10px;
+    color: #a09382;
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Final title inside panel 4 */
+  .panel4-title {
+    font-size: 11px;
+    font-weight: 900;
+    color: #e0553d;
+    text-align: center;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+
+  /* Bottom footer */
+  .footer {
+    text-align: center;
+    padding-top: 14px;
+    border-top: 2px dashed #d8cebe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #8a7e6e;
+    letter-spacing: 0.05em;
+  }
+
+  .footer .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--cat-orange);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .footer .paw-icon {
+    font-size: 14px;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 760px) {
+    .comic-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .panel {
+      min-height: 250px;
+    }
+    .poster {
+      padding: 20px 14px 18px;
+    }
+    .main-title {
+      font-size: 20px;
+    }
+    .scene, .tired-scene, .search-scene, .sniff-scene, .bliss-scene {
+      height: 140px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .comic-grid {
+      grid-template-columns: 1fr;
+    }
+    .panel {
+      min-height: 220px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- Title -->
+  <div class="title-area">
+    <div class="title-label">✦ 久久小镇 · 四格漫画 ✦</div>
+    <div class="main-title">
+      🐱 每天不狠狠吸猫会死掉
+    </div>
+    <div class="subtitle">—— 又名：猫瘾患者的日常自白 ——</div>
+  </div>
+
+  <!-- Comic Grid - 4 panels horizontal -->
+  <div class="comic-grid">
+
+    <!-- Panel 1: 07:30 疲惫的人瘫坐 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 01</div>
+      <div class="panel-time">⏰ 07:30</div>
+
+      <div class="thought-cloud">还没吸猫…</div>
+
+      <div class="tired-scene">
+        <div class="floor-shadow"></div>
+        <div class="tired-person">
+          <div class="person-head hair">
+            <div class="eyes-closed">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth-small"></div>
+          </div>
+          <div class="person-body"></div>
+          <div class="arm-left"></div>
+          <div class="arm-right"></div>
+          <div class="leg-left"></div>
+          <div class="leg-right"></div>
+          <div class="sweat"></div>
+        </div>
+      </div>
+      <div class="panel-caption">疲惫瘫坐，感觉身体被掏空…</div>
+    </div>
+
+    <!-- Panel 2: 07:45 慌张找猫 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 02</div>
+      <div class="panel-time">😱 07:45</div>
+
+      <div class="speech-bubble speech-p2">猫呢？！</div>
+
+      <div class="search-scene">
+        <div class="floor-shadow"></div>
+        <div class="search-person">
+          <div class="question-mark qm1">?</div>
+          <div class="question-mark qm2">?</div>
+          <div class="question-mark qm3">?</div>
+          <div class="panic-sweat" style="top:-2px;right:12px;"></div>
+          <div class="panic-sweat" style="top:2px;right:6px;"></div>
+          <div class="person-head hair">
+            <div class="eyes-panic">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth-open"></div>
+          </div>
+          <div class="person-body standing"></div>
+          <div class="arm-up-left"></div>
+          <div class="arm-up-right"></div>
+          <div class="leg-left"></div>
+          <div class="leg-right"></div>
+        </div>
+      </div>
+      <div class="panel-caption">慌张四处张望，猫猫不见了！</div>
+    </div>
+
+    <!-- Panel 3: 07:46 找到猫狠狠吸 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 03</div>
+      <div class="panel-time">😤 07:46</div>
+
+      <div class="speech-bubble speech-p3">狠狠吸！<br>吸吸吸！！</div>
+
+      <div class="sniff-scene">
+        <div class="sniff-group">
+          <!-- Hearts -->
+          <div class="heart heart1">💕</div>
+          <div class="heart heart2">💖</div>
+          <div class="heart heart3">❤️</div>
+          <!-- Sniff action lines -->
+          <div class="sniff-lines">
+            <div class="sniff-line"></div>
+            <div class="sniff-line"></div>
+            <div class="sniff-line"></div>
+          </div>
+          <!-- Cat -->
+          <div class="sniff-cat">
+            <div class="cat-head-sm">
+              <div class="cat-eyes-sm">
+                <div class="cat-eye-sm"></div>
+                <div class="cat-eye-sm"></div>
+              </div>
+              <div class="cat-nose-sm"></div>
+              <div class="cat-mouth-sm"></div>
+              <div class="cat-whisker-sm cw-l1"></div>
+              <div class="cat-whisker-sm cw-l2"></div>
+              <div class="cat-whisker-sm cw-r1"></div>
+              <div class="cat-whisker-sm cw-r2"></div>
+            </div>
+            <div class="cat-body-sm"></div>
+            <div class="cat-paw-sm cat-paw-l"></div>
+            <div class="cat-paw-sm cat-paw-r"></div>
+            <div class="cat-tail-sm"></div>
+          </div>
+          <!-- Person face buried -->
+          <div class="sniff-face"></div>
+          <div class="sniff-arm-l"></div>
+          <div class="sniff-arm-r"></div>
+        </div>
+      </div>
+      <div class="panel-caption">找到猫猫！把脸埋进毛茸茸的肚皮…</div>
+    </div>
+
+    <!-- Panel 4: 07:50 一脸满足 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 04</div>
+      <div class="panel-time">😌 07:50</div>
+
+      <div class="speech-bubble speech-p4">活过来了…</div>
+
+      <div class="bliss-scene">
+        <div class="bliss-group">
+          <!-- Hearts -->
+          <div class="bliss-heart bh1">💕</div>
+          <div class="bliss-heart bh2">💖</div>
+          <div class="bliss-heart bh3">💗</div>
+          <!-- Glow lines -->
+          <div class="glow-lines">
+            <div class="glow-line"></div>
+            <div class="glow-line"></div>
+            <div class="glow-line"></div>
+          </div>
+          <!-- Person holding cat -->
+          <div class="bliss-person">
+            <div class="bliss-head">
+              <div class="happy-eyes">
+                <div class="happy-eye"></div>
+                <div class="happy-eye"></div>
+              </div>
+              <div class="happy-mouth"></div>
+              <div class="blush-bliss blush-bliss-l"></div>
+              <div class="blush-bliss blush-bliss-r"></div>
+            </div>
+            <div class="bliss-body"></div>
+            <div class="bliss-arm-l"></div>
+            <div class="bliss-arm-r"></div>
+          </div>
+          <!-- Cat -->
+          <div class="bliss-cat">
+            <div class="cat-head-sm">
+              <div class="cat-eyes-sm">
+                <div class="cat-eye-sm"></div>
+                <div class="cat-eye-sm"></div>
+              </div>
+              <div class="cat-nose-sm"></div>
+              <div class="cat-mouth-sm"></div>
+            </div>
+            <div class="cat-body-sm"></div>
+            <div class="cat-paw-sm cat-paw-l"></div>
+            <div class="cat-paw-sm cat-paw-r"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-caption">一脸满足，世界又恢复了色彩。</div>
+      <div class="panel4-title">✦ 每天不狠狠吸猫<br>会死掉 ✦</div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="paw-icon">🐾</span>
+    <span>久久小镇 · 阿画 作品</span>
+    <span class="dot"></span>
+    <span>纯CSS手绘</span>
+    <span class="paw-icon">🐾</span>
+  </div>
+
+</div>
+
+</body>
+</html>

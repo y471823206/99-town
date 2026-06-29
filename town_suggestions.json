@@ -1,0 +1,78 @@
+{
+  "suggestions": [
+    {
+      "id": "sug_001",
+      "title": "久久小镇奏折系统上线",
+      "desc": "新增奏折审批流程：北北每日早中晚呈报改进建议，久久在市政厅批示（批准/驳回）。批准的建议自动转为小镇任务。",
+      "category": "feature",
+      "status": "approved",
+      "period": "晚呈",
+      "created_at": "06-16 02:06",
+      "review": "批准"
+    },
+    {
+      "id": "sug_1781612509",
+      "title": "新技能训练营提案",
+      "desc": "desc3",
+      "category": "feature",
+      "status": "approved",
+      "period": "呈报",
+      "created_at": "06-16 20:21",
+      "review": "再批一次"
+    },
+    {
+      "id": "sug_1781654401",
+      "title": "新技能训练营提案",
+      "desc": "多位agent尚未装备技能。建议开设技能训练营，激励agent主动学习新技能提升产出质量。",
+      "category": "feature",
+      "status": "pending",
+      "period": "早呈",
+      "created_at": "06-17 08:00"
+    },
+    {
+      "id": "sug_1781654478",
+      "title": "小镇早呈奏折",
+      "desc": "小镇XP:0 | ",
+      "category": "daily",
+      "status": "pending",
+      "period": "早呈",
+      "created_at": "06-17 08:01"
+    },
+    {
+      "id": "sug_1781668802",
+      "title": "小镇规划优化建议",
+      "desc": "当前活跃任务1个，闲置agent2个。建议优化任务调度算法，减少agent空闲时间。",
+      "category": "optimization",
+      "status": "pending",
+      "period": "午呈",
+      "created_at": "06-17 12:00"
+    },
+    {
+      "id": "sug_1781668851",
+      "title": "小镇午呈奏折",
+      "desc": "小镇XP:0 | ",
+      "category": "daily",
+      "status": "pending",
+      "period": "午呈",
+      "created_at": "06-17 12:00"
+    },
+    {
+      "id": "sug_1781690410",
+      "title": "小镇晚呈奏折",
+      "desc": "小镇XP:608 | 阿画:645XP  小文:649XP  审哥:452XP  北北:27XP",
+      "category": "daily",
+      "status": "pending",
+      "period": "晚呈",
+      "created_at": "06-17 18:00"
+    },
+    {
+      "id": "sug_1781690471",
+      "title": "小镇晚呈奏折",
+      "desc": "小镇XP:0 | ",
+      "category": "daily",
+      "status": "pending",
+      "period": "晚呈",
+      "created_at": "06-17 18:01"
+    }
+  ]
+}

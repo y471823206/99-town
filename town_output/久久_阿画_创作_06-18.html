@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>久久小镇 · 像素黄昏</title>
+    <style>
+        /* reset & base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #faf7f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+            padding: 24px;
+        }
+
+        /* 像素锯齿模拟 —— 轻微硬边界 + 阶梯感 */
+        .poster {
+            max-width: 960px;
+            width: 100%;
+            background: #faf7f2;
+            border: 3px solid #1a1a1a;
+            box-shadow: 12px 12px 0 rgba(26, 26, 26, 0.15);
+            padding: 48px 40px 40px 40px;
+            position: relative;
+            transition: all 0.1s step-start;
+            image-rendering: pixelated;
+            /* 模拟像素边界 */
+        }
+
+        /* 装饰性像素条纹 (陶土红) */
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: calc(100% - 24px);
+            height: 4px;
+            background: repeating-linear-gradient(90deg, 
+                #c4553b 0px, #c4553b 8px, 
+                transparent 8px, transparent 16px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* ---------- typography first ---------- */
+        .main-title {
+            font-size: 52px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            text-shadow: 3px 3px 0 #c4553b40;
+            word-break: break-word;
+            border-left: 8px solid #c4553b;
+            padding-left: 24px;
+            font-family: 'Courier New', Courier, 'VT323', monospace;
+            /* 像素风味标题 */
+        }
+
+        /* 副标题 (小镇状态卡标题) */
+        .subhead {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px dashed #1a1a1a;
+            padding-bottom: 8px;
+        }
+        .subhead span {
+            background: #1a1a1a;
+            color: #faf7f2;
+            font-size: 18px;
+            padding: 0 12px;
+            line-height: 28px;
+            letter-spacing: 1px;
+        }
+
+        /* 卡片 —— 小镇今日状态 */
+        .status-card {
+            background: #f7f0e5;
+            border: 2px solid #1a1a1a;
+            padding: 20px 24px;
+            margin-bottom: 40px;
+            box-shadow: 4px 4px 0 #c4553b;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 18px;
+            color: #1a1a1a;
+            image-rendering: pixelated;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .status-label {
+            font-weight: 700;
+            background: #c4553b20;
+            padding: 0 8px;
+            border: 1px solid #c4553b60;
+            text-transform: uppercase;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+        .status-value {
+            font-weight: 400;
+            background: #faf7f2;
+            padding: 0 8px;
+            border: 1px solid #1a1a1a40;
+            min-width: 60px;
+        }
+        /* 像素装饰点 */
+        .pixel-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #c4553b;
+            margin-right: 6px;
+            border: 1px solid #1a1a1a;
+        }
+
+        /* 居民区 (四个像素头像) */
+        .residents-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 36px 0 32px 0;
+        }
+
+        .resident-card {
+            background: #f7f0e5;
+            border: 2px solid #1a1a1a;
+            padding: 18px 8px 12px 8px;
+            text-align: center;
+            box-shadow: 3px 3px 0 #c4553b80;
+            transition: 0.1s step-start;
+        }
+        .resident-card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0 #c4553b;
+        }
+
+        /* 像素头像 —— 手工绘制 16x16 放大像素 */
+        .pixel-avatar {
+            display: block;
+            margin: 0 auto 12px auto;
+            width: 80px;
+            height: 80px;
+            image-rendering: pixelated;
+            background-color: #faf7f2;
+            border: 2px solid #1a1a1a;
+            padding: 2px;
+            box-shadow: 0 0 0 1px #c4553b;
+        }
+
+        /* 使用CSS像素画 —— 四个不同居民 (基于grid纯CSS) */
+        .avatar-pixels {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 100%;
+            height: 100%;
+            background: #ece3d3;
+            gap: 1px;
+        }
+
+        /* 每个像素块颜色 */
+        .pixel {
+            border-radius: 0;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #faf7f2;
+        }
+        .skin { background: #f4d3a1; }
+        .hair1 { background: #4a3b2c; }
+        .hair2 { background: #2f241b; }
+        .shirt { background: #c4553b; }
+        .shirt2 { background: #a04832; }
+        .eye { background: #1a1a1a; }
+        .accent { background: #c4553b; }
+        .beard { background: #7a6a5a; }
+        .ribbon { background: #e0634a; }
+        .glasses { background: #3a3a3a; }
+        .hat { background: #5a4a3a; }
+        .dress { background: #b84e3a; }
+        .scarf { background: #d94f34; }
+        .bg-pixel { background: #faf7f2; }
+
+        /* 居民名字 + 对话 */
+        .resident-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+            border-bottom: 2px dotted #c4553b;
+            display: inline-block;
+            padding: 0 4px 2px 4px;
+            margin-bottom: 6px;
+        }
+        .resident-quote {
+            font-size: 15px;
+            color: #1a1a1a;
+            opacity: 0.8;
+            background: #faf7f2;
+            padding: 4px 0;
+            font-style: italic;
+            border-top: 1px dashed #1a1a1a30;
+            margin-top: 4px;
+        }
+        /* 签名 */
+        .signature-area {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 3px double #1a1a1a;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 18px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .signature-block {
+            background: #1a1a1a;
+            color: #faf7f2;
+            padding: 6px 16px 6px 20px;
+            border: 2px solid #c4553b;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 20px;
+            box-shadow: -4px 4px 0 #c4553b;
+        }
+        .signature-mark {
+            font-size: 28px;
+            color: #c4553b;
+            font-weight: 700;
+            transform: rotate(4deg);
+        }
+        /* 响应式 */
+        @media (max-width: 700px) {
+            .poster {
+                padding: 24px 20px;
+            }
+            .main-title {
+                font-size: 36px;
+                padding-left: 16px;
+            }
+            .subhead {
+                font-size: 22px;
+            }
+            .residents-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .status-card {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .signature-area {
+                justify-content: center;
+            }
+        }
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 28px;
+            }
+            .subhead {
+                font-size: 18px;
+            }
+            .residents-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .pixel-avatar {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="poster">
+    <!-- 主标题：久久说过的话 (typography-first) -->
+    <div class="main-title">
+        “今天<br>也要像黄昏的炊烟<br>慢慢走.”
+    </div>
+
+    <!-- 副标题 / 小镇状态卡片标题 -->
+    <div class="subhead">
+        <span>✦ 小镇日志 ✦</span> 
+        久久镇 · 第1024日
+    </div>
+
+    <!-- 小镇今日状态卡片 -->
+    <div class="status-card">
+        <div class="status-item">
+            <span class="pixel-dot"></span>
+            <span class="status-label">🌾 心情</span>
+            <span class="status-value">微风 · 金色</span>
+        </div>
+        <div class="status-item">
+            <span class="pixel-dot"></span>
+            <span class="status-label">🍲 炊事</span>
+            <span class="status-value">南瓜炖云朵</span>
+        </div>
+        <div class="status-item">
+            <span class="pixel-dot"></span>
+            <span class="status-label">📫 信件</span>
+            <span class="status-value">3封未读</span>
+        </div>
+        <div class="status-item">
+            <span class="pixel-dot"></span>
+            <span class="status-label">🌿 居民</span>
+            <span class="status-value">4/4 在线</span>
+        </div>
+    </div>
+
+    <!-- 四个居民 · 像素头像 (纯css像素画) -->
+    <div class="residents-grid">
+        <!-- 居民 1 阿槐 -->
+        <div class="resident-card">
+            <div class="pixel-avatar">
+                <div class="avatar-pixels">
+                    <!-- 阿槐 短发 陶土红上衣 8x8 -->
+                    <div class="pixel hair1"></div><div class="pixel hair1"></div><div class="pixel hair1"></div><div class="pixel hair1"></div><div class="pixel hair1"></div><div class="pixel hair1"></div><div class="pixel hair1"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel hair1"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel hair1"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel hair1"></div><div class="pixel skin"></div><div class="pixel eye"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel eye"></div><div class="pixel skin"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel hair1"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel skin"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel skin"></div><div class="pixel shirt"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel shirt2"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt2"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div><div class="pixel bg-pixel"></div>
+                </div>
+            </div>
+            <div class="resident-name">阿槐</div>
+            <div class="resident-quote">“杏子熟啦”</div>
+        </div>
+        <!-- 居民 2 阿榆 -->
+        <div class="resident-card">
+            <div class="pixel-avatar">
+                <div class="avatar-pixels">
+                    <!-- 阿榆 长辫 眼镜 围巾 -->
+                    <div class="pixel hair2"></div><div class="pixel hair2"></div><div class="pixel hair2"></div><div class="pixel hair2"></div><div class="pixel hair2"></div><div class="pixel hair2"></div><div class="pixel hair2"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel hair2"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel glasses"></div><div class="pixel glasses"></div><div class="pixel skin"></div><div class="pixel hair2"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel hair2"></div><div class="pixel skin"></div><div class="pixel eye"></div><div class="pixel glasses"></div><div class="pixel glasses"></div><div class="pixel eye"></div><div class="pixel skin"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel hair2"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel skin"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel scarf"></div><div class="pixel scarf"></div><div class="pixel scarf"></div><div class="pixel scarf"></div><div class="pixel scarf"></div><div class="pixel scarf"></div><div class="pixel scarf"></div><div class="pixel bg-pixel"></div>
+                    <div class="pixel shirt2"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div><div class="pixel shirt"></div

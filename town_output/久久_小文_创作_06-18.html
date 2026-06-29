@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>久久小镇日报 · 温暖像素</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #f5efe7;  /* 米白底 */
+      font-family: 'Courier New', 'Source Code Pro', 'Noto Sans SC', 'Menlo', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      line-height: 1.5;
+      color: #2c2c2c;  /* 炭黑 */
+    }
+
+    .newspaper {
+      max-width: 1000px;
+      width: 100%;
+      background: #faf7f0;
+      border: 3px solid #2c2c2c;
+      box-shadow: 12px 12px 0 rgba(44, 44, 44, 0.12);
+      padding: 2.2rem 2rem 2.8rem;
+      transition: box-shadow 0.2s ease;
+      border-radius: 0;  /* 像素硬边 */
+      image-rendering: pixelated;
+    }
+
+    /* 像素风味装饰线 */
+    .border-pixel {
+      border-style: solid;
+      border-color: #2c2c2c;
+      border-width: 2px 0 0 0;
+      height: 0;
+      width: 100%;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .border-pixel::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, 
+        #9e6b5e 0px, #9e6b5e 4px, 
+        transparent 4px, transparent 8px);
+    }
+
+    /* 报头 */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 4px double #2c2c2c;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .header-left {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #5c3e35;
+      background: #ede0d4;
+      padding: 0.2rem 0.6rem;
+      border: 2px solid #2c2c2c;
+      image-rendering: pixelated;
+    }
+    .header-date {
+      font-size: 1rem;
+      background: #2c2c2c;
+      color: #faf7f0;
+      padding: 0.2rem 1rem;
+      border: 2px solid #2c2c2c;
+      letter-spacing: 1px;
+    }
+
+    /* 主标题 52px 像素感 */
+    .main-title {
+      font-size: 52px; 
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin: 0.2rem 0 0.1rem;
+      font-family: 'Courier New', 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      color: #2c2c2c;
+      text-shadow: 2px 2px 0 rgba(158, 107, 94, 0.25);
+      word-break: break-word;
+    }
+    .main-title small {
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      margin-left: 10px;
+      color: #7f5346;
+      background: #f5efe7;
+      padding: 0 8px;
+      border: 2px solid #2c2c2c;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1.4;
+    }
+
+    /* 副标题/动态栏 */
+    .dynamic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.8rem 2rem;
+      margin: 1.8rem 0 1.2rem;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border-left: 6px solid #9e6b5e;  /* 陶土红 */
+      padding-left: 10px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #f5efe7 90%, transparent);
+      display: inline-block;
+      color: #2c2c2c;
+    }
+
+    .news-list, .art-list {
+      list-style: none;
+      padding: 0;
+    }
+    .news-list li, .art-list li {
+      font-size: 18px;   /* 正文18px */
+      margin-bottom: 0.9rem;
+      padding-left: 8px;
+      border-left: 2px solid #cdb6a6;
+      padding-left: 14px;
+      position: relative;
+      word-break: break-word;
+    }
+    .news-list li::before, .art-list li::before {
+      content: '◆';
+      color: #9e6b5e;
+      font-size: 10px;
+      position: absolute;
+      left: 0;
+      top: 5px;
+    }
+
+    .chip {
+      display: inline-block;
+      background: #2c2c2c;
+      color: #f5efe7;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      padding: 0 8px;
+      margin-right: 6px;
+      border: 1px solid #2c2c2c;
+      image-rendering: pixelated;
+    }
+
+    .highlight-terracotta {
+      color: #9e6b5e;
+      font-weight: 700;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem 2rem;
+      margin: 1.2rem 0;
+    }
+
+    .art-item {
+      background: #f5efe7;
+      border: 2px solid #2c2c2c;
+      padding: 1rem 1.2rem;
+      transition: 0.1s linear;
+    }
+    .art-item:hover {
+      background: #ece1d6;
+      border-color: #9e6b5e;
+    }
+    .art-item .art-title {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .art-item .art-author {
+      font-size: 18px;
+      color: #5c4a40;
+      border-bottom: 1px dashed #9e6b5e;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .art-desc {
+      font-size: 18px;
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+
+    /* 温暖的一句话专区 */
+    .warm-box {
+      margin-top: 1.8rem;
+      padding: 1.6rem 1.8rem;
+      background: #f5efe7;
+      border: 3px solid #2c2c2c;
+      border-radius: 0;
+      box-shadow: inset 0 0 0 2px #faf7f0, 0 4px 0 #2c2c2c;
+      position: relative;
+      image-rendering: pixelated;
+    }
+    .warm-box .label {
+      display: inline-block;
+      background: #9e6b5e;
+      color: #faf7f0;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 0.1rem 1.2rem;
+      border: 2px solid #2c2c2c;
+      position: relative;
+      top: -0.8rem;
+      margin-bottom: 0.2rem;
+    }
+    .warm-text {
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: #2c2c2c;
+      padding: 0.2rem 0;
+      letter-spacing: 0.8px;
+      word-break: break-word;
+    }
+    .warm-text span {
+      background: #f5efe7;
+      padding: 0 4px;
+      border-bottom: 3px solid #9e6b5e;
+    }
+
+    /* 脚注像素装饰 */
+    .footer-note {
+      margin-top: 2.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px solid #2c2c2c;
+      padding-top: 0.8rem;
+      font-size: 14px;
+      color: #5c3e35;
+      flex-wrap: wrap;
+    }
+    .footer-note .pixels {
+      letter-spacing: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .newspaper {
+        padding: 1.2rem 1rem;
+      }
+      .main-title {
+        font-size: 36px;
+      }
+      .main-title small {
+        font-size: 18px;
+        margin-left: 4px;
+      }
+      .dynamic-grid, .two-column {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .warm-text {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="newspaper">
+
+  <!-- 报头 -->
+  <div class="header">
+    <span class="header-left">✦ 久久小镇 · 号外</span>
+    <span class="header-date">2025 · 春分</span>
+  </div>
+
+  <!-- 主标题 52px -->
+  <div class="main-title">
+    久久日报<span small>温暖像素</span>
+  </div>
+
+  <!-- 装饰线 -->
+  <div class="border-pixel"></div>
+
+  <!-- 小镇今日动态 + 居民创作成果 两列布局 -->
+  <div class="dynamic-grid">
+    <!-- 左：小镇动态 -->
+    <div>
+      <div class="section-title">📮 小镇·动态</div>
+      <ul class="news-list">
+        <li><span class="chip">最新</span> 面包坊新窑 · 柴火烤出陶土色脆皮，今早排队30人</li>
+        <li><span class="chip">修缮</span> 东门旧钟楼修复完成，指针恢复走动，整点有鸽子飞过</li>
+        <li><span class="chip">集会</span> 每周三傍晚「像素市集」：手工陶土、编织、旧书</li>
+        <li><span class="chip">告示</span> 小镇图书馆延长开放，深夜阅读灯新增五盏</li>
+        <li><span class="chip">自然</span> 溪边柳树冒新芽，摄影社今日发起“枝条上的光”活动</li>
+      </ul>
+    </div>
+
+    <!-- 右：居民创作成果 -->
+    <div>
+      <div class="section-title">🎨 居民·创作</div>
+      <ul class="art-list">
+        <li><strong>《迟迟春》</strong> · 阿卷 —— 拼贴诗画，用旧报纸和茶叶渍染出小镇的雨</li>
+        <li><strong>《木刻年画》</strong> · 铁柱 —— 新雕版“猫与炊烟”，限量印制30份</li>
+        <li><strong>陶器展</strong> 山野工作室 —— 陶土红杯碟组，釉面有细碎冰裂</li>
+        <li><strong>《像素小记》</strong> · 鱼片 —— 手工书收录112幅小镇速写</li>
+        <li><strong>种子纸</strong> 手工坊 —— 本周六免费发放野花种子纸，埋入土里会发芽</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 分隔线 更多的创作成果展示 -->
+  <div class="border-pixel" style="margin: 0.2rem 0 1.2rem;"></div>
+
+  <!-- 精选创作成果 (两块卡片) 使用 two-column -->
+  <div class="two-column">
+    <div class="art-item">
+      <div class="art-title"><span class="highlight-terracotta">⋆</span> 棉布诗集</div>
+      <div class="art-author">作家 · 南南</div>
+      <div class="art-desc">
+        手工棉线装帧，封面为手染陶土红。收录小镇四季短诗，每本附赠一枚压干的三叶草。
+      </div>
+    </div>
+    <div class="art-item">
+      <div class="art-title"><span class="highlight-terracotta">⋆</span> 烘焙地图</div>
+      <div class="art-author">插画师 · 小满</div>
+      <div class="art-desc">
+        水彩+像素风格，标记小镇12家面包铺、5家茶摊。背面印有「温暖面包路线」，可沿路收集印章。
+      </div>
+    </div>
+  </div>
+
+  <!-- 一句温暖的话 陶土红强调 -->
+  <div class="warm-box">
+    <div class="label">💛 今日温暖</div>
+    <div class="warm-text">
+      <span>“慢慢来，小事也会发光。”</span> 
+      <span style="border-bottom: 3px solid #2c2c2c; margin-left: 8px; background: #f5efe7;">—— 久久小镇的第七个春天</span>
+    </div>
+    <div style="font-size: 18px; margin-top: 12px; color: #5c3e35; border-left: 3px solid #9e6b5e; padding-left: 14px;">
+      今日阳光 9 小时 · 微风 · 宜出门散步，宜对邻居微笑
+    </div>
+  </div>
+
+  <!-- 脚注 像素风 -->
+  <div class="footer-note">
+    <span>📬 久久小镇 · 邮差每日送达</span>
+    <span class="pixels">▪ ▪ ▪ ▪ ▪</span>
+    <span># 温暖像素  typography-first</span>
+  </div>
+
+  <!-- 装饰极细线 -->
+  <div style="margin-top: 1rem; border-top: 2px dashed #cdb6a6; width: 100%;"></div>
+  <div style="display: flex; justify-content: flex-end; margin-top: 6px; font-size: 14px; color: #6e4f44;">
+    <span>⏺ 久久日报 · 每日一份</span>
+  </div>
+
+</div>
+<!-- 一个额外的像素点缀 (纯粹像素趣味) -->
+<div style="width: 100%; max-width: 1000px; margin: 16px auto 0; display: flex; gap: 6px; flex-wrap: wrap; image-rendering: pixelated; opacity: 0.7;">
+  <span style="background: #9e6b5e; width: 12px; height: 12px; border:1px solid #2c2c2c;"></span>
+  <span style="background: #2c2c2c; width: 12px; height: 12px; border:1px solid #2c2c2c;"></span>
+  <span style="background: #f5efe7; width: 12px; height: 12px; border:1px solid #2c2c2c;"></span>
+  <span style="background: #9e6b5e; width: 12px; height: 12px; border:1px solid #2c2c2c;"></span>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# 久久小镇 (99-town) .gitignore
+
+# 运行时数据
+town.db
+town.db-journal
+town.db-wal
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 环境/密钥
+.env
+key.txt
+*.key
+
+# 备份
+json_backup/
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 每日标记
+town_output/.daily_done_*
+
+# IDE
+.vscode/
+.idea/

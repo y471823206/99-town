@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>久久小镇</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+:root {
+  --bg: #0f0f1a;
+  --panel: #16213e;
+  --gold: #e2b04a;
+  --text: #c8d0e0;
+  --muted: #6c6c8a;
+  --accent-red: #e8715c;
+  --accent-teal: #4ecdc4;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #0a0a14; font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+  display:flex; justify-content:center; align-items:center; min-height:100vh;
+  color: var(--text);
+}
+.game {
+  width: 1060px; display:flex; flex-direction:column; gap:8px;
+}
+.topbar {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 14px 20px; background:var(--panel); border-radius:var(--radius);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.topbar h1 { font-size:22px; color:var(--gold); letter-spacing:3px; }
+.topbar .stats { display:flex; gap:24px; font-size:13px; }
+.topbar .stats span { opacity:0.6; }
+.topbar .stats b { color:var(--gold); }
+.main-row { display:flex; gap:8px; }
+.map-wrap {
+  flex:1; background:var(--panel); border-radius:var(--radius); overflow:hidden;
+  border: 1px solid rgba(255,255,255,0.05); position:relative;
+}
+canvas { display:block; width:100%; height:520px; }
+.sidebar {
+  width: 280px; display:flex; flex-direction:column; gap:8px;
+}
+.panel {
+  background:var(--panel); border-radius:var(--radius); padding:14px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.panel h3 { font-size:12px; letter-spacing:3px; color:var(--gold); margin-bottom:10px; text-transform:uppercase; }
+.agent-mini {
+  display:flex; align-items:center; gap:8px; padding:8px; border-radius:8px; margin-bottom:4px;
+}
+.agent-mini:hover { background:rgba(255,255,255,0.03); }
+.agent-mini .avatar {
+  width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.agent-mini .info { flex:1; min-width:0; }
+.agent-mini .name { font-size:13px; font-weight:600; }
+.agent-mini .status { font-size:11px; opacity:0.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.agent-mini .score { font-size:18px; font-weight:800; color:var(--gold); }
+.log-feed { font-size:12px; line-height:1.8; max-height:160px; overflow-y:auto; }
+.log-feed .entry { opacity:0.6; }
+.log-feed .time { color:var(--gold); margin-right:8px; font-size:11px; }
+
+/* Modal overlay */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100;
+  display:none; justify-content:center; align-items:center;
+}
+.modal-overlay.show { display:flex; }
+.modal {
+  background:var(--panel); border-radius:var(--radius); border:1px solid var(--gold);
+  width:700px; max-height:80vh; overflow-y:auto; padding:28px;
+  min-height: 400px;
+}
+.modal h2 { color:var(--gold); font-size:20px; letter-spacing:2px; margin-bottom:20px; text-align:center; }
+.modal .close {
+  position:absolute; top:16px; right:20px; background:none; border:none;
+  color:var(--text); font-size:24px; cursor:pointer;
+}
+
+/* Tabs */
+.tabs { display:flex; gap:4px; margin-bottom:16px; }
+.tab {
+  flex:1; padding:10px; text-align:center; border-radius:8px; cursor:pointer;
+  font-size:13px; letter-spacing:1px; background:rgba(255,255,255,0.03); border:1px solid transparent;
+  color:var(--muted); transition:all 0.2s;
+}
+.tab:hover { background:rgba(255,255,255,0.06); }
+.tab.active { background:rgba(226,176,74,0.1); border-color:var(--gold); color:var(--gold); }
+
+/* Quest board */
+.quest-item {
+  padding:12px; border-radius:8px; margin-bottom:8px; display:flex; gap:12px; align-items:flex-start;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.quest-item .q-status {
+  width:8px; height:8px; border-radius:50%; margin-top:6px; flex-shrink:0;
+}
+.quest-item .q-status.pending { background:var(--muted); }
+.quest-item .q-status.processing { background:var(--accent-teal); animation:pulse 1.5s infinite; }
+.quest-item .q-status.done { background:#4a9; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.quest-item .q-info { flex:1; }
+.quest-item .q-title { font-size:14px; font-weight:600; }
+.quest-item .q-agent { font-size:11px; opacity:0.5; }
+.quest-item .q-meta { font-size:11px; margin-top:4px; display:flex; gap:12px; }
+.quest-item .q-rating { font-size:13px; }
+.quest-item .q-rating.excellent { color:#ffd700; }
+.quest-item .q-rating.good { color:#4ecdc4; }
+.quest-item .q-rating.ok { color:var(--muted); }
+.quest-item .q-rating.poor { color:var(--accent-red); }
+
+/* Scoreboard */
+.score-row {
+  display:flex; align-items:center; gap:10px; padding:12px; border-radius:8px;
+  margin-bottom:6px; border:1px solid rgba(255,255,255,0.05);
+}
+.score-row.rank-1 { border-color:var(--gold); background:rgba(226,176,74,0.05); }
+.score-rank { font-size:24px; font-weight:900; width:36px; text-align:center; color:var(--muted); }
+.score-rank.gold { color:var(--gold); }
+.score-name { flex:1; font-weight:600; }
+.score-pts { font-size:24px; font-weight:800; color:var(--gold); }
+.score-bar-wrap { height:4px; background:rgba(255,255,255,0.05); border-radius:2px; margin-top:4px; }
+.score-bar { height:100%; background:var(--gold); border-radius:2px; transition:width 0.5s; }
+
+/* Publish form */
+.pub-form { display:flex; gap:8px; margin-top:8px; }
+.pub-form input {
+  flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px; padding:10px 14px; color:var(--text); font-size:14px; outline:none;
+}
+.pub-form input:focus { border-color:var(--gold); }
+.pub-form button {
+  background:var(--gold); color:#0a0a14; border:none; border-radius:8px;
+  padding:10px 20px; font-weight:700; cursor:pointer; font-size:14px;
+}
+.pub-form button:hover { opacity:0.9; }
+
+/* Building tooltip */
+.building-tip {
+  position:absolute; display:none; background:var(--panel); border:1px solid var(--gold);
+  border-radius:8px; padding:8px 14px; font-size:13px; pointer-events:none; z-index:50;
+}
+
+/* Rating buttons */
+.rate-btns { display:flex; gap:6px; margin-top:8px; }
+.rate-btn {
+  padding:4px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.03); color:var(--text); cursor:pointer; font-size:12px;
+  transition:all 0.2s;
+}
+.rate-btn:hover { border-color:var(--gold); }
+.rate-btn.sel-excellent { background:rgba(255,215,0,0.15); border-color:#ffd700; color:#ffd700; }
+.rate-btn.sel-good { background:rgba(78,205,196,0.15); border-color:#4ecdc4; color:#4ecdc4; }
+.rate-btn.sel-poor { background:rgba(232,113,92,0.15); border-color:#e8715c; color:#e8715c; }
+
+/* Notification toast */
+.toast-container {
+  position:fixed; top:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:8px;
+}
+.toast {
+  background:var(--panel); border:1px solid var(--gold); border-radius:10px;
+  padding:14px 18px; font-size:13px; animation:slideIn 0.3s ease; max-width:320px;
+}
+.toast .toast-agent { color:var(--gold); font-weight:600; }
+.toast .toast-action { font-size:11px; opacity:0.5; margin-top:4px; cursor:pointer; color:var(--accent-teal); text-decoration:underline; }
+@keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+
+/* Asset cards */
+.asset-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.asset-card {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px; padding:12px; cursor:pointer; transition:all 0.2s;
+}
+.asset-card:hover { border-color:var(--accent-teal); background:rgba(78,205,196,0.05); }
+.asset-card .asset-type {
+  font-size:10px; letter-spacing:2px; color:var(--accent-teal); margin-bottom:4px;
+}
+.asset-card .asset-name { font-size:13px; font-weight:600; margin-bottom:4px; }
+.asset-card .asset-meta { font-size:11px; opacity:0.4; }
+
+/* Notification badge */
+.badge {
+  display:inline-block; background:var(--accent-red); color:#fff; border-radius:10px;
+  padding:1px 7px; font-size:10px; font-weight:700; animation:pulse 2s infinite;
+}
+
+</style>
+</head>
+<body>
+
+<div class="game">
+  <!-- Top bar -->
+  <div class="topbar">
+    <h1>久久小镇</h1>
+    <div class="stats">
+      <span>悬赏 <b id="stat-tasks">0</b></span>
+      <span>完成 <b id="stat-done">0</b></span>
+      <span>今日 <b id="stat-day">1</b></span>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-row">
+    <!-- Map -->
+    <div class="map-wrap" id="map-wrap">
+      <canvas id="map" width="780" height="520"></canvas>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="panel">
+        <h3>小镇居民</h3>
+        <div id="agent-list"></div>
+      </div>
+      <div class="panel" style="flex:1; overflow:hidden; display:flex; flex-direction:column;">
+        <h3>小镇日报</h3>
+        <div class="log-feed" id="log-feed"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Town Hall Modal -->
+<div class="modal-overlay" id="townhall-modal">
+  <div class="modal" style="position:relative;">
+    <button class="close" onclick="closeModal()" style="position:absolute;">✕</button>
+    <h2>🏛️ 市政厅</h2>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('quests')">悬赏板</div>
+      <div class="tab" onclick="switchTab('history')">任务记录</div>
+      <div class="tab" onclick="switchTab('scores')">积分榜</div>
+      <div class="tab" onclick="switchTab('zouzhe')">奏折</div>
+      <div class="tab" onclick="switchTab('explore')">探索</div>
+    </div>
+    <div id="tab-quests">
+      <div class="pub-form">
+        <input id="pub-input" placeholder="发布新悬赏，如：设计一张海报..." onkeydown="if(event.key==='Enter')publish()">
+        <button onclick="publish()">发布</button>
+      </div>
+      <div id="active-quests" style="margin-top:14px;"></div>
+    </div>
+    <div id="tab-history" style="display:none;"></div>
+    <div id="tab-scores" style="display:none;"></div>
+    <div id="tab-zouzhe" style="display:none;"></div>
+    <div id="tab-explore" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- Library Modal -->
+<div class="modal-overlay" id="library-modal">
+  <div class="modal" style="position:relative;">
+    <button class="close" onclick="closeLibrary()" style="position:absolute;">✕</button>
+    <h2>📚 智库 · 小镇资产</h2>
+    <p style="font-size:12px;opacity:0.4;text-align:center;margin-bottom:16px;">所有产出自动沉淀，无需去D盘翻找</p>
+    <div class="asset-grid" id="asset-grid"></div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toasts"></div>
+
+<script>
+// ============================================================
+// Town Data
+// ============================================================
+const API = 'http://localhost:8700';
+let townState = window.__INIT_STATE__ || { tasks: [], agents: {}, quests: [], log: [], scoring_rules: {} };
+
+async function fetchState() {
+  const prev = townState;
+  try {
+    const r = await fetch(API + '/api/state');
+    townState = await r.json();
+  } catch(e) {
+    // Keep current state if fetch fails
+    console.warn('fetchState failed, using cached state:', e.message);
+    return;
+  }
+
+  // Detect new completed tasks → toast
+  const prevDone = (prev.quests||[]).filter(q=>q.status==='done').length;
+  const nowDone = (townState.quests||[]).filter(q=>q.status==='done').length;
+  if (nowDone > prevDone && prevDone > 0) {
+    const latest = (townState.quests||[]).filter(q=>q.status==='done').slice(-1)[0];
+    const ag = agents.find(a=>a.id===latest?.agent);
+    if (latest && ag) {
+      showToast(`${ag.emoji} ${ag.name}`, `交付了：${latest.title}`, '去评分', () => { openTownHall(); switchTab('history'); });
+    }
+  }
+
+  // Detect new log entries → toast for agent actions
+  const prevLog = (prev.log||[]).length;
+  const nowLog = (townState.log||[]).length;
+  if (nowLog > prevLog && prevLog > 0) {
+    const newEntries = (townState.log||[]).slice(prevLog);
+    for (const e of newEntries) {
+      if (e.agent !== '系统' && e.text.includes('交付') || e.text.includes('完成')) {
+        // silent - handled by task detection above
+      }
+    }
+  }
+
+  renderAll();
+}
+async function publishTask(title) {
+  await fetch(API + '/api/publish', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({title, description: title})
+  });
+  await fetchState();
+}
+async function rateQuest(questId, rating, review) {
+  await fetch(API + '/api/rate', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({quest_id:questId, rating, review})
+  });
+  await fetchState();
+}
+
+// ============================================================
+// Canvas Renderer
+// ============================================================
+const canvas = document.getElementById('map');
+const ctx = canvas.getContext('2d');
+const buildings = [
+  { id:'townhall', name:'市政厅', x:320, y:350, w:140, h:110, color:'rgba(226,176,74,0.08)', border:'#e2b04a' },
+  { id:'studio',   name:'设计工坊', x:30,  y:100, w:150, h:120, color:'rgba(232,113,92,0.08)', border:'#e8715c' },
+  { id:'writer_h', name:'文案间',   x:220, y:60,  w:150, h:120, color:'rgba(78,205,196,0.08)', border:'#4ecdc4' },
+  { id:'review',   name:'审核室',   x:580, y:100, w:150, h:120, color:'rgba(226,176,74,0.06)', border:'#e2b04a' },
+  { id:'media',    name:'媒体中心', x:580, y:340, w:150, h:120, color:'rgba(255,107,107,0.06)', border:'#ff6b6b' },
+  { id:'library',  name:'智库',     x:30,  y:340, w:150, h:120, color:'rgba(150,150,200,0.06)', border:'#9696c8' },
+];
+
+const agentDefs = {
+  designer:  { name:'阿画', emoji:'🎨', color:'#e8715c', home:{x:105, y:160} },
+  writer:    { name:'小文', emoji:'✍️', color:'#4ecdc4', home:{x:295, y:120} },
+  reviewer:  { name:'审哥', emoji:'🔍', color:'#e2b04a', home:{x:655, y:160} },
+  engineer:  { name:'阿程', emoji:'💻', color:'#5a8a6a', home:{x:655, y:400} },
+  pm:        { name:'芝士', emoji:'🧀', color:'#d4a574', home:{x:105, y:400} },
+};
+
+let agents = [
+  { id:'designer',  ...agentDefs.designer,  x:105, y:160, target:null, task:null },
+  { id:'writer',    ...agentDefs.writer,    x:295, y:120, target:null, task:null },
+  { id:'reviewer',  ...agentDefs.reviewer,  x:655, y:160, target:null, task:null },
+  { id:'engineer',  ...agentDefs.engineer,  x:655, y:400, target:null, task:null },
+  { id:'pm',        ...agentDefs.pm,        x:105, y:400, target:null, task:null },
+  { id:'mayor',     name:'北北', emoji:'🏰', color:'#e2b04a', x:390, y:370, target:null, task:null, role:'镇长·守护灵' },
+];
+let activeTab = 'quests';
+let lastLogCount = 0;
+let lastDoneCount = 0;
+
+// Notification
+function showToast(agent, text, action, actionFn) {
+  const container = document.getElementById('toasts');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<span class="toast-agent">${agent}</span> ${text}${action ? ` <span class="toast-action" onclick="(${actionFn.toString()})()">${action}</span>` : ''}`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(), 300); }, 6000);
+}
+
+// Library
+function openLibrary() {
+  document.getElementById('library-modal').classList.add('show');
+  renderLibrary();
+}
+function closeLibrary() { document.getElementById('library-modal').classList.remove('show'); }
+function renderLibrary() {
+  const assets = townState.assets || [];
+  const grid = document.getElementById('asset-grid');
+  grid.innerHTML = assets.slice(0, 20).map(a => `
+    <div class="asset-card" onclick="window.open('${a.url}','_blank')">
+      <div class="asset-type">${a.type}</div>
+      <div class="asset-name">${a.file}</div>
+      <div class="asset-meta">${a.time} · ${(a.size/1024).toFixed(0)}KB</div>
+    </div>
+  `).join('') || '<p style="opacity:0.4;text-align:center;padding:20px;grid-column:1/-1;">智库空空，等第一个产出...</p>';
+}
+
+function drawGround() {
+  ctx.fillStyle = '#0a0a14'; ctx.fillRect(0,0,780,520);
+  ctx.strokeStyle = 'rgba(255,255,255,0.015)'; ctx.lineWidth = 1;
+  for (let x=0; x<780; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,520); ctx.stroke(); }
+  for (let y=0; y<520; y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(780,y); ctx.stroke(); }
+  // paths
+  ctx.strokeStyle = 'rgba(255,255,255,0.02)'; ctx.lineWidth = 28;
+  ctx.beginPath(); ctx.moveTo(105,220); ctx.lineTo(395,220); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(395,180); ctx.lineTo(395,390); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(655,220); ctx.lineTo(395,390); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(105,390); ctx.lineTo(395,390); ctx.stroke();
+  // trees
+  const trees = [[250,300],[450,440],[710,250],[80,440],[700,450],[180,440]];
+  for (const [tx,ty] of trees) {
+    ctx.fillStyle = '#1a3a18'; ctx.beginPath(); ctx.arc(tx,ty-8,12,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#2d5a27'; ctx.beginPath(); ctx.arc(tx-5,ty-3,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#2d5a27'; ctx.beginPath(); ctx.arc(tx+5,ty-3,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#5a3a1a'; ctx.fillRect(tx-2,ty+4,4,8);
+  }
+}
+
+function drawBuilding(b) {
+  const {x,y,w,h} = b;
+  ctx.fillStyle = b.color; ctx.fillRect(x+8, y+18, w-16, h-28);
+  ctx.strokeStyle = b.border; ctx.lineWidth = 1.5; ctx.strokeRect(x+8, y+18, w-16, h-28);
+  // roof
+  ctx.fillStyle = b.border + '20';
+  ctx.beginPath(); ctx.moveTo(x+4,y+18); ctx.lineTo(x+w/2,y-2); ctx.lineTo(x+w-4,y+18); ctx.closePath();
+  ctx.fill(); ctx.strokeStyle = b.border; ctx.lineWidth = 1; ctx.stroke();
+  // windows
+  ctx.fillStyle = b.border + '40';
+  for (let wy=y+26; wy<y+h-14; wy+=22)
+    for (let wx=x+16; wx<x+w-16; wx+=16)
+      ctx.fillRect(wx,wy,7,7);
+  // label
+  ctx.fillStyle = '#ffffff70'; ctx.font = '10px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign = 'center'; ctx.fillText(b.name, x+w/2, y+h-4);
+  // highlight for townhall
+  if (b.id === 'townhall') {
+    ctx.strokeStyle = b.border; ctx.lineWidth = 2;
+    ctx.setLineDash([4,4]); ctx.strokeRect(x-2, y-4, w+4, h+6); ctx.setLineDash([]);
+  }
+}
+
+function drawAgent(a) {
+  ctx.save();
+  // Mayor glow
+  if (a.id === 'mayor') {
+    ctx.shadowColor = '#e2b04a';
+    ctx.shadowBlur = 12 + Math.sin(Date.now()/1000) * 4;
+  }
+  // shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath();
+  ctx.ellipse(a.x, a.y+14, 9, 3.5, 0, 0, Math.PI*2); ctx.fill();
+  // body
+  ctx.fillStyle = a.color; ctx.fillRect(a.x-7, a.y-3, 14, 14);
+  // head
+  ctx.fillRect(a.x-5, a.y-11, 10, 9);
+  // eyes
+  ctx.fillStyle = '#fff'; ctx.fillRect(a.x-3, a.y-9, 2.5, 2.5); ctx.fillRect(a.x+1, a.y-9, 2.5, 2.5);
+  ctx.fillStyle = '#0a0a14'; ctx.fillRect(a.x-2, a.y-8, 1.5, 1.5); ctx.fillRect(a.x+2, a.y-8, 1.5, 1.5);
+  // working indicator
+  if (a.task) {
+    ctx.fillStyle = '#4ecdc4'; ctx.beginPath(); ctx.arc(a.x+9, a.y-12, 3.5, 0, Math.PI*2); ctx.fill();
+    // speech bubble
+    const txt = a.task.length > 10 ? a.task.slice(0,10)+'…' : a.task;
+    ctx.fillStyle = 'rgba(0,0,0,0.85)'; roundRect(ctx, a.x-50, a.y-32, 100, 18, 5);
+    ctx.fillStyle = '#fff'; ctx.font = '9px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.textAlign = 'center'; ctx.fillText(txt, a.x, a.y-19);
+  }
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+r); ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); ctx.fill();
+}
+
+function renderMap() {
+  ctx.clearRect(0,0,780,520);
+  drawGround();
+  for (const b of buildings) drawBuilding(b);
+  for (const a of agents) drawAgent(a);
+}
+
+// ============================================================
+// UI Render
+// ============================================================
+function renderAll() {
+  renderMap();
+  renderSidebar();
+  renderModal();
+  // stats
+  const tasks = townState.tasks || [];
+  const quests = townState.quests || [];
+  document.getElementById('stat-tasks').textContent = tasks.filter(t=>t.status==='pending'||t.status==='processing').length;
+  document.getElementById('stat-done').textContent = quests.filter(q=>q.status==='done').length;
+  const today = new Date().toISOString().slice(5,10).replace('-','-'); // "06-18"
+  document.getElementById('stat-day').textContent = tasks.filter(t=>t.status==='done'&&(t.completed||'').startsWith(today)).length;
+}
+
+function renderSidebar() {
+  // Agent list
+  const scores = townState.agents || {};
+  const tasks = townState.tasks || [];
+  const list = document.getElementById('agent-list');
+  list.innerHTML = agents.map(a => {
+    const sc = scores[a.id] || {};
+    const task = tasks.find(t => t.assignee === a.id && t.status === 'processing');
+    const detail = a.role ? a.role : (task ? `处理中：${task.title.slice(0,15)}…` : '待命中');
+    const isMayor = a.id === 'mayor';
+    return `<div class="agent-mini" onclick="clickAgent('${a.id}')" style="${isMayor ? 'border:1px solid rgba(226,176,74,0.3);border-radius:8px;' : ''}">
+      <div class="avatar" style="background:${a.color}20">${a.emoji}</div>
+      <div class="info"><div class="name">${a.name} ${isMayor?'👑':''}</div><div class="status">${detail}</div></div>
+      <div class="score">${sc.xp || sc.total || 0}</div>
+    </div>`;
+  }).join('');
+
+  // Log
+  const log = townState.log || [];
+  document.getElementById('log-feed').innerHTML = log.slice(-15).reverse().map(e =>
+    `<div class="entry"><span class="time">${e.time}</span>${e.agent==='系统'?'':e.agent+'：'}${e.text}</div>`
+  ).join('');
+}
+
+function renderModal() {
+  const tasks = townState.tasks || [];
+  const quests = townState.quests || [];
+  const scores = townState.agents || {};
+  const rules = townState.scoring_rules || {};
+
+  // Active quests
+  document.getElementById('active-quests').innerHTML = tasks
+    .filter(t => t.status !== 'done')
+    .map(t => {
+      const ag = agents.find(a=>a.id===t.assignee);
+      return `<div class="quest-item">
+        <div class="q-status ${t.status}"></div>
+        <div class="q-info">
+          <div class="q-title">${t.title}</div>
+          <div class="q-agent">${ag ? ag.emoji+' '+ag.name : '未分配'}</div>
+        </div>
+      </div>`;
+    }).join('') || '<p style="opacity:0.4;text-align:center;padding:20px;">暂无活跃悬赏</p>';
+
+  // History - match quests with tasks for precise output linking
+  const taskMap = {};
+  tasks.forEach(t => { taskMap[t.id] = t; });
+  const assets = townState.assets || [];
+  document.getElementById('tab-history').innerHTML = quests
+    .filter(q => q.status === 'done')
+    .reverse()
+    .map(q => {
+      const ag = agents.find(a=>a.id===q.agent);
+      const ratingHtml = q.rating
+        ? `<span class="q-rating ${q.rating}">${({excellent:'卓越',good:'好评',ok:'一般',poor:'差评'})[q.rating]||q.rating} · ${q.total_score||q.base_score}分</span>` + (q.review ? `<span style="font-size:11px;opacity:0.5;margin-left:8px">「${q.review}」</span>` : '')
+        : `<span class="rate-btns" style="display:inline-flex;gap:4px;margin-top:4px">
+             <button class="rate-btn sel-excellent" onclick="event.stopPropagation();rateQuest('${q.id}','excellent')">卓越</button>
+             <button class="rate-btn sel-good" onclick="event.stopPropagation();rateQuest('${q.id}','good')">好评</button>
+             <button class="rate-btn sel-ok" onclick="event.stopPropagation();rateQuest('${q.id}','ok')">一般</button>
+           </span>`;
+      // Use task's precise output list — match by title since ids may differ
+      const task = taskMap[q.id] || (q.id ? taskMap[q.id.replace('_designer','').replace('_writer','')] : null) 
+        || Object.values(taskMap).find(t => t.title === q.title) || {};
+      const outputs = (() => {
+        if (task.outputs) {
+          try { const p = JSON.parse(task.outputs); if (Array.isArray(p) && p.length > 0) return p; } catch(e) {}
+          if (typeof task.outputs === 'string' && task.outputs !== '[]' && task.outputs !== '') return [task.outputs];
+          if (Array.isArray(task.outputs) && task.outputs.length > 0) return task.outputs;
+        }
+        return task.output ? [task.output] : [];
+      })();
+      const outLinks = outputs.length > 0
+        ? '<div style=margin-top:6px>' + outputs.map(f => {
+            const a = assets.find(x => x.file === f || x.file === f.split('/').pop());
+            const url = a ? a.url : ('/outputs/' + encodeURIComponent(f.split('/').pop()));
+            return `<a href="${url}" target=_blank style=color:var(--accent-teal);font-size:11px;text-decoration:underline;margin-right:10px>${f.split('/').pop()}</a>`;
+          }).join('') + '</div>'
+        : '';
+      return `<div class="quest-item">
+        <div class="q-status done"></div>
+        <div class="q-info">
+          <div class="q-title">${q.title}</div>
+          <div class="q-agent">${ag ? ag.emoji+' '+ag.name : ''} ${ratingHtml}</div>
+          ${q.review ? `<div style="font-size:11px;opacity:0.5;margin-top:4px;">「${q.review}」</div>` : ''}
+          ${outLinks}
+        </div>
+      </div>`;
+    }).join('') || '<p style="opacity:0.4;text-align:center;padding:20px;">暂无完成记录</p>';
+
+  // Scores
+  const maxScore = Math.max(1, ...Object.values(scores).map(s=>s.total||0));
+  const sorted = Object.entries(scores).sort((a,b)=>(b[1].total||0)-(a[1].total||0));
+  document.getElementById('tab-scores').innerHTML = sorted.map(([id, s], i) => {
+    const ag = agents.find(a=>a.id===id);
+    const pct = ((s.total||0)/maxScore*100).toFixed(0);
+    return `<div class="score-row ${i===0?'rank-1':''}">
+      <div class="score-rank ${i===0?'gold':''}">${i+1}</div>
+      <div class="avatar" style="background:${ag?.color||'#666'}20;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;">${ag?.emoji||'?'}</div>
+      <div class="score-name">${s.name||id}</div>
+      <div class="score-pts">${s.total||0}</div>
+      <div class="score-bar-wrap" style="position:absolute;bottom:4px;left:60px;right:60px;"><div class="score-bar" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  // 奏折
+  const suggestions = townState.suggestions?.suggestions || [];
+  document.getElementById('tab-zouzhe').innerHTML = suggestions.map(s => {
+    const st = s.status === 'pending' ? '⏳ 待批' : s.status === 'approved' ? '✅ 已批准' : '❌ 驳回';
+    const review = s.review ? `<div style="font-size:11px;opacity:0.5;margin-top:4px;">批示：「${s.review}」</div>` : '';
+    const btns = s.status === 'pending'
+      ? `<div class="rate-btns" style="margin-top:6px">
+           <button class="rate-btn sel-excellent" onclick="event.stopPropagation();approveSugg('${s.id}','approved')">批准</button>
+           <button class="rate-btn sel-poor" onclick="event.stopPropagation();approveSugg('${s.id}','rejected')">驳回</button>
+         </div>`
+      : '';
+    return `<div class="quest-item">
+      <div class="q-status ${s.status==='pending'?'processing':'done'}"></div>
+      <div class="q-info">
+        <div class="q-title">${s.period} · ${s.title}</div>
+        <div style="font-size:12px;opacity:0.5;">${s.desc} &nbsp; ${st} &nbsp; ${s.created_at}</div>
+        ${review}${btns}
+      </div>
+    </div>`;
+  }).join('') || '<p style="opacity:0.4;text-align:center;padding:20px;">暂无奏折。守护灵将在早8/午12/晚6呈报。</p>';
+
+  // 探索
+  const exploreTasks = tasks.filter(t => t.auto_generated);
+  document.getElementById('tab-explore').innerHTML = exploreTasks.reverse().map(t => {
+    const ag = agents.find(a=>a.id===t.assignee);
+    const outs = t.outputs || [];
+    const links = outs.map(f => {
+      const a = assets.find(x => x.file === f);
+      const url = a ? a.url : ('/outputs/' + encodeURIComponent(f.split('/').pop()));
+      return `<a href="${url}" target=_blank style="color:var(--accent-teal);font-size:11px;text-decoration:underline;margin-right:8px;">${f.split('/').pop()}</a>`;
+    }).join('');
+    return `<div class="quest-item">
+      <div class="q-status ${t.status}"></div>
+      <div class="q-info">
+        <div class="q-title">🤖 ${t.title}</div>
+        <div class="q-agent">${ag ? ag.emoji+' '+ag.name : ''} · 自主探索</div>
+        ${links ? `<div style="margin-top:4px;">${links}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('') || '<p style="opacity:0.4;text-align:center;padding:20px;">暂无探索记录。agent闲了会自动找活干。</p>';
+}
+
+// ============================================================
+// Interaction
+// ============================================================
+function openTownHall() {
+  document.getElementById('townhall-modal').classList.add('show');
+  switchTab('quests');
+}
+function closeModal() {
+  document.getElementById('townhall-modal').classList.remove('show');
+}
+function switchTab(tab) {
+  activeTab = tab;
+  const tabNames = {quests:'悬赏板',history:'任务记录',scores:'积分榜',zouzhe:'奏折',explore:'探索'};
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.textContent.includes(tabNames[tab])));
+  document.getElementById('tab-quests').style.display = tab === 'quests' ? '' : 'none';
+  document.getElementById('tab-history').style.display = tab === 'history' ? '' : 'none';
+  document.getElementById('tab-scores').style.display = tab === 'scores' ? '' : 'none';
+  document.getElementById('tab-zouzhe').style.display = tab === 'zouzhe' ? '' : 'none';
+  document.getElementById('tab-explore').style.display = tab === 'explore' ? '' : 'none';
+}
+async function publish() {
+  const inp = document.getElementById('pub-input');
+  const title = inp.value.trim();
+  if (!title) return;
+  await publishTask(title);
+  inp.value = '';
+}
+async function approveSugg(id, action) {
+  await fetch(API + '/api/approve', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({id, action, review: action==='approved'?'批准':'驳回'})
+  });
+  await fetchState();
+}
+async function rateQuest(questId, rating) {
+  const labels = {excellent:'卓越', good:'好评', ok:'一般', poor:'差评'};
+  const review = prompt('给' + labels[rating] + '写一句评价吧~', '');
+  if (review === null) return; // 用户取消
+  await fetch(API + '/api/rate', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({quest_id: questId, rating, review})
+  });
+  await fetchState();
+}
+function clickAgent(id) {
+  const a = agents.find(x=>x.id===id);
+  if (a) {
+    const tasks = townState.tasks||[];
+    const t = tasks.find(x=>x.assignee===id && x.status==='processing');
+    alert(`${a.emoji} ${a.name}\n积分：${(townState.agents[id]||{total:0}).total}\n${t ? '正在：'+t.title : '待命中'}`);
+  }
+}
+
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const sx = 780/rect.width, sy = 520/rect.height;
+  const mx = (e.clientX-rect.left)*sx, my = (e.clientY-rect.top)*sy;
+  // Check buildings
+  for (const b of buildings) {
+    if (mx >= b.x-2 && mx <= b.x+b.w+2 && my >= b.y-4 && my <= b.y+b.h+6) {
+      if (b.id === 'townhall') openTownHall();
+      else if (b.id === 'library') openLibrary();
+      else if (b.id === 'studio') clickAgent('designer');
+      else if (b.id === 'writer_h') clickAgent('writer');
+      else if (b.id === 'review') clickAgent('reviewer');
+      else if (b.id === 'media') clickAgent('engineer');
+      return;
+    }
+  }
+  // Check agents
+  for (const a of agents) {
+    if (Math.abs(mx-a.x) < 12 && Math.abs(my-a.y) < 16) {
+      clickAgent(a.id);
+      return;
+    }
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const sx = 780/rect.width, sy = 520/rect.height;
+  const mx = (e.clientX-rect.left)*sx, my = (e.clientY-rect.top)*sy;
+  let cursor = 'default';
+  for (const b of buildings) {
+    if (mx >= b.x-2 && mx <= b.x+b.w+2 && my >= b.y-4 && my <= b.y+b.h+6) {
+      cursor = 'pointer'; break;
+    }
+  }
+  for (const a of agents) {
+    if (Math.abs(mx-a.x) < 12 && Math.abs(my-a.y) < 16) { cursor = 'pointer'; break; }
+  }
+  canvas.style.cursor = cursor;
+});
+
+// ============================================================
+// Game loop
+// ============================================================
+function update() {
+  // Agent idle movement
+  for (const a of agents) {
+    if (!a.task && Math.random() < 0.004) {
+      a.x += (Math.random()-0.5)*5; a.y += (Math.random()-0.5)*5;
+      a.x = Math.max(15, Math.min(765, a.x)); a.y = Math.max(15, Math.min(505, a.y));
+    }
+    if (!a.task && Math.random() < 0.0008) a.target = {...a.home};
+    if (a.target) {
+      const dx = a.target.x-a.x, dy = a.target.y-a.y;
+      const d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 1.5) a.target = null;
+      else { a.x += dx*0.025; a.y += dy*0.025; }
+    }
+  }
+  // Sync task state
+  const tasks = townState.tasks || [];
+  for (const a of agents) {
+    const t = tasks.find(x=>x.assignee===a.id && x.status==='processing');
+    a.task = t ? t.title : null;
+  }
+}
+
+function gameLoop() {
+  update();
+  renderMap();
+  requestAnimationFrame(gameLoop);
+}
+
+// Boot
+if (window.__INIT_STATE__) renderAll();
+fetchState();
+gameLoop();
+setInterval(fetchState, 8000); // Poll every 8s
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>久久小镇日报 · 温暖像素</title>
+    <style>
+        /* 重置 & 像素化基础 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5efe6;  /* 米白底 */
+            font-family: 'Courier New', 'Lucida Console', 'IBM Plex Mono', 'VT323', monospace, system-ui;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            margin: 0;
+            /* 全局像素化氛围 —— 细微锯齿感 */
+            image-rendering: pixelated;
+        }
+
+        /* 主报纸卡片 —— 像素块感，无圆角，纯直角 */
+        .paper {
+            max-width: 820px;
+            width: 100%;
+            background: #faf7f0;   /* 暖米白 */
+            border: 4px solid #2b2b2b;  /* 炭黑边框 */
+            box-shadow: 8px 8px 0 #2b2b2b;
+            padding: 2rem 2rem 2.5rem;
+            transition: box-shadow 0.1s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1.6rem;
+        }
+
+        /* 模拟像素印刷线 */
+        .paper::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: -4px;
+            bottom: -4px;
+            border: 1px dashed rgba(43, 43, 43, 0.08);
+            pointer-events: none;
+        }
+
+        /* 报头 */
+        .masthead {
+            border-bottom: 6px double #2b2b2b;
+            padding-bottom: 0.3rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .newspaper-name {
+            font-size: 52px;            /* 标题52px */
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #2b2b2b;             /* 炭黑 */
+            line-height: 1.1;
+            font-family: 'Courier New', 'VT323', 'Lucida Console', monospace;
+            text-shadow: 3px 3px 0 #d9c8b0; /* 陶土红影子变柔和土红 */
+            word-break: break-word;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .newspaper-name small {
+            font-size: 18px;            /* 正文大小用于副标题 */
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #b85e3a;             /* 陶土红 */
+            text-shadow: none;
+            background: #2b2b2b;
+            color: #f5efe6;
+            padding: 0.2rem 0.6rem;
+            display: inline-block;
+            margin-left: 0.5rem;
+            border: 2px solid #b85e3a;
+            border-left: none;
+            border-right: none;
+            vertical-align: middle;
+        }
+
+        .date-line {
+            font-size: 18px;            /* 正文18px */
+            color: #b85e3a;             /* 陶土红 */
+            background: #f5efe6;
+            padding: 0.2rem 0 0.1rem 0;
+            border-top: 1px solid #2b2b2b;
+            margin-top: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .date-line span {
+            background: #2b2b2b;
+            color: #faf7f0;
+            padding: 0 0.5rem;
+            font-size: 16px;
+        }
+
+        /* 版面网格 —— 两列为主，一列小 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.8rem 1rem;
+            margin-top: 0.75rem;
+        }
+
+        /* 左栏 主要动态 */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 4px solid #b85e3a;
+            display: inline-block;
+            padding-bottom: 0.2rem;
+            margin-bottom: 0.75rem;
+            color: #2b2b2b;
+            background: #faf7f0;
+            padding-right: 0.8rem;
+        }
+
+        .section-title span {
+            background: #b85e3a;
+            color: #faf7f0;
+            display: inline-block;
+            padding: 0 0.3rem;
+            font-size: 1rem;
+            margin-right: 0.3rem;
+        }
+
+        /* 动态条目 */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .news-item {
+            border-left: 6px solid #b85e3a;
+            padding-left: 0.8rem;
+        }
+
+        .news-item h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2b2b2b;
+            letter-spacing: -0.3px;
+            line-height: 1.3;
+            margin-bottom: 0.2rem;
+        }
+
+        .news-item .meta {
+            font-size: 14px;
+            color: #7a5a44;
+            letter-spacing: 0.2px;
+            background: #ede3d5;
+            display: inline-block;
+            padding: 0 0.4rem;
+            margin-top: 0.2rem;
+            border: 1px solid #b85e3a;
+            border-left: none;
+            border-right: none;
+        }
+
+        .news-item p {
+            font-size: 18px;          /* 正文18px */
+            color: #2b2b2b;
+            margin-top: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .news-item p strong {
+            background: #2b2b2b;
+            color: #faf7f0;
+            padding: 0 3px;
+            font-weight: 600;
+        }
+
+        /* 居民创作成果 + 一句话温暖 */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .creation-block {
+            border: 3px solid #2b2b2b;
+            padding: 1.2rem 1rem 1rem;
+            background: #f5efe6;
+            box-shadow: 4px 4px 0 #b85e3a;
+        }
+
+        .creation-block .section-title {
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+            border-bottom-color: #2b2b2b;
+        }
+
+        .creation-item {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            align-items: baseline;
+        }
+
+        .creation-item .badge {
+            background: #b85e3a;
+            color: #faf7f0;
+            font-size: 14px;
+            padding: 0.2rem 0.6rem;
+            border: 2px solid #2b2b2b;
+            flex-shrink: 0;
+        }
+
+        .creation-item .content {
+            font-size: 18px;          /* 正文18px */
+            line-height: 1.4;
+            color: #2b2b2b;
+        }
+
+        .creation-item .content .highlight {
+            background: #2b2b2b;
+            color: #f5efe6;
+            padding: 0 4px;
+        }
+
+        .warm-block {
+            border-top: 6px double #b85e3a;
+            border-bottom: 6px double #b85e3a;
+            padding: 1.2rem 0.5rem 1rem 0.5rem;
+            background: #fcf9f3;
+            text-align: center;
+            margin-top: 0.4rem;
+            box-shadow: inset 0 0 0 2px #2b2b2b;
+        }
+
+        .warm-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #b85e3a;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .warm-sentence {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2b2b2b;
+            line-height: 1.4;
+            background: #faf7f0;
+            padding: 0.4rem 0.2rem;
+            border: 2px dashed #2b2b2b;
+            margin: 0.4rem 0;
+            font-style: normal;
+        }
+
+        .warm-sentence:before {
+            content: "✦ ";
+            color: #b85e3a;
+        }
+
+        .warm-sentence:after {
+            content: " ✦";
+            color: #b85e3a;
+        }
+
+        .signature {
+            margin-top: 0.8rem;
+            font-size: 18px;
+            color: #5a3f2e;
+            border-top: 1px solid #2b2b2b;
+            padding-top: 0.5rem;
+            text-align: right;
+            letter-spacing: 1px;
+        }
+
+        .signature span {
+            background: #b85e3a;
+            color: #faf7f0;
+            padding: 0 0.5rem;
+        }
+
+        /* 底部小小装饰 */
+        .footer-note {
+            font-size: 15px;
+            color: #563f2e;
+            border-top: 3px solid #2b2b2b;
+            padding-top: 1rem;
+            margin-top: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-note i {
+            font-style: normal;
+            background: #2b2b2b;
+            color: #f0e6d8;
+            padding: 0 6px;
+        }
+
+        /* 移动端调整 */
+        @media (max-width: 600px) {
+            body { padding: 0.8rem; }
+            .paper { padding: 1.5rem 1rem; }
+            .content-grid { grid-template-columns: 1fr; }
+            .newspaper-name { font-size: 40px; }
+            .newspaper-name small { font-size: 16px; }
+            .warm-sentence { font-size: 20px; }
+        }
+
+        /* 像素风小点缀 */
+        .pixel-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #b85e3a;
+            margin-right: 6px;
+            border: 2px solid #2b2b2b;
+        }
+
+        .inline-pixel {
+            background: #2b2b2b;
+            color: #f5efe6;
+            padding: 0 0.2rem;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper">
+        <!-- 报头: 大字 + 陶土红点缀 -->
+        <div class="masthead">
+            <div class="newspaper-name">
+                <span>久久小镇<span style="color:#b85e3a; background: transparent; text-shadow: 2px 2px 0 #d5c1ad;">日报</span></span>
+                <small>· 像素回声 ·</small>
+            </div>
+            <div class="date-line">
+                <span>📅 第 2049 期</span>
+                <span>☀️ 丰收月 第十二日</span>
+                <span style="background:#b85e3a; color:#faf7f0;">温暖微风</span>
+            </div>
+        </div>
+
+        <!-- 核心内容网格 -->
+        <div class="content-grid">
+            <!-- 左栏：小镇今日动态 -->
+            <div class="left-col">
+                <div>
+                    <div class="section-title">
+                        <span class="pixel-dot"></span> 今日动态
+                    </div>
+                    <div class="news-list">
+                        <div class="news-item">
+                            <h3>🌾 北仓谷堆 · 集体晾晒日</h3>
+                            <span class="meta">镇中心广场 · 晨间</span>
+                            <p>四十三户居民合力铺开新收的 <strong>红小米</strong>，金色谷粒映着陶土屋檐。磨坊今日出粉率 <strong>+17%</strong>，粮仓大叔哼着自编的《久久打谷调》。</p>
+                        </div>
+                        <div class="news-item">
+                            <h3>📦 像素邮局 · 漂流信箱开启</h3>
+                            <span class="meta">西街 13 号 · 午后</span>
+                            <p>小镇邮差 <strong>阿炭</strong> 修复了旧木信箱，收集到 22 封手写信。最远一封来自 <strong>松针岭</strong>，落款是“一只喜欢烤红薯的狐狸”。</p>
+                        </div>
+                        <div class="news-item">
+                            <h3>🎨 陶土工作室 · 公共壁画日</h3>
+                            <span class="meta">南巷 · 全时段</span>
+                            <p>大家用 <strong>赭石、黏土白、炭黑</strong> 在墙上拼出一幅《久久小镇的星空》。每个路过的人都能添上一笔，今天新增了 <strong>19 颗像素星星</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右栏：居民创作成果 + 温暖的话 -->
+            <div class="right-col">
+                <!-- 居民创作成果 -->
+                <div class="creation-block">
+                    <div class="section-title" style="border-bottom-color: #b85e3a;">
+                        <span class="pixel-dot" style="background:#2b2b2b;"></span> 居民创作
+                    </div>
+                    <div class="creation-item">
+                        <span class="badge">📖</span>
+                        <span class="content"><span class="highlight">《谷仓月光》</span> · 阿栗写的小诗，共 7 行，用了 49 个像素字。</span>
+                    </div>
+                    <div class="creation-item">
+                        <span class="badge">🧶</span>
+                        <span class="content"><span class="highlight">毛线窗花</span>  编织小组用陶土红&炭黑线钩出 12 幅迷你窗贴，每幅都藏着一颗“心形像素”。</span>
+                    </div>
+                    <div class="creation-item">
+                        <span class="badge">🎵</span>
+                        <span class="content"><span class="highlight">《久久日常》</span> 八音盒曲 · 铁匠铺小六用锉刀和齿轮调出了一段 8-bit 旋律，据说听到的人会想跟着点头。</span>
+                    </div>
+                    <div style="font-size:18px; margin-top: 0.6rem; border-left: 3px solid #2b2b2b; padding-left: 0.6rem;">
+                        🖌️ 今日最受欢迎：<strong style="background:#2b2b2b; color:#faf7f0; padding:0 4px;">“炭笔素描 · 小镇清晨”</strong> 作者：门卫大爷
+                    </div>
+                </div>
+
+                <!-- 一句温暖的话 -->
+                <div class="warm-block">
+                    <span class="warm-label">🌿 小镇暖流</span>
+                    <div class="warm-sentence">
+                        今天，有人帮你扶了一下晾衣绳
+                    </div>
+                    <div style="font-size: 18px; color: #2b2b2b; background: #ede3d5; padding: 0.2rem 0; border-top: 1px solid #b85e3a; margin-top: 0.2rem;">
+                        —— 那是昨天你为蒲公英让路的回响
+                    </div>
+                    <div class="signature">
+                        <span>✦</span> 久久小镇 · 人人都是邻座的星光 <span>✦</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 像素底栏 -->
+        <div class="footer-note">
+            <span><i>📟</i> 本日印刷 · 像素油墨</span>
+            <span>🌱 明日预告：柿子晒场 & 故事帐篷</span>
+            <span style

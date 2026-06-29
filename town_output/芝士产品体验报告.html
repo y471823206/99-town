@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>芝士产品体验报告 · 久久小镇</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #faf7f2;
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+    color: #1a1a1a;
+    line-height: 1.8;
+    padding: 3rem 1.5rem 6rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .report {
+    max-width: 760px;
+    width: 100%;
+  }
+
+  /* ── 封面 ── */
+  .cover {
+    border-bottom: 3px solid #c4553b;
+    padding-bottom: 2.2rem;
+    margin-bottom: 2.8rem;
+  }
+  .cover .label {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #c4553b;
+    margin-bottom: 0.6rem;
+  }
+  .cover h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.8rem;
+  }
+  .cover .sub {
+    font-size: 1.05rem;
+    color: #6b5e53;
+    margin-bottom: 2rem;
+  }
+  .cover .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: #9b8c80;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  /* ── 节 ── */
+  section {
+    margin-bottom: 3.2rem;
+  }
+  section h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    border-left: 4px solid #c4553b;
+    padding-left: 1rem;
+    margin-bottom: 1.4rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── 卡片 ── */
+  .card {
+    background: #fffdf8;
+    border: 1px solid #e8e2d7;
+    border-radius: 6px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 0.9rem;
+  }
+  .card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .card .tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    padding: 2px 10px;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    margin-bottom: 0.3rem;
+  }
+  .tag-green  { background: #dceee4; color: #2d5a3f; }
+  .tag-yellow { background: #faf3dc; color: #7a5e20; }
+  .tag-red    { background: #fbe7e4; color: #a33d2e; }
+  .tag-gray   { background: #eeece7; color: #6b5e53; }
+
+  .card p {
+    font-size: 0.95rem;
+    color: #3d3530;
+    margin-top: 0.5rem;
+  }
+
+  /* ── 表格 ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+  }
+  thead th {
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9b8c80;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e8e2d7;
+  }
+  tbody td {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #f0ebe0;
+    vertical-align: top;
+  }
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .badge-pass { background: #dceee4; color: #2d5a3f; }
+  .badge-warn { background: #faf3dc; color: #7a5e20; }
+  .badge-fail { background: #fbe7e4; color: #a33d2e; }
+
+  /* ── 引用 ── */
+  blockquote {
+    border-left: 3px solid #c4553b;
+    padding: 0.6rem 1rem;
+    margin: 1rem 0;
+    background: #fdf9f3;
+    font-size: 0.9rem;
+    color: #5a4e44;
+    font-style: italic;
+  }
+
+  /* ── 优先级条 ── */
+  .prio-list {
+    list-style: none;
+    counter-reset: prio;
+  }
+  .prio-list li {
+    counter-increment: prio;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0ebe0;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .prio-list li::before {
+    content: "P" counter(prio);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #c4553b;
+    background: #fdf4ef;
+    padding: 3px 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    min-width: 44px;
+    text-align: center;
+  }
+  .prio-list .item-content strong {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+  }
+  .prio-list .item-content span {
+    font-size: 0.85rem;
+    color: #6b5e53;
+  }
+
+  /* ── 尾声 ── */
+  .footer {
+    border-top: 1px solid #e8e2d7;
+    padding-top: 1.6rem;
+    margin-top: 4rem;
+    font-size: 0.8rem;
+    color: #9b8c80;
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  em { font-style: normal; color: #c4553b; }
+
+  /* ── 锚点高亮 ── */
+  .highlight { background: linear-gradient(180deg, transparent 60%, #fdf4ef 60%); }
+</style>
+</head>
+<body>
+<div class="report">
+
+<!-- ── 封面 ── -->
+<header class="cover">
+  <div class="label">产品体验分析报告</div>
+  <h1>久久小镇</h1>
+  <div class="sub">一个会呼吸的AI小镇，还是三个AI在假装上班？</div>
+  <div class="meta">
+    <span>分析师：芝士</span>
+    <span>2026.06.18</span>
+    <span>版本：v3 (SQLite)</span>
+    <span>体验用户：久久</span>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 1. 功能概览                                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <h2>一、当前功能概览</h2>
+
+  <p style="margin-bottom:1.2rem;">久久小镇是一个「像素风AI居民小镇」——在浏览器里看一群AI角色接任务、做产出、挣积分。技术栈：<em>Python HTTP 服务 + SQLite + Canvas 地图 + DeepSeek LLM + 守护进程</em>。以下逐一盘点：</p>
+
+  <table>
+    <thead>
+      <tr><th style="width:22%;">功能模块</th><th style="width:12%;">状态</th><th>实际运转情况</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>悬赏发布</strong></td>
+        <td><span class="badge badge-pass">运转中</span></td>
+        <td>用户在市政厅输入任务标题 → dispatch_queue 写入 → watchdog 识别后调用 LLM 分配给 agent。核心链路通畅。</td>
+      </tr>
+      <tr>
+        <td><strong>Agent 创作</strong></td>
+        <td><span class="badge badge-pass">运转中</span></td>
+        <td>阿画（设计师）、小文（文案）、审哥（审核）三个角色，各自有技能和偏好。但 <em>实际执行依赖 watchdog 调度 LLM 调用</em>，并非 agent 自主循环。</td>
+      </tr>
+      <tr>
+        <td><strong>每日自动创作</strong></td>
+        <td><span class="badge badge-warn">有 Bug</span></td>
+        <td>Watchdog 每天随机抽一个 agent 做每日创作（海报/日报/品质报告）。<em>产出前端时常夹带 LLM 聊天文本</em>（"这是为您生成的HTML代码…"），导致 HTML 无效。</td>
+      </tr>
+      <tr>
+        <td><strong>任务记录 & 评价</strong></td>
+        <td><span class="badge badge-warn">半运转</span></td>
+        <td>历史面板可看到已完成任务。四个评级按钮（卓越/好评/一般/差评）可用。但 <em>评价写入 API 有 bug：review 字段实际存的是 rating key</em>（"excellent"而不是用户写的句子）。</td>
+      </tr>
+      <tr>
+        <td><strong>积分榜</strong></td>
+        <td><span class="badge badge-pass">运转中</span></td>
+        <td>居民 XP 随任务完成累加，排行榜实时刷新。</td>
+      </tr>
+      <tr>
+        <td><strong>奏折系统</strong></td>
+        <td><span class="badge badge-warn">在产，质低</span></td>
+        <td>北北在 8:00 / 12:00 / 18:00 生成奏折呈报久久。功能存在，但 <em>约 40% 的奏折内容仅一行"小镇XP:0 | "</em>，无可用信息。</td>
+      </tr>
+      <tr>
+        <td><strong>智库（资产库）</strong></td>
+        <td><span class="badge badge-pass">运转中</span></td>
+        <td>产出文件自动索引，可点击查看。支持 HTML / MD / 代码三类。21 个文件在库。</td>
+      </tr>
+      <tr>
+        <td><strong>Canvas 小镇地图</strong></td>
+        <td><span class="badge badge-pass">运转中</span></td>
+        <td>6 栋建筑 + 4 个居民 + 行道树，可点击交互。北北有金色光晕动画。居民在空闲时会随机走动。</td>
+      </tr>
+      <tr>
+        <td><strong>Agent 自主探索</strong></td>
+        <td><span class="badge badge-fail">未启用</span></td>
+        <td>探索日志（北北探索日志.md）显示 watchdog 多次识别到"agent 空闲→生成探索任务"，但 <em>实际只产生了一条 dispatch 记录</em>，且该任务（color_palette.html）未见产出。</td>
+      </tr>
+      <tr>
+        <td><strong>经济 & 技能商店</strong></td>
+        <td><span class="badge badge-warn">定义存在，逻辑空</span></td>
+        <td>数据库有 agents.coins / agents.gold，shop 有 6 个商品。但 <em>购买后的效果函数（xp_boost / gold_boost / decorate）主体为空</em>，仅记日志。技能文件购买了但推理时未被加载为 system prompt。</td>
+      </tr>
+      <tr>
+        <td><strong>媒体中心</strong></td>
+        <td><span class="badge badge-fail">未实现</span></td>
+        <td>地图上有建筑（media），economy 标记为 locked。无任何交互逻辑。</td>
+      </tr>
+      <tr>
+        <td><strong>服务器保活</strong></td>
+        <td><span class="badge badge-warn">依赖守护</span></td>
+        <td>town_server.py 是单线程 BaseHTTPRequestHandler，异常即崩溃。town_watchdog.py 每 3 分钟检测并重启。历史上已重启至少 3 次。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card" style="margin-top:1rem;">
+    <h3>数据资产现状</h3>
+    <p>
+      累计产出 <em>21 个文件</em>，8 个 HTML + 4 个 MD + 9 个其他。
+      已完成任务 <em>41 条</em>，其中约 70% 来自 auto_generated 每日创作。
+      小文 XP 最高（879），审哥最低但任务量最多。
+      久久亲自评价了 11 个任务——"好看，超过我了""文案能力小学生AI水平""惊艳，继续加油"——这些评价是小镇最珍贵的训练信号，但<em>没有被充分喂回给 agent</em>。
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2. 体验断点                                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <h2>二、体验断点</h2>
+
+  <p style="margin-bottom:1rem;">以下从「久久坐在屏幕前的视角」梳理她在哪些时刻会感到困惑或失望。</p>
+
+  <div class="card">
+    <h3><span class="tag tag-red">严重</span> 断点 1：产出文件打不开 / 内容被污染</h3>
+    <p>
+      当久久点击智库中某个产出时，看到的第一行是「<em>这是为您生成的"久久小镇日报"HTML代码。它是一份温暖像素风的小镇日报…</em>」——这是 LLM 的聊天开场白，不是 HTML。浏览器无法解析，或者解析后顶部出现乱码。
+    </p>
+    <p>
+      <strong>根因：</strong>Watchdog 的 daily_creative() 有清理逻辑（从 <code>&lt;!DOCTYPE</code> 开始截取），但不够健壮——LLM 有时把说明文字放在 <code>&lt;!DOCTYPE</code> 之前且无 markdown 包裹，清理失败。而由 <em>用户手动发布的悬赏任务</em> 根本不走这个清理逻辑，更容易被污染。
+    </p>
+    <blockquote>久久的第一反应：我发了个悬赏，结果打开是一段 AI 的自言自语？</blockquote>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag tag-red">严重</span> 断点 2：评价后看不到反馈闭环</h3>
+    <p>
+      久久花时间评了"文案能力小学生AI水平"（差评），但点完按钮之后：
+    </p>
+    <p>
+      ① 页面上出现一条评分记录，仅此而已。<br>
+      ② Agent 不会因此调整下次产出风格。<br>
+      ③ 下一次日报 / 海报 / 品质报告的质量和之前一样。<br>
+      ④ 评价文字（review）甚至<em>被 API bug 丢弃</em>——town_server.py line 141 把 rating 值同时写入了 review 字段，用户打的句子丢了。
+    </p>
+    <blockquote>久久的心理活动：我花时间写了评价，然后呢？他们听进去了吗？</blockquote>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag tag-yellow">中等</span> 断点 3：奏折内容空洞</h3>
+    <p>
+      市政厅→奏折 Tab 里，几条 pending 的奏折内容分别是：
+    </p>
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:0.8rem;padding-left:1rem;">
+      「小镇XP:0 | 」<br>
+      「小镇XP:608 | 阿画:645XP 小文:649XP 审哥:452XP 北北:27XP」<br>
+    </p>
+    <p>
+      无叙事、无判断、无「久久需要做什么决策」。这是数据 dump，不是奏折。一个奏折系统如果只是把数据库字段拼出来，那它的存在本身就在浪费久久点击它的时间。
+    </p>
+    <blockquote>我打开奏折是想知道小镇发生了什么，结果看到一行数字。我为什么不直接看积分榜？</blockquote>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag tag-yellow">中等</span> 断点 4：重复产出无感知</h3>
+    <p>
+      久久打开智库，看到 <em>同一个文件名被覆盖了至少 12 次</em>——「小镇品质报告.html」被审哥在 6 月 17 日一个晚上覆盖了 8 次，「久久小镇日报.html」被小文覆盖了 5 次，「久久每日一图.html」被阿画覆盖了 4 次。<br>
+      智库里永远只有最新版本，但久久不知道：<em>这次和上次有什么区别？改了什么？</em> 覆盖前的内容永久丢失。
+    </p>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag tag-yellow">中等</span> 断点 5：任务从发布到产出——中间是黑洞</h3>
+    <p>
+      久久发布悬赏 → 点击发布 → 悬赏板上出现一条记录（状态：pending / processing）→ 然后……等。不知道要等多久。不知道 agent 在干嘛。<em>没有进度条、没有"阿画正在构思""小文已写 120 字"这类状态。</em> 某天突然刷新页面，任务变成了 done，产出出现了。中间的等待——信息真空。
+    </p>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag tag-gray">轻微</span> 断点 6：地图上的建筑是「死」的</h3>
+    <p>
+      设计工坊、文案间、审核室、媒体中心——点击后只是 alert 弹窗，显示 agent 基本信息。一个像素风 RPG 地图如果建筑物不能触发叙事或功能，很快就会变成纯装饰。<em>尤其是媒体中心，地图上画了但点了没反应。</em>
+    </p>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag tag-gray">轻微</span> 断点 7：agent 点击体验粗糙</h3>
+    <p>
+      点击居民弹出 <code>alert()</code> 原生弹窗——在 2026 年的浏览器里，这显得突兀。而且弹窗内容是硬编码的「积分：XX」「正在：XXX」，没有个性语气、没有关于这个 agent 最近做了什么的故事。
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 3. 流程闭环检查                                -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <h2>三、流程闭环检查</h2>
+
+  <p style="margin-bottom:1rem;">把每条核心用户旅程从「触发」到「完成」拆开看，链路是否完整：</p>
+
+  <table>
+    <thead>
+      <tr><th>流程</th><th>触发</th><th>中间</th><th>结束</th><th>闭环？</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>发布悬赏 → 看产出</strong></td>
+        <td>✅ 输入框 + 按钮</td>
+        <td>⚠️ dispatch 写入 → watchdog 轮询 → LLM 调用，<em>无进度反馈</em></td>
+        <td>⚠️ 产出写入后状态变 done，但 <em>产出可能被 LLM 文本污染</em></td>
+        <td><span class="badge badge-warn">80%</span></td>
+      </tr>
+      <tr>
+        <td><strong>评价产出 → Agent 改进</strong></td>
+        <td>✅ 四个评级按钮 + prompt 输入</td>
+        <td>⚠️ API 写入了 DB，但 <em>review 字段被 rating key 覆盖</em></td>
+        <td>❌ Agent 下次调用 <em>未携带上次评价作为 system prompt</em>。watchdog 的 feedback 参数传给 LLM 但 daily_creative 限制了仅 5 条且格式粗糙</td>
+        <td><span class="badge badge-fail">20%</span></td>
+      </tr>
+      <tr>
+        <td><strong>奏折呈报 → 久久决策 → 行动</strong></td>
+        <td>✅ 早中晚自动生成</td>
+        <td>⚠️ 内容质量极不稳定，<em>40% 为纯数据 dump</em></td>
+        <td>⚠️ 批准后可转任务，但 <em>驳回无后续跟进</em>，pending 的永远 pending</td>
+        <td><span class="badge badge-warn">45%</span></td>
+      </tr>
+      <tr>
+        <td><strong>每日自动创作 → 持久资产</strong></td>
+        <td>✅ 每天自动触发一次</td>
+        <td>⚠️ 同一文件名反复覆盖，<em>历史版本丢失</em></td>
+        <td>⚠️ 产出质量不可控——有时是精美 HTML，有时夹带 LLM 废话</td>
+        <td><span class="badge badge-warn">55%</span></td>
+      </tr>
+      <tr>
+        <td><strong>Agent 自主探索</strong></td>
+        <td>⚠️ 探索日志有记录</td>
+        <td>❌ dispatch 几乎不产出实际文件</td>
+        <td>❌ 无可见结果</td>
+        <td><span class="badge badge-fail">5%</span></td>
+      </tr>
+      <tr>
+        <td><strong>金币 → 技能商店 → 能力提升</strong></td>
+        <td>✅ 商店商品定义完整</td>
+        <td>⚠️ 购买扣金币 + 记日志</td>
+        <td>❌ 购买的技能文件 <em>未被注入 agent 的 LLM 调用</em>，eqipped_skills 字段形同虚设</td>
+        <td><span class="badge badge-fail">15%</span></td>
+      </tr>
+      <tr>
+        <td><strong>服务器稳定运行</strong></td>
+        <td>✅ watchdog 每 3 分钟心跳</td>
+        <td>⚠️ 单线程 HTTP 服务 + try/except 兜底</td>
+        <td>⚠️ 已崩溃重启 3+ 次，重启窗口期 <em>用户请求会超时</em></td>
+        <td><span class="badge badge-warn">70%</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 4. 优先级建议                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <h2>四、优先级建议</h2>
+
+  <p style="margin-bottom:1.4rem;">以下排序原则：<em>优先修「让久久觉得这个产品坏了」的，再修「让久久觉得这个产品不够好」的。</em></p>
+
+  <ol class="prio-list">
+
+    <li>
+      <div class="item-content">
+        <strong>修复产出污染 &amp; 评价丢失 Bug</strong>
+        <span>这是 <em>最严重</em> 的两个数据损坏级 bug：① LLM 聊天文本混入 HTML 产出导致文件不可用；② rate API 把用户亲手写的评价文字替换成了 "excellent" / "good" 等 key。两个修起来都只需改动 town_server.py 和 town_watchdog.py 各 5–10 行——产出清理用更健壮的正则（先搜 <code>&lt;!DOCTYPE</code> / <code>&lt;html</code> 再截断），rate 端点把 body.review 传给 review 字段而不是 rating。修完这两个，久久会立刻感觉到「小镇变好了」。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>评价→Agent 反馈闭环</strong>
+        <span>把久久的评价文字（修复后的 review）作为 system prompt 注入到下一次该 agent 的 LLM 调用中。至少要做到：每次调用时从 scores 表取该 agent 最近 3 条评价，格式化为「久久上次对你的评价是：xxx，请据此改进」。这个改动不需要新 UI，不需要新数据表——只是往现有的 llm_chat() 调用前加一段 prompt 组装。但它会让久久感受到「我说的每一句话都被小镇记住了」——这是产品从工具跃迁为伙伴的关键一步。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>奏折质量治理</strong>
+        <span>目前奏折 prompt 里给了 LLM 太多数据、太少叙事引导。改进方向：① 在 prompt 里要求「以久久的口吻写一段你观察到的小镇动态（100 字），然后给出 1 个具体的、久久可以做的决策问题」；② 如果 LLM 返回内容 &lt; 50 字符，判定为生成失败，打日志并重试；③ 加一个简单的质量 gating——奏折必须有至少一个建议句才能入库。三条 pending 的空白奏折应该被自动清理。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>产出版本化</strong>
+        <span>每日自动创作的输出文件名加时间戳或序号（如 <code>久久小镇日报_06-18_01.html</code>），而不是反复覆盖同一个文件。或者保持 latest 版本覆盖 + 自动归档旧版到 <code>town_output/archive/</code>。这样智库里可以看到历史轨迹而不是只有一张最新快照。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>任务进度可见性</strong>
+        <span>在悬赏板和侧边栏 agent 状态中增加中间状态：不只是 pending → processing → done，而是在 processing 阶段附加一个简短描述，如「阿画正在构思海报布局…」。可以在 watchdog 分配任务后写入 log，前端从 log 中读取最新状态展示。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>技能系统真实化</strong>
+        <span>把 equipped_skills 对应的 .md 文件内容读取后注入到 agent 的 LLM system prompt 中。目前阿画已购买 3d_visual_design.md、小文有 xiaohongshu-style-writer，但这些技能文件的内容从未被传给 LLM。购买技能 → 能力提升这条链路才是经济系统的核心驱动力。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>Agent 点击体验升级</strong>
+        <span>把 alert() 替换为地图上的 tooltip 或侧边栏内的 agent 详情面板。内容包括：最近 3 个产出链接 + 久久的评价 + 当前心情（可从 LLM 生成一句简短的自述）。这比弹窗多了 10 倍的信息量，但实现成本不过是一个简单的 DOM 更新。</span>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <strong>服务器健壮性</strong>
+        <span>当前的 while True + try/except 足够用了。但可以考虑：① 把 town_server.py 从 BaseHTTPRequestHandler 换成 ThreadingHTTPServer（一行改动）；② 加一个 /api/health 端点给 watchdog 做更精准的健康检查（不只是看 TCP 通不通，而是查 DB 是否能读写）。</span>
+      </div>
+    </li>
+
+  </ol>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 尾声                                         -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <h2>五、一句总结</h2>
+
+  <div class="card" style="background:#fdf4ef;border-color:#f0d6cc;">
+    <p style="font-size:1.1rem;color:#5a2d21;">
+      久久小镇有一个好骨架——像素美学、角色分工、经济循环、奏折叙事——这些设计决策说明建造者<em>知道一个好小镇应该长什么样</em>。
+      但当前它像一栋刚封顶的房子：外墙漂亮，走进去却发现有些门把手一拧就掉（rate API bug）、有些房间灯不亮（奏折空洞）、有些管道没接通（技能系统无效果）。
+      最该做的不是加新功能，是<em>把已有的 7 条核心链路每条都跑通、跑稳、让久久真实地走完一遍</em>。
+      先把 P1 修了——久久明天打开小镇时会发现，她上次写的评价真的被阿画读进去了。
+      那一刻，这个小镇才真正开始呼吸。
+    </p>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>芝士 · 产品体验报告</span>
+  <span>久久小镇 v3 · 2026.06.18</span>
+</footer>
+
+</div>
+</body>
+</html>

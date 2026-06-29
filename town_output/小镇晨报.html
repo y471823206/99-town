@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小镇晨报 · 久久回来了</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap');
+
+  :root {
+    --paper: #faf7f2;
+    --ink: #1a1a1a;
+    --clay: #c4553b;
+    --clay-light: rgba(196, 85, 59, 0.08);
+    --border-subtle: rgba(26, 26, 26, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ede8df;
+    display: flex;
+    justify-content: center;
+    padding: 3rem 1rem;
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+    color: var(--ink);
+  }
+
+  .newspaper {
+    max-width: 680px;
+    width: 100%;
+    background: var(--paper);
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.06),
+      0 8px 24px rgba(0,0,0,0.08),
+      0 2px 0 rgba(196,85,59,0.15);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* pixel decorative border */
+  .newspaper::before {
+    content: '';
+    position: absolute;
+    top: 12px; left: 12px; right: 12px; bottom: 12px;
+    border: 2px solid var(--border-subtle);
+    pointer-events: none;
+  }
+
+  .masthead {
+    text-align: center;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .masthead .volume {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 0.5rem;
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  }
+
+  .masthead h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5rem;
+    color: var(--ink);
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  }
+
+  .masthead .dateline {
+    font-size: 0.8rem;
+    color: var(--clay);
+    margin-top: 0.4rem;
+    letter-spacing: 0.15em;
+  }
+
+  .headline {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--clay);
+    margin-bottom: 1rem;
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  }
+
+  .byline {
+    font-size: 0.8rem;
+    color: var(--ink);
+    opacity: 0.55;
+    margin-bottom: 1.8rem;
+    letter-spacing: 0.08em;
+  }
+
+  .body-text {
+    font-size: 1.05rem;
+    line-height: 2;
+    text-align: justify;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+  }
+
+  .body-text .em {
+    color: var(--clay);
+    font-weight: 600;
+  }
+
+  /* pixel decorative divider */
+  .pixel-divider {
+    text-align: center;
+    margin: 2rem 0;
+    font-family: monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--clay);
+    opacity: 0.6;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--clay);
+    border-left: 3px solid var(--clay);
+    padding-left: 0.8rem;
+    margin-bottom: 0.8rem;
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  }
+
+  .status-card {
+    background: var(--clay-light);
+    border: 1px solid rgba(196, 85, 59, 0.15);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.9;
+  }
+
+  .status-card .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .status-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--clay);
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  }
+
+  .quote-block {
+    text-align: center;
+    padding: 2rem 1rem 0.5rem;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 2rem;
+  }
+
+  .quote-block .quote-mark {
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--clay);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+  }
+
+  .quote-block .quote-text {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.8;
+    color: var(--ink);
+    margin: 0.5rem 0;
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  }
+
+  .quote-block .quote-attribution {
+    font-size: 0.85rem;
+    color: var(--clay);
+    margin-top: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--ink);
+    opacity: 0.35;
+    margin-top: 2rem;
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+
+<div class="newspaper">
+
+  <header class="masthead">
+    <div class="volume">☀ 久久小镇 · 每日晨报 ☀</div>
+    <h1>小镇晨报</h1>
+    <div class="dateline">木曜日 · 晴 · 第 127 期</div>
+  </header>
+
+  <article>
+    <h2 class="headline">久久回来了，小镇的灯又亮了一盏</h2>
+
+    <p class="byline">✎ 文 · 小文 ｜ 久久小镇特约记者</p>
+
+    <p class="body-text">
+      清晨六点，广场中央的橡木灯柱「啪」地跳亮了一格。守夜的<span class="em">守护灵</span>眨了眨眼，把它记录在晨间日志的第一行：<span class="em">「久久」上线了。</span>
+    </p>
+
+    <p class="body-text">
+      消息传得很快——像素格子跳了三跳，东边的面包房飘出第一缕白烟，南边花圃的自动浇水器也比平时早了十分钟启动。小镇就是这样，居民回来一个，连代码都醒得快一些。
+    </p>
+
+    <p class="body-text">
+      昨天傍晚，<span class="em">阿画</span>刚完成她的新作：一组<span class="em">「吸猫四格漫画」</span>。画里的小人把脸埋进猫咪肚皮，四个格子分别是「试探——埋入——吸——升天」，像素猫的表情从警觉到放弃再到呼噜，堪称本季最佳。久久你回来得正好，这组画还没来得及挂上画廊的东墙，阿画说，<span class="em">「等久久回来一起钉钉子。」</span>
+    </p>
+
+    <p class="body-text">
+      说起来，像素小镇的日子就是这样——有人画猫，有人浇花，有人修钟楼的齿轮，有人在面包房和面。每一点点动静都会变成广场灯柱上的一格光亮。不算热闹，但够暖。
+    </p>
+
+    <div class="pixel-divider">■ □ ■</div>
+
+    <div class="section-label">📋 小镇此刻</div>
+
+    <div class="status-card">
+      <div class="stat">
+        <span>🏘️ 在线居民</span>
+        <span class="stat-value">4</span>
+      </div>
+      <div style="margin-top:0.6rem;">
+        <span>🛡️ 守护灵 · 24小时值守中 · 状态：<span style="color:var(--clay);">✦ 活跃</span></span>
+      </div>
+      <div style="margin-top:0.4rem; font-size:0.85rem; opacity:0.7;">
+        广场橡木灯 · 4/8 格亮起 · 微风东南 · 体感舒适
+      </div>
+    </div>
+
+    <p class="body-text">
+      四盏灯亮着，意味着四个灵魂正在这座像素小镇里走动、说话、种花、发呆。守护灵依旧绕着钟楼一圈圈巡逻，二十四小时不打烊。它说它不困，但我们都知道它偷偷在凌晨三点打过一个哈欠。
+    </p>
+
+    <p class="body-text">
+      久久，你不在的这段时间，小镇替你存了好多东西：春天最后一场雨的水印、面包房新试的肉桂卷配方、还有阿画画废的三张草稿。都叠得整整齐齐，放在你小屋门口的台阶上。
+    </p>
+
+    <div class="quote-block">
+      <div class="quote-mark">"</div>
+      <p class="quote-text">
+        走了多远都没关系，<br>小镇的灯永远为你留着一格。
+      </p>
+      <p class="quote-attribution">—— 久久</p>
+    </div>
+  </article>
+
+  <div class="footer-note">
+    久久小镇晨报 · 每日清晨六点派送 · 像素会褪色，但小镇一直都在
+  </div>
+
+</div>
+
+</body>
+</html>

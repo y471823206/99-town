@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>芝士 · 久久小镇产品巡检报告</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #faf7f2;
+    color: #1a1a1a;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", Georgia, serif;
+    line-height: 1.8;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 32px 80px;
+  }
+  .header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #e0d8cc;
+  }
+  .header .label {
+    font-size: 14px;
+    color: #c4553b;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+  }
+  .header .meta {
+    font-size: 14px;
+    color: #8c8273;
+  }
+  .header .meta span { color: #c4553b; }
+
+  .section {
+    margin-bottom: 48px;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0d8cc;
+    letter-spacing: 0.03em;
+  }
+  .section h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 24px 0 12px;
+    color: #2a2a2a;
+  }
+
+  /* Stat cards */
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .stat-card .num {
+    font-size: 32px;
+    font-weight: 700;
+    color: #c4553b;
+    line-height: 1.2;
+  }
+  .stat-card .label {
+    font-size: 13px;
+    color: #8c8273;
+    margin-top: 4px;
+  }
+
+  /* Agent table */
+  .agent-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .agent-table th {
+    background: #f5f0e8;
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #5c5244;
+  }
+  .agent-table td {
+    padding: 10px 16px;
+    border-top: 1px solid #f0ebe0;
+    vertical-align: middle;
+  }
+  .agent-table .name {
+    font-weight: 600;
+  }
+  .agent-table .role-tag {
+    display: inline-block;
+    font-size: 11px;
+    background: #f5f0e8;
+    color: #5c5244;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+  .agent-table .xp-bar-bg {
+    width: 80px;
+    height: 6px;
+    background: #f0ebe0;
+    border-radius: 3px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  .agent-table .xp-bar-fill {
+    height: 6px;
+    background: #c4553b;
+    border-radius: 3px;
+  }
+
+  /* Issue cards */
+  .issue-list {
+    list-style: none;
+  }
+  .issue-item {
+    background: #fff;
+    margin-bottom: 16px;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border-left: 4px solid #e0d8cc;
+  }
+  .issue-item.p0 { border-left-color: #c4553b; }
+  .issue-item.p1 { border-left-color: #d4853b; }
+  .issue-item.p2 { border-left-color: #8c8273; }
+  .issue-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .issue-header .priority {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+  }
+  .issue-item.p0 .priority { background: #fce8e3; color: #c4553b; }
+  .issue-item.p1 .priority { background: #fdf0e0; color: #d4853b; }
+  .issue-item.p2 .priority { background: #f0ebe0; color: #5c5244; }
+  .issue-header .title {
+    font-size: 17px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .issue-body {
+    font-size: 15px;
+    color: #3a3a3a;
+    line-height: 1.9;
+  }
+  .issue-body .finding {
+    margin-bottom: 12px;
+    padding-left: 16px;
+    border-left: 2px solid #e0d8cc;
+  }
+  .issue-body .finding strong {
+    color: #c4553b;
+    font-weight: 600;
+  }
+  .issue-body .recommendation {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: #faf6ef;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .issue-body .recommendation::before {
+    content: "建议方案";
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #c4553b;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  /* Score review */
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .score-item {
+    background: #fff;
+    padding: 14px 16px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    font-size: 14px;
+  }
+  .score-item .title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #2a2a2a;
+  }
+  .score-item .rating {
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .rating.excellent { background: #e8f5e9; color: #2e7d32; }
+  .rating.good { background: #e3f2fd; color: #1565c0; }
+  .rating.ok { background: #fff8e1; color: #f57f17; }
+  .rating.poor { background: #fce8e3; color: #c4553b; }
+  .score-item .comment {
+    font-size: 12px;
+    color: #8c8273;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* Summary */
+  .summary-box {
+    background: #fff;
+    padding: 28px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .summary-box .big-num {
+    font-size: 48px;
+    font-weight: 700;
+    color: #c4553b;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid #e0d8cc;
+    font-size: 12px;
+    color: #b8ad9a;
+  }
+
+  .warn-icon {
+    color: #c4553b;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="label">芝士 · 产品巡检</div>
+  <h1>久久小镇需求建议</h1>
+  <div class="meta">2026年6月29日 21:05 &nbsp;·&nbsp; 巡检周期：06-16 ~ 06-29 &nbsp;·&nbsp; 小镇总XP：<span>776</span></div>
+</div>
+
+<!-- 小镇现状 -->
+<div class="section">
+  <h2>小镇现状概览</h2>
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="num">6</div>
+      <div class="label">居民</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">26</div>
+      <div class="label">总任务</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">2</div>
+      <div class="label">待分配</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">25</div>
+      <div class="label">资产沉淀</div>
+    </div>
+  </div>
+
+  <table class="agent-table">
+    <thead>
+      <tr>
+        <th>居民</th>
+        <th>角色</th>
+        <th>等级</th>
+        <th>经验</th>
+        <th>金币</th>
+        <th>最近产出</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="name">阿画</span><span class="role-tag">设计师</span></td>
+        <td>🎨</td>
+        <td>Lv2</td>
+        <td><span class="xp-bar-bg"><span class="xp-bar-fill" style="width:84%"></span></span>835</td>
+        <td>403</td>
+        <td>excellent · 猫猫海报</td>
+      </tr>
+      <tr>
+        <td><span class="name">小文</span><span class="role-tag">文案</span></td>
+        <td>✍️</td>
+        <td>Lv2</td>
+        <td><span class="xp-bar-bg"><span class="xp-bar-fill" style="width:86%"></span></span>859</td>
+        <td>415</td>
+        <td>excellent · 小镇晨报</td>
+      </tr>
+      <tr>
+        <td><span class="name">审哥</span><span class="role-tag">审核</span></td>
+        <td>🔍</td>
+        <td>Lv1</td>
+        <td><span class="xp-bar-bg"><span class="xp-bar-fill" style="width:61%"></span></span>612</td>
+        <td>295</td>
+        <td>good · 猫猫审核</td>
+      </tr>
+      <tr>
+        <td><span class="name">芝士</span><span class="role-tag">产品经理</span></td>
+        <td>🧀</td>
+        <td>Lv1</td>
+        <td><span class="xp-bar-bg"><span class="xp-bar-fill" style="width:2%"></span></span>20</td>
+        <td>10</td>
+        <td>good · 产品体验报告</td>
+      </tr>
+      <tr>
+        <td><span class="name">北北</span><span class="role-tag">镇长</span></td>
+        <td>🏰</td>
+        <td>Lv1</td>
+        <td><span class="xp-bar-bg"><span class="xp-bar-fill" style="width:3%"></span></span>27</td>
+        <td>0</td>
+        <td>—</td>
+      </tr>
+      <tr style="background:#fef9f0">
+        <td><span class="name">阿程</span><span class="role-tag">工程师</span></td>
+        <td>💻</td>
+        <td>Lv1</td>
+        <td><span class="xp-bar-bg"><span class="xp-bar-fill" style="width:0%"></span></span><span class="warn-icon">0</span></td>
+        <td><span class="warn-icon">0</span></td>
+        <td><span class="warn-icon">从未接单</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 最近产出质量 -->
+<div class="section">
+  <h2>最近产出质量回顾</h2>
+  <div class="score-grid">
+    <div class="score-item">
+      <div class="title">四格漫画：每天不狠狠吸猫会死掉</div>
+      <span class="rating excellent">excellent</span> <span style="font-size:12px;color:#8c8273">20分</span>
+      <div class="comment">久久：「惊艳，继续加油」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">小镇晨报：欢迎久久回来</div>
+      <span class="rating excellent">excellent</span> <span style="font-size:12px;color:#8c8273">15分</span>
+      <div class="comment">久久：「有意思！喜欢你们的创造力」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">猫猫海报</div>
+      <span class="rating excellent">excellent</span> <span style="font-size:12px;color:#8c8273">15分</span>
+      <div class="comment">久久：「画得非常好！！！惊艳」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">猫猫朋友圈文案</div>
+      <span class="rating good">good</span> <span style="font-size:12px;color:#8c8273">12分</span>
+      <div class="comment">久久：「有趣了些，但更日常就好了」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">万山无阻小红书推广海报</div>
+      <span class="rating excellent">excellent</span> <span style="font-size:12px;color:#8c8273">15分</span>
+      <div class="comment">久久：「好看，超过我了」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">万山无阻小红书推文文案</div>
+      <span class="rating poor">poor</span> <span style="font-size:12px;color:#8c8273">7分</span>
+      <div class="comment">久久：「文案能力小学生AI水平」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">审核万山无阻推广物料</div>
+      <span class="rating ok">ok</span> <span style="font-size:12px;color:#8c8273">10分</span>
+      <div class="comment">久久：「审核细但漏了文案质感问题」</div>
+    </div>
+    <div class="score-item">
+      <div class="title">芝士产品体验报告</div>
+      <span class="rating good">good</span> <span style="font-size:12px;color:#8c8273">15分</span>
+      <div class="comment">测试评价</div>
+    </div>
+  </div>
+  <p style="font-size:13px; color:#8c8273; margin-top:16px;">
+    近两周产出以阿画（视觉）和小文（文字）为主，质量中上。审哥漏了一次文案审核但整体可靠。<br>
+    <span style="color:#c4553b;">但 Daily 类常规任务（日报/海报/品质报告）全部无人评分——反馈链断裂。</span>
+  </p>
+</div>
+
+<!-- 市政厅使用 -->
+<div class="section">
+  <h2>市政厅 · 奏折系统使用情况</h2>
+
+  <h3>已批准奏折</h3>
+  <table class="agent-table" style="margin-bottom:20px;">
+    <thead>
+      <tr><th>奏折ID</th><th>标题</th><th>久久批示</th><th>转任务</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-size:12px;">sug_001</td>
+        <td>奏折系统上线</td>
+        <td>批准</td>
+        <td style="color:#8c8273;">历史任务</td>
+      </tr>
+      <tr>
+        <td style="font-size:12px;">sug_1781654401</td>
+        <td>新技能训练营提案</td>
+        <td>批准</td>
+        <td style="color:#c4553b;">06-29才生成，<strong>延迟12天</strong></td>
+      </tr>
+      <tr>
+        <td style="font-size:12px;">sug_1781654478</td>
+        <td>小镇早呈奏折</td>
+        <td>批准</td>
+        <td style="color:#c4553b;">06-29才生成，<strong>延迟12天</strong></td>
+      </tr>
+      <tr>
+        <td style="font-size:12px;">sug_1781612509</td>
+        <td>新技能训练营提案</td>
+        <td>再批一次</td>
+        <td style="color:#8c8273;">未转任务</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>卡住的奏折（pending超过12天）</h3>
+  <table class="agent-table">
+    <thead>
+      <tr><th>奏折ID</th><th>标题</th><th>描述摘要</th><th>提交时间</th><th>状态</th></tr>
+    </thead>
+    <tbody>
+      <tr style="background:#fef9f0">
+        <td style="font-size:12px;">sug_1781690471</td>
+        <td>小镇晚呈奏折</td>
+        <td>小镇XP:0（数据异常）</td>
+        <td>06-17 18:01</td>
+        <td style="color:#c4553b;">pending · 12天</td>
+      </tr>
+      <tr style="background:#fef9f0">
+        <td style="font-size:12px;">sug_1781690410</td>
+        <td>小镇晚呈奏折</td>
+        <td>居民经验详情</td>
+        <td>06-17 18:00</td>
+        <td style="color:#c4553b;">pending · 12天</td>
+      </tr>
+      <tr style="background:#fef9f0">
+        <td style="font-size:12px;">sug_1781668851</td>
+        <td>小镇午呈奏折</td>
+        <td>小镇XP:0（数据异常）</td>
+        <td>06-17 12:00</td>
+        <td style="color:#c4553b;">pending · 12天</td>
+      </tr>
+      <tr style="background:#fef9f0">
+        <td style="font-size:12px;">sug_1781668802</td>
+        <td>小镇规划优化建议</td>
+        <td>建议优化任务调度，减少agent空闲</td>
+        <td>06-17 12:00</td>
+        <td style="color:#c4553b;">pending · 12天</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 需求清单 -->
+<div class="section">
+  <h2>需求清单</h2>
+
+  <ul class="issue-list">
+    <li class="issue-item p0">
+      <div class="issue-header">
+        <span class="priority">P0 · 阻断</span>
+        <span class="title">奏折→任务 Pipeline 修复</span>
+      </div>
+      <div class="issue-body">
+        <div class="finding">
+          <strong>发现：</strong>久久在06-16/06-17批准了4份奏折（含「新技能训练营提案」「小镇早呈奏折」），但其中2份的任务到06-29才生成，延迟<strong>12天</strong>。另有1份「再批一次」和4份午呈/晚呈奏折至今pending，超过12天无人处理。
+        </div>
+        <div class="finding">
+          <strong>用户为什么需要这个：</strong>奏折系统是久久与小镇的唯一治理链路。她批了奏折，小镇12天没反应——等于「写了意见没人看」。这不是效率问题，是信任问题。如果奏折系统不可靠，久久就没动力继续批阅。
+        </div>
+        <div class="recommendation">
+          短期（本周）：手动将pending奏折批量处理——午呈/晚呈奏折直接转任务或标记作废，数据异常的（XP:0）检查上报逻辑修复。<br>
+          中期（下周）：在奏折审批回调中增加<strong>即时任务生成</strong>——批准后30秒内出任务并自动分配，不让「批准→执行」有空窗期。增加<strong>奏折超时告警</strong>：pending超过2小时通知镇长。
+        </div>
+      </div>
+    </li>
+
+    <li class="issue-item p1">
+      <div class="issue-header">
+        <span class="priority">P1 · 重要</span>
+        <span class="title">Daily 任务评分闭环</span>
+      </div>
+      <div class="issue-body">
+        <div class="finding">
+          <strong>发现：</strong>小镇过去两周产生了11个daily类任务（日报、海报、品质报告），全部完成但<strong>没有一个被评分</strong>。评分表（scores）只覆盖了quest和task前缀的任务，daily_xxx任务在scores表里有记录但rating字段为空。
+        </div>
+        <div class="finding">
+          <strong>用户为什么需要这个：</strong>没有评分=没有反馈=没有改进方向。小文上次万山无阻文案被评poor后，后续作品有明显提升（晨报excellent）。评分不是惩罚，是导航。Daily任务占了小镇产出的大半，如果都跳过评分环，审哥的reviewer角色就被架空了。
+        </div>
+        <div class="recommendation">
+          在任务complete回调中增加判断：无论daily/quest/task前缀，<strong>完成即触发评分请求</strong>。审哥需要在任务完成后自动收到审核任务。评分不要求复杂——哪怕只有「excellent/good/ok/poor」四档+一句话，也比空白强100倍。
+        </div>
+      </div>
+    </li>
+
+    <li class="issue-item p1">
+      <div class="issue-header">
+        <span class="priority">P1 · 重要</span>
+        <span class="title">激活阿程 · 工程师入职</span>
+      </div>
+      <div class="issue-body">
+        <div class="finding">
+          <strong>发现：</strong>阿程（工程师）XP=0、金币=0，自加入小镇以来<strong>从未接到任何任务</strong>。当前所有任务类型（文案、设计、审核、产品）都不匹配他的技能标签。小镇有25项资产沉淀，但没有工程师维护——代码bug、奏折Pipeline断裂、调度逻辑异常这些问题，理论上都是他的职责。
+        </div>
+        <div class="finding">
+          <strong>用户为什么需要这个：</strong>一个从未工作的居民等于不存在。小镇目前的3人工作流（阿画→小文→审哥）跑得通，但遇到系统层问题就卡死——这是典型的「缺后端」。阿程不是锦上添花，是小镇从「能跑」到「健康跑」的必需要素。
+        </div>
+        <div class="recommendation">
+          先给阿程装备hermes-agent技能（小镇系统维护能力）。然后定义他的任务类型：<br>
+          · 系统巡检：每日检查奏折pipeline、任务调度、数据一致性<br>
+          · Bug修复：收到异常报告后自动诊断修复<br>
+          · 优化任务：执行类似「小镇规划优化建议」中的调度优化<br>
+          · 巡检报告：每周输出小镇系统健康度报告
+        </div>
+      </div>
+    </li>
+
+    <li class="issue-item p2">
+      <div class="issue-header">
+        <span class="priority">P2 · 优化</span>
+        <span class="title">任务自动分配机制</span>
+      </div>
+      <div class="issue-body">
+        <div class="finding">
+          <strong>发现：</strong>当前2个pending任务（task_1782738080, task_1782738078）均为「奏折任务」，assignee为空。这意味着奏折批准后虽然生成了任务，但没有人认领。小镇目前靠手动或外部触发分配，缺乏自动匹配逻辑。
+        </div>
+        <div class="finding">
+          <strong>用户为什么需要这个：</strong>奏折系统设计文档明确写了「批准的建议自动转为小镇任务」。但自动转≠自动分——任务生成了，丢在任务池里没人接，等于没转。这是在Pipeline修复（P0）基础上的必要补充。
+        </div>
+        <div class="recommendation">
+          按任务类型→角色映射自动分配：文案→小文，设计→阿画，审核→审哥，系统/工程→阿程，产品/规划→芝士。如果对应居民忙碌（有进行中任务），放入队列等待；如果空闲超过阈值，降级给其他居民。
+        </div>
+      </div>
+    </li>
+
+    <li class="issue-item p2">
+      <div class="issue-header">
+        <span class="priority">P2 · 体验</span>
+        <span class="title">午呈/晚呈机制修复</span>
+      </div>
+      <div class="issue-body">
+        <div class="finding">
+          <strong>发现：</strong>06-17之后再也没有新的午呈/晚呈奏折生成。最近2份晚呈奏折的XP数据为0（可能读取失败），表明奏折生成逻辑可能已经静默失败。
+        </div>
+        <div class="finding">
+          <strong>用户为什么需要这个：</strong>早呈/午呈/晚呈是久久了解小镇的三次心跳。现在只有早呈在跑，午呈和晚呈停了12天——久久能看到的窗口少了一半。如果她习惯晚呈看总结，那这个窗口的消失意味着她失去了一半的小镇可见度。
+        </div>
+        <div class="recommendation">
+          检查奏折生成的cron配置，确认午呈（12:00）和晚呈（18:00）的触发逻辑是否正常。修复XP读取（当前读到了0而非真实值）。如果一时修不好，先手动补今天的午呈和晚呈，让久久知道我们没关窗。
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- 优先级总览 -->
+<div class="section">
+  <h2>优先级排序</h2>
+  <div class="summary-box">
+    <table style="width:100%; font-size:15px; border-collapse:collapse;">
+      <tr style="border-bottom:1px solid #f0ebe0;">
+        <td style="padding:10px 0;"><span style="background:#fce8e3;color:#c4553b;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">P0</span></td>
+        <td style="padding:10px 0;font-weight:600;">奏折→任务 Pipeline修复</td>
+        <td style="padding:10px 0;color:#8c8273;">阻断治理链路，信任崩塌</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0ebe0;">
+        <td style="padding:10px 0;"><span style="background:#fdf0e0;color:#d4853b;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">P1</span></td>
+        <td style="padding:10px 0;font-weight:600;">Daily任务评分闭环</td>
+        <td style="padding:10px 0;color:#8c8273;">常规产出无反馈，审哥角色架空</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0ebe0;">
+        <td style="padding:10px 0;"><span style="background:#fdf0e0;color:#d4853b;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">P1</span></td>
+        <td style="padding:10px 0;font-weight:600;">激活阿程 · 工程师</td>
+        <td style="padding:10px 0;color:#8c8273;">系统层问题无人维护</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0ebe0;">
+        <td style="padding:10px 0;"><span style="background:#f0ebe0;color:#5c5244;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">P2</span></td>
+        <td style="padding:10px 0;">任务自动分配机制</td>
+        <td style="padding:10px 0;color:#8c8273;">依赖P0修复后生效</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;"><span style="background:#f0ebe0;color:#5c5244;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">P2</span></td>
+        <td style="padding:10px 0;">午呈/晚呈机制修复</td>
+        <td style="padding:10px 0;color:#8c8273;">久久窗口少了一半</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- 居民协调 -->
+<div class="section">
+  <h2>居民协调建议</h2>
+  <div class="summary-box" style="font-size:14px; line-height:2;">
+    <p><strong>阿程</strong> · 优先级最高：即刻激活，装备hermes-agent技能，首要任务修复奏折Pipeline（P0）。这是他入职第一项工作，也是最能体现价值的地方。</p>
+    <p><strong>审哥</strong> · 扩充职责：不仅审quest任务，daily任务也要审。如果量太大，可以设置daily评分简化规则（只评good/ok两档，一句话点评）。</p>
+    <p><strong>小文</strong> · 持续观察：万山无阻文案poor之后有进步，猫猫文案也收到「更日常」的方向指导。保持quality tracking，不需要额外介入。</p>
+    <p><strong>阿画</strong> · 状态最好：所有评分excellent或good，是小镇质量标杆。不建议干扰当前节奏。</p>
+    <p><strong>北北（镇长）</strong> · 关注点：奏折系统异常和午呈/晚呈停摆需要镇长介入排查cron配置。这是系统层的活，不是产品层能解决的。</p>
+  </div>
+</div>
+
+<!-- 久久对话响应 -->
+<div class="section">
+  <h2>市政厅待批奏折</h2>
+  <p style="font-size:14px; color:#8c8273; line-height:1.9;">
+    当前无久久新批示待回复。已批准的4份奏折中，2份已转任务（延迟执行），1份「再批一次」需重新整理后呈报。<br>
+    4份pending奏折（午呈×1 + 晚呈×2 + 规划建议×1）建议由镇长确认后批量处理：
+    规划建议（sug_1781668802）有价值，建议批准转任务；
+    午呈/晚呈奏折因数据异常，建议驳回并要求系统修复后重新呈报。
+  </p>
+</div>
+
+<div class="footer">
+  芝士 · 久久小镇产品经理 &nbsp;|&nbsp; 2026.06.29 &nbsp;|&nbsp; 巡检 #1
+</div>
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+以下是您所需的“小镇品质报告”HTML代码。它是一款温暖像素风、强调排版的纯文本型报告页面，适合用于展示最近产出质量概述、亮点与改进建议。
+```html
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小镇品质报告 · 像素温暖</title>
+  <style>
+    /* 重置 & 基础像素风格 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    body {
+      background-color: #f5f0e8;  /* 米白底 */
+      font-family: 'Courier New', 'Consolas', 'Bitstream Vera Sans Mono', monospace;
+      color: #2e2a28;            /* 炭黑主色 */
+      padding: 2.5rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* 主卡片 — 像素温暖框 */
+    .report {
+      max-width: 820px;
+      width: 100%;
+      background: #faf6ef;
+      border: 4px solid #2e2a28;
+      padding: 2.8rem 2.8rem 3.2rem;
+      box-shadow: 12px 12px 0 #2e2a28;
+      transition: box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    /* 装饰性像素线 — typography-first 不依赖图片 */
+    .report::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      border: 2px solid #c46a4d;  /* 陶土红 */
+      pointer-events: none;
+      opacity: 0.45;
+      box-shadow: 0 0 0 2px #f0dcd0 inset;
+    }
+
+    /* 标题区 */
+    .header {
+      border-bottom: 4px double #c46a4d;
+      padding-bottom: 1.2rem;
+      margin-bottom: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #2e2a28;
+      text-shadow: 3px 3px 0 #d9c8b0;
+      margin: 0;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .header .sub {
+      font-size: 0.9rem;
+      color: #5e4d40;
+      background: #ede3d5;
+      display: inline-block;
+      padding: 0.2rem 1rem;
+      border: 2px solid #c46a4d;
+      letter-spacing: 1px;
+      align-self: flex-start;
+      margin-top: 0.3rem;
+    }
+
+    .header .date {
+      align-self: flex-end;
+      font-size: 0.85rem;
+      background: #2e2a28;
+      color: #f5f0e8;
+      padding: 0.2rem 0.9rem;
+      border: 2px solid #c46a4d;
+      letter-spacing: 1px;
+      margin-top: -0.5rem;
+    }
+
+    /* 核心内容区块——像素typography */
+    .section {
+      margin-bottom: 2.8rem;
+      border-left: 12px solid #c46a4d;
+      padding-left: 1.6rem;
+    }
+
+    .section:last-child {
+      margin-bottom: 0.6rem;
+    }
+
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #2e2a28;
+      display: inline-block;
+      border-bottom: 5px solid #c46a4d;
+      padding-bottom: 0.15rem;
+      margin-bottom: 1.2rem;
+      background: #f5f0e8;
+      box-shadow: 6px 4px 0 #d9c8b0;
+      padding-right: 1rem;
+    }
+
+    /* 概述段落 — 像素感强烈 */
+    .overview p {
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      padding: 0.6rem 1rem;
+      background: #f4ede4;
+      border: 2px solid #c8b6a4;
+      box-shadow: 4px 4px 0 #c8b6a4;
+    }
+
+    .overview p strong {
+      color: #c46a4d;
+      font-weight: 700;
+      background: #efe0d4;
+      padding: 0 6px;
+      border: 1px solid #ae5a3e;
+    }
+
+    /* 亮点列表 */
+    .highlight-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    .highlight-list li {
+      font-size: 1.05rem;
+      padding: 0.65rem 0.8rem 0.65rem 2.4rem;
+      margin-bottom: 0.8rem;
+      background: #f2eae0;
+      border: 2px solid #c8b6a4;
+      box-shadow: 4px 4px 0 #d4c2ae;
+      position: relative;
+      transition: all 0.1s ease;
+    }
+
+    .highlight-list li::before {
+      content: '✦';
+      color: #c46a4d;
+      font-size: 1.7rem;
+      position: absolute;
+      left: 10px;
+      top: 0.3rem;
+      text-shadow: 2px 2px 0 #f0dcd0;
+      line-height: 1;
+    }
+
+    .highlight-list li span.tag {
+      background: #c46a4d;
+      color: #f5f0e8;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.5rem;
+      margin-left: 0.8rem;
+      letter-spacing: 1px;
+      border: 1px solid #2e2a28;
+      vertical-align: middle;
+      text-transform: uppercase;
+    }
+
+    /* 改进建议 */
+    .improve-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 0;
+    }
+
+    .improve-list li {
+      font-size: 1.05rem;
+      padding: 0.7rem 0.8rem 0.7rem 2.4rem;
+      margin-bottom: 0.8rem;
+      background: #ede3d5;
+      border: 2px dashed #b5866e;  /* 陶土红变体 */
+      box-shadow: 3px 3px 0 #dccabc;
+      position: relative;
+    }
+
+    .improve-list li::before {
+      content: '↻';
+      color: #b5623e;
+      font-size: 1.6rem;
+      position: absolute;
+      left: 10px;
+      top: 0.2rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 0 #ede3d5;
+    }
+
+    .improve-list li i, .improve-list li em {
+      color: #7a5a48;
+      background: #f3e7db;
+      font-style: normal;
+      padding: 0 3px;
+      border-bottom: 2px solid #c46a4d;
+    }
+
+    /* 像素分割线 */
+    .divider {
+      width: 100%;
+      height: 8px;
+      background: repeating-linear-gradient(
+        90deg,
+        #2e2a28 0px,
+        #2e2a28 6px,
+        #c46a4d 6px,
+        #c46a4d 12px,
+        #f5f0e8 12px,
+        #f5f0e8 18px
+      );
+      margin: 2.2rem 0 1.6rem;
+      border: none;
+      opacity: 0.7;
+    }
+
+    /* 脚注 — 像素小字 */
+    .footer-note {
+      font-size: 0.75rem;
+      text-align: right;
+      color: #5e4d40;
+      border-top: 2px dotted #c9b7a2;
+      padding-top: 1.2rem;
+      margin-top: 1.4rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .footer-note .pixel-badge {
+      background: #2e2a28;
+      color: #f5f0e8;
+      padding: 0.2rem 1rem;
+      border: 2px solid #c46a4d;
+      font-size: 0.7rem;
+    }
+
+    .footer-note span {
+      opacity: 0.8;
+    }
+
+    /* 响应式细节 */
+    @media (max-width: 550px) {
+      .report {
+        padding: 1.8rem 1.2rem;
+      }
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      .section h2 {
+        font-size: 1.25rem;
+      }
+      .highlight-list li, .improve-list li {
+        font-size: 0.95rem;
+        padding-left: 2rem;
+      }
+    }
+
+    /* 点缀像素鼠标悬停效果 — 保留温暖趣味 */
+    .highlight-list li:hover {
+      background: #f2e3d2;
+      border-color: #b5623e;
+      box-shadow: 6px 6px 0 #c8b6a4;
+    }
+
+    .improve-list li:hover {
+      background: #e8d9c9;
+      border-color: #9f6b51;
+    }
+
+    /* 一些小像素块 (typography-first 不用图片) */
+    .pixel-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #c46a4d;
+      margin-right: 6px;
+      border: 1px solid #2e2a28;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+<div class="report">
+
+  <!-- 头部 温暖像素 -->
+  <div class="header">
+    <div class="date">✦ 批次 · 2025 春</div>
+    <h1>小镇品质报告</h1>
+    <div class="sub">⌂ 产出质量概述 · 亮点 · 改进</div>
+  </div>
+
+  <!-- 最近产出质量概述 -->
+  <div class="section overview">
+    <h2>📋 最近产出质量概述</h2>
+    <p>
+      <span class="pixel-dot"></span> 本周期小镇整体产出<strong>稳定 + 0.8</strong>，相较上一周期提升约12%。  
+      各工坊与手作聚落交付合格率<strong>97.3%</strong>，返工率下降至 3.1%。  
+      陶土、编织与木作三类核心制品继续保持<strong>“温暖耐看”</strong>的质感评价，  
+      其中<strong>陶土红釉系列</strong>与<strong>炭黑草木染</strong>成为本季度最受欢迎组合。  
+      像素级品控记录显示：细节偏差主要出现在边角打磨与缝线对齐工序，  
+      但整体品质基调牢固，社区满意度评分 <strong>4.5 / 5.0</strong>。
+    </p>
+    <!-- 像素分割 -->
+    <div style="height:4px; background:#2e2a28; width:40px; margin:0.5rem 0 0;"></div>
+  </div>
+
+  <!-- 亮点 -->
+  <div class="section">
+    <h2>⭐ 亮点</h2>
+    <ul class="highlight-list">
+      <li>
+        <span class="tag">工艺</span> 陶土红釉重现古法 · 柴窑落灰效果提升34% 
+        <span style="color:#b5623e; font-weight:bold; background:#f2eade; padding:0 3px; border:1px solid #c46a4d;">热销</span>
+      </li>
+      <li>
+        <span class="tag">材料</span> 炭黑染料采用本土槲树皮，色牢度达 8 级，且带有自然草木气息
+      </li>
+      <li>
+        <span class="tag">协作</span> 木工与编织组联合开发「像素格收纳盒」，误差 < 0.5 mm，订单量 +28%
+      </li>
+      <li>
+        <span class="tag">测试</span> 耐久性盲测中，95% 使用者认为“越用越有温度”，优于往年同期
+      </li>
+    </ul>
+  </div>
+
+  <!-- 改进建议 -->
+  <div class="section">
+    <h2>🔄 改进建议</h2>
+    <ul class="improve-list">
+      <li>
+        <i>边角处理</i> – 部分木作边角仍存在细微毛刺，建议增加一道 <em>手工蜡磨</em> 工序，可减少 60% 粗糙感。
+      </li>
+      <li>
+        <i>色差控制</i> – 陶土红釉批次间存在 ΔE 1.8~2.3 浮动，可建立 <em>标准色砖</em> 对照制度，缩小差异至 ΔE ≤ 1.0。
+      </li>
+      <li>
+        <i>包装保护</i> – 配送中陶器破损率 2.4%，推荐使用 <em>再生纸浆 + 麻布内衬</em>，提升抗震且更符合小镇风格。
+      </li>
+      <li>
+        <i>文档记录</i> – 工坊日志目前为手写，建议引入 <em>像素风格电子卡片</em> 以便追溯品质数据（保留手写温度）。
+      </li>
+    </ul>
+  </div>
+
+  <!-- 像素分割线 -->
+  <div class="divider"></div>
+
+  <!-- 脚注 品质总结 typography-first -->
+  <div class="footer-note">
+    <span><span class="pixel-dot" style="background:#2e2a28;"></span> 温暖像素 · 米白 · 炭黑 · 陶土红</span>
+    <span class="pixel-badge">✦ 品质指数 87/100</span>
+    <span>报告生成 · 小镇手作质检组</span>
+  </div>
+
+  <!-- 额外小像素装饰 (纯字符) -->
+  <div style="margin-top: 1rem; font-size: 0.6rem; letter-spacing: 3px; color: #c46a4d; opacity: 0.4; text-align: center; border-top: 1px solid #e0d0be; padding-top: 0.8rem;">
+    ▪ ▪ ▪ ▪ ▪ ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪  ▪
+  </div>
+</div>
+<!-- 本报告纯HTML typography-first · 温暖像素风 · 无图片依赖 -->
+</body>
+</html>
+```
