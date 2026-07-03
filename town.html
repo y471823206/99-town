@@ -336,6 +336,7 @@ const buildings = [
   { id:'review',   name:'审核室',   x:580, y:100, w:150, h:120, color:'rgba(226,176,74,0.06)', border:'#e2b04a' },
   { id:'media',    name:'媒体中心', x:580, y:340, w:150, h:120, color:'rgba(255,107,107,0.06)', border:'#ff6b6b' },
   { id:'library',  name:'智库',     x:30,  y:340, w:150, h:120, color:'rgba(150,150,200,0.06)', border:'#9696c8' },
+  { id:'truman_h', name:'创业课室', x:410, y:70,  w:130, h:100, color:'rgba(109,141,219,0.07)', border:'#6d8ddb' },
 ];
 
 const agentDefs = {
@@ -344,6 +345,7 @@ const agentDefs = {
   reviewer:  { name:'审哥', emoji:'🔍', color:'#e2b04a', home:{x:655, y:160} },
   engineer:  { name:'阿程', emoji:'💻', color:'#5a8a6a', home:{x:655, y:400} },
   pm:        { name:'芝士', emoji:'🧀', color:'#d4a574', home:{x:105, y:400} },
+  truman:    { name:'Truman', emoji:'🧭', color:'#6d8ddb', home:{x:475, y:125} },
 };
 
 let agents = [
@@ -352,6 +354,7 @@ let agents = [
   { id:'reviewer',  ...agentDefs.reviewer,  x:655, y:160, target:null, task:null },
   { id:'engineer',  ...agentDefs.engineer,  x:655, y:400, target:null, task:null },
   { id:'pm',        ...agentDefs.pm,        x:105, y:400, target:null, task:null },
+  { id:'truman',    ...agentDefs.truman,    x:475, y:125, target:null, task:null },
   { id:'mayor',     name:'北北', emoji:'🏰', color:'#e2b04a', x:390, y:370, target:null, task:null, role:'镇长·守护灵' },
 ];
 let activeTab = 'quests';
@@ -712,6 +715,7 @@ canvas.addEventListener('click', e => {
       else if (b.id === 'writer_h') clickAgent('writer');
       else if (b.id === 'review') clickAgent('reviewer');
       else if (b.id === 'media') clickAgent('engineer');
+      else if (b.id === 'truman_h') clickAgent('truman');
       return;
     }
   }

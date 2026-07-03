@@ -25,6 +25,13 @@ def execute(sql, params=()):
 
 def now(): return time.strftime("%m-%d %H:%M")
 
+def ensure_truman_agent():
+    execute(
+        """INSERT OR IGNORE INTO agents(id,name,role,emoji,color,xp,coins,gold,level,equipped_skills,last_decision)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
+        ("truman", "Truman", "创业思维顾问", "🧭", "#6d8ddb", 0, 10, 0, 1, "[]", 0)
+    )
+
 class TownHandler(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
 
@@ -154,7 +161,7 @@ class TownHandler(BaseHTTPRequestHandler):
             if not title: return self._send_json({"error":"empty title"}, 400)
 
             # Agent 匹配: 1) 人名前缀 2) 关键词 3) 留空
-            agent_names = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm"}
+            agent_names = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm","Truman":"truman","许楚":"truman"}
             matched = ""
             for name, aid in agent_names.items():
                 if title.startswith(name) or title.startswith("@" + name):
@@ -167,6 +174,7 @@ class TownHandler(BaseHTTPRequestHandler):
                     "reviewer": ["审核","品质","检查","报告","复盘"],
                     "engineer": ["代码","bug","技术","修复","架构","性能"],
                     "pm": ["产品","体验","用户","需求","规划","功能"],
+                    "truman": ["Truman","许楚","创业","商业","五步法","里程碑","商业模式","决策","假设","增长","壁垒","操盘"],
                 }
                 for aid, keywords in agent_map.items():
                     if any(kw in title for kw in keywords):
@@ -217,6 +225,7 @@ class TownHandler(BaseHTTPRequestHandler):
                     "reviewer": ["审核", "品质", "检查", "报告", "复盘"],
                     "engineer": ["代码", "bug", "技术", "修复", "架构", "性能"],
                     "pm": ["产品", "体验", "用户", "需求", "规划", "功能"],
+                    "truman": ["Truman", "许楚", "创业", "商业", "五步法", "里程碑", "商业模式", "决策", "假设", "增长", "壁垒", "操盘"],
                 }
                 matched = ""
                 for aid, keywords in agent_map.items():
@@ -317,5 +326,6 @@ class TownHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8700))
+    ensure_truman_agent()
     print(f"久久小镇 v3 (SQLite): http://localhost:{port}")
     HTTPServer(("127.0.0.1", port), TownHandler).serve_forever()
