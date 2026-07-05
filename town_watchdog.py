@@ -10,7 +10,7 @@ BASE = f"http://127.0.0.1:{PORT}"
 DB_PATH = TOWN / "town.db"
 CHECK_INTERVAL = 30
 TICK_INTERVAL = 180
-AGENT_NAMES = {"designer":"阿画","writer":"小文","reviewer":"审哥","mayor":"北北"}
+AGENT_NAMES = {"designer":"阿画","writer":"小文","reviewer":"审哥","truman":"Truman","mayor":"北北"}
 
 def db(): return sqlite3.connect(str(DB_PATH))
 
