@@ -1,7 +1,7 @@
 """久久小镇 v3 — SQLite后端"""
 
 import json, time, uuid, os, sqlite3, hashlib
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 
@@ -15,15 +15,25 @@ def db(): return sqlite3.connect(str(DB_PATH))
 def row_dict(cursor, row): return {col[0]: row[i] for i, col in enumerate(cursor.description)}
 
 def query(sql, params=(), one=False):
-    c = db().execute(sql, params)
-    if one: return row_dict(c, r) if (r := c.fetchone()) else None
-    return [row_dict(c, r) for r in c.fetchall()]
+    conn = db()
+    try:
+        c = conn.execute(sql, params)
+        if one:
+            r = c.fetchone()
+            return row_dict(c, r) if r else None
+        return [row_dict(c, r) for r in c.fetchall()]
+    finally:
+        conn.close()
 
 def execute(sql, params=()):
     conn = db(); c = conn.execute(sql, params); conn.commit(); conn.close()
     return c
 
 def now(): return time.strftime("%m-%d %H:%M")
+
+def new_task_id(prefix="task"):
+    """Return a collision-resistant task id for rapid consecutive API calls."""
+    return f"{prefix}_{int(time.time() * 1000)}_{uuid.uuid4().hex[:6]}"
 
 class TownHandler(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
@@ -91,13 +101,50 @@ class TownHandler(BaseHTTPRequestHandler):
         elif path == "/api/dispatch":
             self._send_json(query("SELECT * FROM dispatch_queue"))
 
+        elif path in ("/gallery", "/gallery.html"):
+            html = TOWN_DIR / "gallery.html"
+            if html.exists():
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(html.read_bytes())
+            else:
+                self._send_json({"error": "not found"}, 404)
+
+        elif path.startswith("/docs/"):
+            docs_root = (TOWN_DIR / "docs").resolve()
+            doc_path = (TOWN_DIR / unquote(path.lstrip("/"))).resolve()
+            try:
+                doc_path.relative_to(docs_root)
+                allowed = doc_path.suffix.lower() in (".md", ".json")
+            except ValueError:
+                allowed = False
+
+            if allowed and doc_path.exists() and doc_path.is_file():
+                ct = "application/json" if doc_path.suffix.lower() == ".json" else "text/markdown"
+                self.send_response(200)
+                self.send_header("Content-Type", f"{ct}; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(doc_path.read_bytes())
+            else:
+                self._send_json({"error": "not found"}, 404)
+
         elif path.startswith("/outputs/"):
             filename = unquote(path.split("/outputs/", 1)[1])
             filepath = OUTPUT_DIR / filename
             if filepath.exists() and filepath.is_file():
                 self.send_response(200)
-                ct = "text/html" if filepath.suffix==".html" else "text/plain"
-                self.send_header("Content-Type", f"{ct}; charset=utf-8")
+                content_types = {
+                    ".html": "text/html; charset=utf-8",
+                    ".png": "image/png",
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".webp": "image/webp",
+                    ".gif": "image/gif",
+                    ".svg": "image/svg+xml; charset=utf-8",
+                }
+                ct = content_types.get(filepath.suffix.lower(), "text/plain; charset=utf-8")
+                self.send_header("Content-Type", ct)
                 self.end_headers()
                 self.wfile.write(filepath.read_bytes())
             else: self._send_json({"error":"not found"}, 404)
@@ -173,9 +220,12 @@ class TownHandler(BaseHTTPRequestHandler):
                         matched = aid
                         break
 
-            tid = f"task_{int(time.time())}"
-            execute("INSERT INTO tasks(id,title,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?)",
-                (tid, title, matched, "", "pending", 10, 5, now()))
+            description = body.get("description", "")
+            tid = new_task_id()
+            execute("INSERT INTO tasks(id,title,body,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?,?)",
+                (tid, title, description, matched, "", "pending", 10, 5, now()))
+            execute("INSERT INTO scores(quest_id,title,agent,agent_name,status,xp,coins) VALUES(?,?,?,?,?,?,?)",
+                (tid, title, matched, "", "pending", 10, 5))
             if matched:
                 execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
                     (tid, matched, title, now()))
@@ -188,7 +238,7 @@ class TownHandler(BaseHTTPRequestHandler):
             qid = body.get("quest_id", "")
             rating = body.get("rating", "")
             review = body.get("review", "")
-            bonus = {"excellent": 10, "good": 5, "ok": 2}.get(rating, 0)
+            bonus = {"excellent": 10, "good": 5, "ok": 2, "poor": -2}.get(rating, 0)
             execute("UPDATE scores SET rating=?,review=?,total_score=base_score+? WHERE quest_id=?",
                 (rating, review, bonus, qid))
             execute("UPDATE tasks SET rating=?,review=? WHERE id=? OR title=(SELECT title FROM scores WHERE quest_id=?)",
@@ -198,6 +248,11 @@ class TownHandler(BaseHTTPRequestHandler):
             if q:
                 total = sum(s["total_score"] or 0 for s in query("SELECT total_score FROM scores WHERE agent=? AND rating!=''", (q["agent"],)))
                 execute("UPDATE agents SET xp=?,coins=coins+? WHERE id=?", (total, bonus, q["agent"]))
+            # 反馈自动沉淀到 feedback_log
+            q2 = query("SELECT agent,agent_name FROM scores WHERE quest_id=?", (qid,), one=True)
+            if q2 and (rating or review):
+                execute("INSERT INTO feedback_log(agent_id,agent_name,task_id,rating,review,created_at) VALUES(?,?,?,?,?,?)",
+                    (q2["agent"], q2["agent_name"], qid, rating, review, now()))
             self._send_json({"success": True})
 
         elif path == "/api/approve":
@@ -205,31 +260,41 @@ class TownHandler(BaseHTTPRequestHandler):
             action = body.get("action", "")
             review = body.get("review", "")
             execute("UPDATE suggestions SET status=?,review=? WHERE id=?", (action, review, sid))
+            sugg = query("SELECT * FROM suggestions WHERE id=?", (sid,), one=True)
+            if not sugg:
+                self._send_json({"success": True})
+                return
             if action == "approved":
-                # 获取奏折内容用于匹配agent
-                sugg = query("SELECT * FROM suggestions WHERE id=?", (sid,), one=True)
-                title = f"奏折任务: {sid}"
-                desc = (sugg["title"] + " " + (sugg["description"] or "")) if sugg else ""
-                # 关键词匹配分配agent
+                # 用奏折实际标题+描述作为任务内容
+                desc = (sugg["title"] + " " + (sugg["description"] or "")).strip()
                 agent_map = {
                     "designer": ["设计", "海报", "视觉", "配色", "排版", "绘图"],
-                    "writer": ["文案", "推文", "日报", "写作", "撰稿", "谐音梗", "晨报"],
+                    "writer": ["文案", "推文", "日报", "写作", "撰稿", "谐音梗", "晨报", "检查项"],
                     "reviewer": ["审核", "品质", "检查", "报告", "复盘"],
-                    "engineer": ["代码", "bug", "技术", "修复", "架构", "性能"],
-                    "pm": ["产品", "体验", "用户", "需求", "规划", "功能"],
+                    "engineer": ["代码", "bug", "技术", "修复", "架构", "性能", "cron", "调度", "备份", "配置"],
+                    "pm": ["产品", "体验", "用户", "需求", "规划", "功能", "积压", "调度"],
                 }
                 matched = ""
                 for aid, keywords in agent_map.items():
                     if any(kw in desc for kw in keywords):
                         matched = aid
                         break
-                tid = f"task_{int(time.time())}"
+                tid = new_task_id()
+                task_title = f"奏折任务: {sugg['title'][:40]}"
+                agent_name = {"designer":"阿画","writer":"小文","reviewer":"审哥","engineer":"阿程","pm":"芝士"}.get(matched, "")
                 execute("INSERT INTO tasks(id,title,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?)",
-                    (tid, title, matched, "", "pending", 10, 5, now()))
-                if matched:
-                    execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
-                        (tid, matched, title, now()))
-            self._send_json({"success": True})
+                    (tid, task_title, matched, agent_name, "pending", 15, 8, now()))
+                execute("INSERT INTO scores(quest_id,title,agent,agent_name,status,xp,coins) VALUES(?,?,?,?,?,?,?)",
+                    (tid, task_title, matched, agent_name, "pending", 15, 8))
+                execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
+                    (tid, matched, task_title, now()))
+                execute("INSERT INTO logs(time,agent,text) VALUES(?,?,?)",
+                    (now(), "北北", f"批准奏折「{sugg['title'][:20]}」→ 创建任务 {tid} (assignee={agent_name or '待匹配'})"))
+                self._send_json({"success": True, "task_id": tid, "agent": matched or "待匹配"})
+            else:
+                execute("INSERT INTO logs(time,agent,text) VALUES(?,?,?)",
+                    (now(), "北北", f"驳回奏折「{sugg['title'][:20]}」"))
+                self._send_json({"success": True})
 
         elif path == "/api/clear_dispatch":
             execute("DELETE FROM dispatch_queue")
@@ -269,8 +334,9 @@ class TownHandler(BaseHTTPRequestHandler):
             decisions = []
             if task["assignee"]:
                 execute("UPDATE agents SET xp=xp+?,coins=coins+? WHERE id=?", (task["xp"], task["coins"], task["assignee"]))
-                execute("INSERT OR REPLACE INTO scores(quest_id,title,agent,agent_name,status,xp,coins,completed) VALUES(?,?,?,?,?,?,?,?)",
+                execute("INSERT OR IGNORE INTO scores(quest_id,title,agent,agent_name,status,xp,coins,completed) VALUES(?,?,?,?,?,?,?,?)",
                     (tid, task["title"], task["assignee"], task["assignee_name"], "done", task["xp"], task["coins"], now()))
+                execute("UPDATE scores SET status='done',completed=? WHERE quest_id=?", (now(), tid))
                 # 自动触发决策引擎
                 agent = query("SELECT * FROM agents WHERE id=? AND id!='mayor'", (task["assignee"],), one=True)
                 if agent and time.time() - (agent["last_decision"] or 0) >= 300:
@@ -318,4 +384,4 @@ class TownHandler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8700))
     print(f"久久小镇 v3 (SQLite): http://localhost:{port}")
-    HTTPServer(("127.0.0.1", port), TownHandler).serve_forever()
+    ThreadingHTTPServer(("127.0.0.1", port), TownHandler).serve_forever()
