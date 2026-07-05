@@ -378,7 +378,7 @@ class TownHandler(BaseHTTPRequestHandler):
                 (rating, review, bonus, qid))
             execute("UPDATE tasks SET rating=?,review=? WHERE id=? OR title=(SELECT title FROM scores WHERE quest_id=?)",
                 (rating, review, qid, qid))
-            # 经济结算: 更新agent总分 + 发放金币
+            # 经济结算: 更新agent总分 + 发放积分
             q = query("SELECT agent,coins FROM scores WHERE quest_id=?", (qid,), one=True)
             if q:
                 total = sum(s["total_score"] or 0 for s in query("SELECT total_score FROM scores WHERE agent=? AND rating!=''", (q["agent"],)))
@@ -506,7 +506,7 @@ class TownHandler(BaseHTTPRequestHandler):
                 elif item == "gold_boost": pass
                 elif item == "decorate": pass
                 execute("INSERT INTO logs(time,agent,text) VALUES(?,?,?)",
-                    (time.strftime("%H:%M"), agent["name"], f"购买了 {item}（-{cost}金币）"))
+                    (time.strftime("%H:%M"), agent["name"], f"购买了 {item}（-{cost}积分）"))
                 self._send_json({"success": True})
             else: self._send_json({"error":"insufficient"}, 400)
 
