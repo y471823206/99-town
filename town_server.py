@@ -10,6 +10,141 @@ DB_PATH = TOWN_DIR / "town.db"
 OUTPUT_DIR = TOWN_DIR / "town_output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
+DEFAULT_AGENTS = [
+    ("designer", "阿画", "视觉设计师", "🎨", "#e76f51"),
+    ("writer", "小文", "文案写手", "✍️", "#f4a261"),
+    ("reviewer", "审哥", "审核员", "🔍", "#2a9d8f"),
+    ("engineer", "阿程", "全栈工程师", "💻", "#457b9d"),
+    ("pm", "芝士", "产品经理", "🧀", "#e9c46a"),
+    ("mayor", "久久", "镇长", "🏛️", "#c4553b"),
+]
+
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS agents (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    role TEXT DEFAULT '',
+    emoji TEXT DEFAULT '',
+    color TEXT DEFAULT '',
+    xp INTEGER DEFAULT 0,
+    coins INTEGER DEFAULT 0,
+    gold INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 1,
+    equipped_skills TEXT DEFAULT '[]',
+    last_decision REAL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS tasks (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    body TEXT DEFAULT '',
+    assignee TEXT DEFAULT '',
+    assignee_name TEXT DEFAULT '',
+    status TEXT DEFAULT 'pending',
+    auto_generated INTEGER DEFAULT 0,
+    xp INTEGER DEFAULT 10,
+    coins INTEGER DEFAULT 5,
+    output TEXT DEFAULT '',
+    outputs TEXT DEFAULT '[]',
+    rating TEXT DEFAULT '',
+    review TEXT DEFAULT '',
+    total_score INTEGER DEFAULT 0,
+    base_score INTEGER DEFAULT 10,
+    created TEXT DEFAULT '',
+    completed TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS scores (
+    quest_id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    agent TEXT DEFAULT '',
+    agent_name TEXT DEFAULT '',
+    status TEXT DEFAULT 'done',
+    rating TEXT DEFAULT '',
+    review TEXT DEFAULT '',
+    total_score INTEGER DEFAULT 0,
+    base_score INTEGER DEFAULT 10,
+    xp INTEGER DEFAULT 10,
+    coins INTEGER DEFAULT 5,
+    output TEXT DEFAULT '',
+    completed TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time TEXT NOT NULL,
+    agent TEXT NOT NULL,
+    text TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS assets (
+    id TEXT PRIMARY KEY,
+    file TEXT NOT NULL,
+    type TEXT DEFAULT '',
+    size INTEGER DEFAULT 0,
+    time TEXT DEFAULT '',
+    url TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS suggestions (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    category TEXT DEFAULT '',
+    status TEXT DEFAULT 'pending',
+    period TEXT DEFAULT '',
+    review TEXT DEFAULT '',
+    created_at TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS dispatch_queue (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_id TEXT NOT NULL,
+    agent TEXT DEFAULT '',
+    title TEXT DEFAULT '',
+    time TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS feedback_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent_id TEXT DEFAULT '',
+    agent_name TEXT DEFAULT '',
+    task_id TEXT DEFAULT '',
+    rating TEXT DEFAULT '',
+    review TEXT DEFAULT '',
+    created_at TEXT DEFAULT '',
+    processed INTEGER DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS town_state (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+"""
+
+EXPECTED_COLUMNS = {
+    "agents": {"role": "TEXT DEFAULT ''", "emoji": "TEXT DEFAULT ''", "color": "TEXT DEFAULT ''", "xp": "INTEGER DEFAULT 0", "coins": "INTEGER DEFAULT 0", "gold": "INTEGER DEFAULT 0", "level": "INTEGER DEFAULT 1", "equipped_skills": "TEXT DEFAULT '[]'", "last_decision": "REAL DEFAULT 0"},
+    "tasks": {"body": "TEXT DEFAULT ''", "assignee": "TEXT DEFAULT ''", "assignee_name": "TEXT DEFAULT ''", "status": "TEXT DEFAULT 'pending'", "auto_generated": "INTEGER DEFAULT 0", "xp": "INTEGER DEFAULT 10", "coins": "INTEGER DEFAULT 5", "output": "TEXT DEFAULT ''", "outputs": "TEXT DEFAULT '[]'", "rating": "TEXT DEFAULT ''", "review": "TEXT DEFAULT ''", "total_score": "INTEGER DEFAULT 0", "base_score": "INTEGER DEFAULT 10", "created": "TEXT DEFAULT ''", "completed": "TEXT DEFAULT ''"},
+    "scores": {"agent": "TEXT DEFAULT ''", "agent_name": "TEXT DEFAULT ''", "status": "TEXT DEFAULT 'done'", "rating": "TEXT DEFAULT ''", "review": "TEXT DEFAULT ''", "total_score": "INTEGER DEFAULT 0", "base_score": "INTEGER DEFAULT 10", "xp": "INTEGER DEFAULT 10", "coins": "INTEGER DEFAULT 5", "output": "TEXT DEFAULT ''", "completed": "TEXT DEFAULT ''"},
+    "suggestions": {"description": "TEXT DEFAULT ''", "category": "TEXT DEFAULT ''", "status": "TEXT DEFAULT 'pending'", "period": "TEXT DEFAULT ''", "review": "TEXT DEFAULT ''", "created_at": "TEXT DEFAULT ''"},
+    "dispatch_queue": {"agent": "TEXT DEFAULT ''", "title": "TEXT DEFAULT ''", "time": "TEXT DEFAULT ''"},
+    "feedback_log": {"agent_id": "TEXT DEFAULT ''", "agent_name": "TEXT DEFAULT ''", "task_id": "TEXT DEFAULT ''", "rating": "TEXT DEFAULT ''", "review": "TEXT DEFAULT ''", "created_at": "TEXT DEFAULT ''", "processed": "INTEGER DEFAULT 0"},
+}
+
+def ensure_schema():
+    conn = sqlite3.connect(str(DB_PATH))
+    try:
+        conn.executescript(SCHEMA)
+        for table, columns in EXPECTED_COLUMNS.items():
+            existing = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+            for name, spec in columns.items():
+                if name not in existing:
+                    conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {spec}")
+        for aid, name, role, emoji, color in DEFAULT_AGENTS:
+            conn.execute(
+                "INSERT OR IGNORE INTO agents(id,name,role,emoji,color) VALUES(?,?,?,?,?)",
+                (aid, name, role, emoji, color),
+            )
+        conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_xp','0')")
+        conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_gold','0')")
+        conn.commit()
+    finally:
+        conn.close()
+
+ensure_schema()
+
 def db(): return sqlite3.connect(str(DB_PATH))
 
 def row_dict(cursor, row): return {col[0]: row[i] for i, col in enumerate(cursor.description)}

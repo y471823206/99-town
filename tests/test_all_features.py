@@ -15,9 +15,9 @@ from pathlib import Path
 
 BASE_URL = "http://127.0.0.1:8700"
 API = f"{BASE_URL}/api/state"
-HTML = r"D:\北北\99-town\town.html"
-DB = r"D:\北北\99-town\town.db"
 TOWN_DIR = Path(__file__).resolve().parents[1]
+HTML = TOWN_DIR / "town.html"
+DB = TOWN_DIR / "town.db"
 OUTPUT_DIR = TOWN_DIR / "town_output"
 
 
