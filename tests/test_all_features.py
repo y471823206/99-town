@@ -112,7 +112,7 @@ def test_state_returns_all_fields():
 
 @test("/api/publish 创建任务成功并写入scores+dispatch_queue")
 def test_publish_creates_task():
-    title = f"TDD测试任务_{int(__import__('time').time())}"
+    title = f"阿程 TDD测试任务_{int(__import__('time').time())}"
     description = "TDD测试：验证发布接口会保存中文描述"
     result = fetch("/api/publish", "POST", {"title": title, "description": description})
 
@@ -138,7 +138,7 @@ def test_publish_creates_task():
 def test_complete_awards_xp():
     # 自己 publish 一个任务来测，并在 finally 中清理，不碰居民真实任务。
     ts = int(__import__('time').time())
-    title = f"TDD完成任务_{ts}"
+    title = f"阿程 TDD完成任务_{ts}"
     description = "TDD complete测试：完成后应该有真实成果链接"
     output_name = f"tdd_complete_output_{ts}.html"
     OUTPUT_DIR.mkdir(exist_ok=True)
@@ -407,6 +407,39 @@ def test_frontend_mayor_dashboard():
         assert marker in html, f"镇长驾驶舱缺少: {marker}"
 
 
+@test("页面入口与指标不重复: 市政厅按钮移除，顶部小指标移除")
+def test_frontend_no_duplicate_townhall_and_metrics():
+    html = read_html()
+    assert "进入市政厅" not in html, "市政厅存在重复按钮入口，应只保留地图建筑入口"
+    for marker in ["stat-tasks", "stat-done", "stat-day"]:
+        assert marker not in html, f"顶部重复指标未移除: {marker}"
+    for marker in ["stat-pending", "stat-unrated", "stat-today-done", "stat-health"]:
+        assert marker in html, f"镇长驾驶舱指标缺失: {marker}"
+
+
+@test("小匠技能官: 后端、前端、脚本与技能卡齐备")
+def test_skill_officer_configuration():
+    html = read_html()
+    server = (TOWN_DIR / "town_server.py").read_text(encoding="utf-8")
+    script = TOWN_DIR / "skill_officer.py"
+    skill = TOWN_DIR / ".codex" / "skills" / "skill-officer-lessons" / "SKILL.md"
+    assert "craftsman" in server and "小匠" in server, "后端未注册小匠"
+    assert "craftsman" in html and "技能工坊" in html, "前端未展示小匠/技能工坊"
+    assert script.exists(), "缺少 skill_officer.py"
+    assert skill.exists(), "缺少小匠核心 skill"
+    content = script.read_text(encoding="utf-8")
+    for marker in ["security_findings", "skill-pool", "equipped_skills", "maybe_level_bonus"]:
+        assert marker in content, f"小匠闭环脚本缺少: {marker}"
+
+
+@test("任务记录自愈: ensure_schema 会补齐历史 done tasks 到 scores")
+def test_task_history_healing_in_server():
+    server = (TOWN_DIR / "town_server.py").read_text(encoding="utf-8")
+    assert "历史 done 任务若漏写 scores" in server, "缺少任务记录自愈说明"
+    assert "INSERT OR IGNORE INTO scores" in server and "FROM tasks" in server, "未实现 tasks→scores 补齐"
+    assert "ensure_schema()" in server, "api/state 未触发自愈"
+
+
 # ================================================================
 # 4. 业务流程测试
 # ================================================================
@@ -414,7 +447,7 @@ def test_frontend_mayor_dashboard():
 @test("评分闭环: rate → feedback_log → feedback_to_skill.py 可运行")
 def test_feedback_pipeline():
     # feedback_to_skill.py 文件存在
-    script_path = r"D:\北北\99-town\feedback_to_skill.py"
+    script_path = str(TOWN_DIR / "feedback_to_skill.py")
     assert os.path.exists(script_path), f"feedback_to_skill.py 不存在: {script_path}"
 
     # 脚本语法正确（直接 compile 检查，避免 subprocess 路径转义）
@@ -520,6 +553,9 @@ if __name__ == "__main__":
         test_frontend_css_score_row,
         test_frontend_polling,
         test_frontend_mayor_dashboard,
+        test_frontend_no_duplicate_townhall_and_metrics,
+        test_skill_officer_configuration,
+        test_task_history_healing_in_server,
     ])
 
     # Section 4: Business flow

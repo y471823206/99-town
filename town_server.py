@@ -16,6 +16,7 @@ DEFAULT_AGENTS = [
     ("reviewer", "审哥", "审核员", "🔍", "#2a9d8f"),
     ("engineer", "阿程", "全栈工程师", "💻", "#457b9d"),
     ("pm", "芝士", "产品经理", "🧀", "#e9c46a"),
+    ("craftsman", "小匠", "技能官", "🛠️", "#8d6e63"),
     ("mayor", "久久", "镇长", "🏛️", "#c4553b"),
 ]
 
@@ -139,6 +140,22 @@ def ensure_schema():
             )
         conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_xp','0')")
         conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_gold','0')")
+        # 任务记录以 scores 为事实账本；历史 done 任务若漏写 scores，会在前端消失。
+        # 启动和 /api/state 时补齐，保证以往任务记录可见且 /api/rate 能写入 feedback_log。
+        conn.execute("""
+            INSERT OR IGNORE INTO scores(quest_id,title,agent,agent_name,status,xp,coins,output,completed)
+            SELECT id,title,assignee,assignee_name,status,xp,coins,output,completed
+            FROM tasks
+            WHERE status IN ('done','failed','backlog')
+              AND COALESCE(assignee,'') != ''
+        """)
+        conn.execute("""
+            UPDATE scores
+            SET status=(SELECT tasks.status FROM tasks WHERE tasks.id=scores.quest_id),
+                output=COALESCE(NULLIF((SELECT tasks.output FROM tasks WHERE tasks.id=scores.quest_id),''), output),
+                completed=COALESCE(NULLIF((SELECT tasks.completed FROM tasks WHERE tasks.id=scores.quest_id),''), completed)
+            WHERE EXISTS (SELECT 1 FROM tasks WHERE tasks.id=scores.quest_id AND tasks.status IN ('done','failed','backlog'))
+        """)
         conn.commit()
     finally:
         conn.close()
@@ -199,6 +216,7 @@ class TownHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
 
         if path == "/api/state":
+            ensure_schema()
             agents = {a["id"]: {k: a[k] for k in ["name","role","emoji","color","xp","coins","gold","level","equipped_skills","last_decision"]} for a in query("SELECT * FROM agents")}
             agents_d = {a["id"]: a for a in query("SELECT * FROM agents")}
             tasks = query("SELECT * FROM tasks")
@@ -336,7 +354,7 @@ class TownHandler(BaseHTTPRequestHandler):
             if not title: return self._send_json({"error":"empty title"}, 400)
 
             # Agent 匹配: 1) 人名前缀 2) 关键词 3) 留空
-            agent_names = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm"}
+            agent_names = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm","小匠":"craftsman"}
             matched = ""
             for name, aid in agent_names.items():
                 if title.startswith(name) or title.startswith("@" + name):
@@ -349,6 +367,7 @@ class TownHandler(BaseHTTPRequestHandler):
                     "reviewer": ["审核","品质","检查","报告","复盘"],
                     "engineer": ["代码","bug","技术","修复","架构","性能"],
                     "pm": ["产品","体验","用户","需求","规划","功能"],
+                    "craftsman": ["技能","skill","插件","能力","安装","安全检查","修复bug","优化"],
                 }
                 for aid, keywords in agent_map.items():
                     if any(kw in title for kw in keywords):
@@ -408,6 +427,7 @@ class TownHandler(BaseHTTPRequestHandler):
                     "reviewer": ["审核", "品质", "检查", "报告", "复盘"],
                     "engineer": ["代码", "bug", "技术", "修复", "架构", "性能", "cron", "调度", "备份", "配置"],
                     "pm": ["产品", "体验", "用户", "需求", "规划", "功能", "积压", "调度"],
+                    "craftsman": ["技能", "skill", "插件", "能力", "安装", "安全检查", "修复bug", "优化"],
                 }
                 matched = ""
                 for aid, keywords in agent_map.items():
@@ -416,7 +436,7 @@ class TownHandler(BaseHTTPRequestHandler):
                         break
                 tid = new_task_id()
                 task_title = f"奏折任务: {sugg['title'][:40]}"
-                agent_name = {"designer":"阿画","writer":"小文","reviewer":"审哥","engineer":"阿程","pm":"芝士"}.get(matched, "")
+                agent_name = {"designer":"阿画","writer":"小文","reviewer":"审哥","engineer":"阿程","pm":"芝士","craftsman":"小匠"}.get(matched, "")
                 execute("INSERT INTO tasks(id,title,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?)",
                     (tid, task_title, matched, agent_name, "pending", 15, 8, now()))
                 execute("INSERT INTO scores(quest_id,title,agent,agent_name,status,xp,coins) VALUES(?,?,?,?,?,?,?)",
