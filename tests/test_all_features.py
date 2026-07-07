@@ -407,6 +407,26 @@ def test_frontend_mayor_dashboard():
         assert marker in html, f"镇长驾驶舱缺少: {marker}"
 
 
+@test("市政厅入口: 去除重复直达入口，保留上下文入口")
+def test_frontend_townhall_entry_scope():
+    html = read_html()
+    dashboard_start = html.find('<div class="mayor-dashboard"')
+    dashboard_end = html.find('<!-- Main -->', dashboard_start)
+    dashboard_html = html[dashboard_start:dashboard_end]
+    assert "openTownHallTab" not in dashboard_html, "驾驶舱指标卡不应重复直达市政厅 tab"
+    assert 'class="dash-card' in dashboard_html, "驾驶舱指标卡仍需保留为状态展示"
+
+    map_head_start = html.find('<div class="map-head">')
+    map_head_end = html.find('</div>\n      <canvas', map_head_start)
+    map_head_html = html[map_head_start:map_head_end]
+    assert "进入市政厅" not in map_head_html, "地图头部不应再放重复的市政厅按钮"
+    assert "openTownHall()" not in map_head_html, "地图头部不应绑定市政厅打开动作"
+
+    assert "if (b.id === 'townhall') openTownHall();" in html, "地图建筑点击仍应打开市政厅"
+    assert "openTownHallTab('${i.tab}')" in html, "闭环提醒仍应保留上下文入口"
+    assert "'去评分', () => { openTownHallTab('history'); }" in html, "交付 toast 仍应保留去评分入口"
+
+
 # ================================================================
 # 4. 业务流程测试
 # ================================================================
@@ -520,6 +540,7 @@ if __name__ == "__main__":
         test_frontend_css_score_row,
         test_frontend_polling,
         test_frontend_mayor_dashboard,
+        test_frontend_townhall_entry_scope,
     ])
 
     # Section 4: Business flow

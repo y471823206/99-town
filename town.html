@@ -52,8 +52,8 @@ body {
 .guardian-card { display:flex; flex-direction:column; justify-content:space-between; min-height:116px; }
 .guardian-kicker, .dash-label { font-size:11px; letter-spacing:2px; color:#8a7d70; }
 .guardian-advice { font-size:17px; line-height:1.55; margin-top:10px; font-weight:650; }
-.dash-card { text-align:left; cursor:pointer; transition:transform .16s, border-color .16s; }
-.dash-card:hover { transform:translateY(-2px); border-color:#c4553b; }
+.dash-card { text-align:left; }
+.dash-card.accent { border-color:rgba(196,85,59,0.28); }
 .dash-value { font-size:34px; line-height:1; font-weight:850; margin:18px 0 8px; color:#1a1a1a; }
 .dash-hint { font-size:12px; color:#6f665f; line-height:1.4; }
 .dash-card.accent .dash-value { color:#c4553b; }
@@ -302,26 +302,26 @@ canvas { display:block; width:100%; height:520px; }
       <div class="guardian-kicker">北北守护灵</div>
       <div class="guardian-advice" id="guardian-advice">正在观察小镇...</div>
     </section>
-    <button class="dash-card accent" onclick="openTownHallTab('quests')">
+    <section class="dash-card accent">
       <div class="dash-label">待处理</div>
       <div class="dash-value" id="stat-pending">0</div>
       <div class="dash-hint">悬赏与执行队列</div>
-    </button>
-    <button class="dash-card accent" onclick="openTownHallTab('history')">
+    </section>
+    <section class="dash-card accent">
       <div class="dash-label">未评分</div>
       <div class="dash-value" id="stat-unrated">0</div>
       <div class="dash-hint">评价会沉淀为成长</div>
-    </button>
-    <button class="dash-card" onclick="openTownHallTab('history')">
+    </section>
+    <section class="dash-card">
       <div class="dash-label">今日交付</div>
       <div class="dash-value" id="stat-today-done">0</div>
       <div class="dash-hint">今天完成的作品</div>
-    </button>
-    <button class="dash-card" onclick="openTownHallTab('zouzhe')">
+    </section>
+    <section class="dash-card">
       <div class="dash-label">健康度</div>
       <div class="dash-value" id="stat-health">100</div>
       <div class="dash-hint">待办与反馈压力</div>
-    </button>
+    </section>
   </div>
 
   <!-- Main -->
@@ -333,7 +333,6 @@ canvas { display:block; width:100%; height:520px; }
           <h3>居民生活地图</h3>
           <p id="map-subtitle">看见每位居民的位置、工作状态与产出流向</p>
         </div>
-        <button onclick="openTownHall()">进入市政厅</button>
       </div>
       <canvas id="map" width="780" height="520"></canvas>
       <div class="map-legend" id="map-legend"></div>
