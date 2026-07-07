@@ -390,11 +390,13 @@ def test_frontend_polling():
     assert "8000" in html, "轮询间隔不是8秒"
 
 
-@test("镇长驾驶舱: 第一屏暴露治理闭环")
+@test("全屏像素小镇: 第一屏用世界承载治理闭环")
 def test_frontend_mayor_dashboard():
     html = read_html()
     required = [
-        "mayor-dashboard",
+        "pixel-town-stage",
+        "town-hud",
+        "town-canvas",
         "stat-pending",
         "stat-unrated",
         "stat-today-done",
@@ -404,7 +406,8 @@ def test_frontend_mayor_dashboard():
         "作品长廊",
     ]
     for marker in required:
-        assert marker in html, f"镇长驾驶舱缺少: {marker}"
+        assert marker in html, f"全屏像素小镇缺少: {marker}"
+    assert "mayor-dashboard" not in html, "第一屏不应再使用页面式 mayor-dashboard 卡片区"
 
 
 # ================================================================
