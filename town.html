@@ -49,7 +49,7 @@ body {
 .guardian-kicker, .status-title, .dash-label { font-size:11px; letter-spacing:2px; color:var(--accent); font-weight:900; }
 .guardian-advice { font-size:15px; line-height:1.55; font-weight:750; margin-top:7px; }
 .town-board { position:absolute; right:28px; bottom:26px; z-index:4; width:340px; padding:15px; }
-.town-stat { display:grid; grid-template-columns:26px 1fr; gap:9px; border-top:2px solid #eadbc8; padding:10px 0; background:transparent; text-align:left; width:100%; cursor:pointer; }
+.town-stat { display:grid; grid-template-columns:26px 1fr; gap:9px; border-top:2px solid #eadbc8; padding:10px 0; background:transparent; text-align:left; width:100%; }
 .town-stat:first-of-type { border-top:0; padding-top:0; }
 .stat-dot { width:18px; height:18px; border:3px solid var(--line); margin-top:2px; box-shadow:2px 2px 0 rgba(58,42,36,.16); background:var(--amber); }
 .stat-dot.red { background:var(--accent); } .stat-dot.green { background:var(--accent-teal); }
@@ -156,8 +156,6 @@ body {
       <p>一个会运转、会交付、会记住评价的 AI 居民小镇。</p>
     </div>
     <div class="town-actions">
-      <button class="pixel-btn primary" onclick="openTownHallTab('quests')">发布悬赏</button>
-      <button class="pixel-btn" onclick="openTownHallTab('history')">评价交付</button>
       <button class="ghost-btn" onclick="openGallery()">作品长廊</button>
     </div>
   </section>
@@ -169,18 +167,18 @@ body {
 
   <aside class="pixel-panel town-board" aria-label="今日小镇">
     <div class="status-title">今日小镇</div>
-    <button class="town-stat" onclick="openTownHallTab('quests')">
+    <div class="town-stat">
       <i class="stat-dot red"></i><div><span class="dash-label">待处理</span><b class="dash-value" id="stat-pending">0</b><span class="dash-hint">悬赏与执行队列</span></div>
-    </button>
-    <button class="town-stat" onclick="openTownHallTab('history')">
+    </div>
+    <div class="town-stat">
       <i class="stat-dot red"></i><div><span class="dash-label">未评分</span><b class="dash-value" id="stat-unrated">0</b><span class="dash-hint">评价会沉淀为成长</span></div>
-    </button>
-    <button class="town-stat" onclick="openTownHallTab('history')">
+    </div>
+    <div class="town-stat">
       <i class="stat-dot green"></i><div><span class="dash-label">今日交付</span><b class="dash-value" id="stat-today-done">0</b><span class="dash-hint">今天完成的作品</span></div>
-    </button>
-    <button class="town-stat" onclick="openTownHallTab('zouzhe')">
+    </div>
+    <div class="town-stat">
       <i class="stat-dot"></i><div><span class="dash-label">健康度</span><b class="dash-value" id="stat-health">100</b><span class="dash-hint">待办与反馈压力</span></div>
-    </button>
+    </div>
     <span style="display:none"><b id="stat-tasks">0</b><b id="stat-done">0</b><b id="stat-day">0</b></span>
     <div id="reminder-list" class="reminder-list"></div>
   </aside>

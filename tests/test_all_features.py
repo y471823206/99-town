@@ -410,6 +410,25 @@ def test_frontend_mayor_dashboard():
     assert "mayor-dashboard" not in html, "第一屏不应再使用页面式 mayor-dashboard 卡片区"
 
 
+@test("市政厅入口: 全屏版去除重复直达入口，保留空间与上下文入口")
+def test_frontend_townhall_entry_cleanup():
+    html = read_html()
+    dashboard_start = html.find('<aside class="pixel-panel town-board"')
+    dashboard_end = html.find('<span style="display:none">', dashboard_start)
+    dashboard_html = html[dashboard_start:dashboard_end]
+    header_start = html.find('<section class="town-hud"')
+    header_end = html.find('</section>', header_start)
+    header_html = html[header_start:header_end]
+
+    assert "发布悬赏" not in header_html, "顶部不应保留发布悬赏直达入口"
+    assert "评价交付" not in header_html, "顶部不应保留评价交付直达入口"
+    assert "openTownHallTab" not in dashboard_html, "今日小镇指标卡不应直接跳市政厅 tab"
+    assert '<button class="town-stat"' not in dashboard_html, "今日小镇指标应是状态展示，不应是按钮"
+    assert "id:'townhall'" in html, "应保留地图里的市政厅空间入口"
+    assert "if (b.id === 'townhall') openTownHall();" in html, "点击市政厅建筑应打开待办"
+    assert "reminder-action" in html and "openTownHallTab" in html, "应保留提醒中的上下文动作入口"
+
+
 # ================================================================
 # 4. 业务流程测试
 # ================================================================
