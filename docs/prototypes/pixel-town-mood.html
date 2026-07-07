@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>久久小镇 · 像素画风样张</title>
+<style>
+:root{
+  --paper:#faf7f2;
+  --ink:#1a1a1a;
+  --soil:#8d6b52;
+  --soil-dark:#5c4436;
+  --grass:#8fb083;
+  --grass-deep:#5f8a62;
+  --cream:#fff8ea;
+  --line:#3a2a24;
+  --accent:#c4553b;
+  --gold:#d6a645;
+  --blue:#5d8c9c;
+  --mint:#7ba88b;
+  --shadow:#2a1d18;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif}
+body{image-rendering:pixelated;}
+.shell{position:fixed;inset:0;background:var(--paper);display:grid;place-items:center;}
+.stage{position:relative;width:100vw;height:100vh;min-height:680px;overflow:hidden;background:#efe4d2;}
+canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;}
+.hud{position:absolute;left:28px;right:28px;top:22px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;pointer-events:none;}
+.brand{background:rgba(250,247,242,.92);border:3px solid var(--line);box-shadow:6px 6px 0 rgba(58,42,36,.18);padding:14px 18px 12px;min-width:260px;pointer-events:auto;}
+.brand h1{font-size:25px;line-height:1;letter-spacing:2px;font-weight:900;}
+.brand p{font-size:12px;color:#725f55;margin-top:8px;line-height:1.5;}
+.actions{display:flex;gap:10px;pointer-events:auto;}
+.pixel-btn{border:3px solid var(--line);background:var(--cream);color:var(--ink);font-weight:800;font-size:13px;padding:11px 14px;box-shadow:4px 4px 0 rgba(58,42,36,.22);cursor:pointer;}
+.pixel-btn.primary{background:var(--accent);color:#fff8ea;}
+.pixel-btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 rgba(58,42,36,.22);}
+.status-board{position:absolute;right:28px;bottom:26px;width:340px;background:rgba(255,248,234,.94);border:3px solid var(--line);box-shadow:7px 7px 0 rgba(58,42,36,.18);padding:15px;}
+.status-title{font-size:12px;letter-spacing:2px;color:var(--accent);font-weight:900;margin-bottom:10px;}
+.quest{display:grid;grid-template-columns:26px 1fr;gap:9px;border-top:2px solid #eadbc8;padding:10px 0;}
+.quest:first-of-type{border-top:0;padding-top:0;}
+.dot{width:18px;height:18px;border:3px solid var(--line);margin-top:2px;box-shadow:2px 2px 0 rgba(58,42,36,.16)}
+.dot.red{background:var(--accent)}.dot.gold{background:var(--gold)}.dot.green{background:var(--mint)}
+.quest b{display:block;font-size:13px;margin-bottom:4px;}
+.quest span{font-size:12px;line-height:1.45;color:#6d5b51;}
+.speech{position:absolute;left:112px;top:132px;width:350px;background:rgba(255,248,234,.96);border:3px solid var(--line);box-shadow:6px 6px 0 rgba(58,42,36,.18);padding:14px 15px;}
+.speech:after{content:"";position:absolute;left:35px;bottom:-15px;width:18px;height:18px;background:rgba(255,248,234,.96);border-right:3px solid var(--line);border-bottom:3px solid var(--line);transform:rotate(45deg);}
+.speech .who{font-size:11px;letter-spacing:2px;color:var(--accent);font-weight:900;margin-bottom:7px;}
+.speech .text{font-size:15px;line-height:1.55;font-weight:700;}
+.dock{position:absolute;left:28px;bottom:26px;display:flex;gap:10px;align-items:flex-end;}
+.resident-card{width:124px;background:rgba(255,248,234,.92);border:3px solid var(--line);box-shadow:5px 5px 0 rgba(58,42,36,.16);padding:10px;cursor:pointer;}
+.resident-card.active{background:#fff2d3;transform:translateY(-6px);}
+.resident-card .avatar{width:28px;height:28px;border:3px solid var(--line);box-shadow:2px 2px 0 rgba(58,42,36,.18);margin-bottom:8px;}
+.resident-card b{font-size:13px;display:block;}
+.resident-card span{font-size:11px;color:#725f55;line-height:1.4;display:block;margin-top:4px;}
+.legend{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);background:rgba(250,247,242,.88);border:3px solid var(--line);box-shadow:5px 5px 0 rgba(58,42,36,.16);padding:9px 12px;font-size:12px;font-weight:800;color:#5d4b42;white-space:nowrap;}
+@media(max-width:980px){
+  .hud{left:14px;right:14px;top:14px}.brand{min-width:0;width:240px}.actions{flex-direction:column}.status-board{right:14px;bottom:14px;width:300px}.dock{left:14px;right:14px;bottom:14px;overflow-x:auto;padding-bottom:6px}.resident-card{min-width:116px}.legend{display:none}.speech{left:28px;top:118px;width:min(340px,calc(100vw - 56px))}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <main class="stage" aria-label="久久小镇像素画风样张">
+    <canvas id="town"></canvas>
+    <section class="hud">
+      <div class="brand">
+        <h1>久久小镇</h1>
+        <p>一个会运转、会交付、会记住评价的 AI 居民小镇。</p>
+      </div>
+      <div class="actions">
+        <button class="pixel-btn primary" id="btnTask">发布悬赏</button>
+        <button class="pixel-btn" id="btnRate">评价交付</button>
+        <button class="pixel-btn" id="btnNight">切换时辰</button>
+      </div>
+    </section>
+
+    <aside class="speech" id="speech">
+      <div class="who">北北守护灵</div>
+      <div class="text" id="speechText">久久，阿画把新海报送到市政厅了。你给一句评价，她下次会真的记住。</div>
+    </aside>
+
+    <aside class="status-board">
+      <div class="status-title">今日小镇</div>
+      <div class="quest"><i class="dot red"></i><div><b>1 件交付待评分</b><span>阿画正在市政厅门口等你看作品。</span></div></div>
+      <div class="quest"><i class="dot gold"></i><div><b>1 份奏折待批</b><span>芝士发现“探索”和“悬赏”的边界还可以更清楚。</span></div></div>
+      <div class="quest"><i class="dot green"></i><div><b>3 位居民在工作</b><span>工坊亮灯时，代表居民真的进入工作状态。</span></div></div>
+    </aside>
+
+    <nav class="dock" aria-label="居民状态">
+      <div class="resident-card active" data-focus="ahua"><div class="avatar" style="background:#d87a5f"></div><b>阿画</b><span>抱着作品等评价</span></div>
+      <div class="resident-card" data-focus="xiaowen"><div class="avatar" style="background:#65a094"></div><b>小文</b><span>在公告栏改标题</span></div>
+      <div class="resident-card" data-focus="acheng"><div class="avatar" style="background:#6f936d"></div><b>阿程</b><span>工程屋跑测试</span></div>
+      <div class="resident-card" data-focus="zhishi"><div class="avatar" style="background:#d6a645"></div><b>芝士</b><span>带着便签巡逻</span></div>
+      <div class="resident-card" data-focus="beibei"><div class="avatar" style="background:#c4553b"></div><b>北北</b><span>守在灯塔旁</span></div>
+    </nav>
+    <div class="legend">建筑亮灯 = 正在工作　发光信件 = 等你处理　作品上墙 = 成长沉淀</div>
+  </main>
+</div>
+<script>
+const canvas = document.getElementById('town');
+const ctx = canvas.getContext('2d');
+let W = 0, H = 0, DPR = 1, tick = 0, night = false, focus = 'ahua';
+const px = n => Math.round(n);
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=canvas.clientWidth;H=canvas.clientHeight;canvas.width=px(W*DPR);canvas.height=px(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);}
+window.addEventListener('resize',resize);resize();
+const colors={line:'#3a2a24',paper:'#faf7f2',cream:'#fff8ea',grass:'#8fb083',grass2:'#6f9b6e',soil:'#8d6b52',road:'#d6bf9d',accent:'#c4553b',gold:'#d6a645',blue:'#5d8c9c'};
+const residents=[
+  {id:'ahua',name:'阿画',c:'#d87a5f',x:.37,y:.58,tx:.50,ty:.62,home:'studio',item:'poster',mood:'wait'},
+  {id:'xiaowen',name:'小文',c:'#65a094',x:.66,y:.42,tx:.68,ty:.42,home:'writer',item:'paper',mood:'work'},
+  {id:'acheng',name:'阿程',c:'#6f936d',x:.74,y:.66,tx:.74,ty:.66,home:'engineer',item:'tool',mood:'work'},
+  {id:'zhishi',name:'芝士',c:'#d6a645',x:.28,y:.43,tx:.42,ty:.48,home:'pm',item:'note',mood:'walk'},
+  {id:'beibei',name:'北北',c:'#c4553b',x:.22,y:.34,tx:.22,ty:.34,home:'tower',item:'light',mood:'watch'}
+];
+const buildings=[
+  {id:'studio',name:'设计工坊',x:.18,y:.56,w:150,h:116,c:'#d87a5f',lit:true,sign:'画'},
+  {id:'writer',name:'文案间',x:.64,y:.30,w:138,h:108,c:'#65a094',lit:true,sign:'文'},
+  {id:'hall',name:'市政厅',x:.43,y:.50,w:174,h:132,c:'#d6a645',lit:true,sign:'厅'},
+  {id:'review',name:'审核室',x:.52,y:.25,w:132,h:104,c:'#8b879b',lit:false,sign:'审'},
+  {id:'engineer',name:'工程屋',x:.72,y:.61,w:150,h:112,c:'#6f936d',lit:true,sign:'程'},
+  {id:'pm',name:'产品屋',x:.25,y:.31,w:132,h:104,c:'#d0a860',lit:false,sign:'芝'},
+  {id:'tower',name:'北北灯塔',x:.12,y:.26,w:102,h:154,c:'#c4553b',lit:true,sign:'北'},
+  {id:'gallery',name:'作品长廊',x:.43,y:.73,w:200,h:92,c:'#b88964',lit:true,sign:'展'}
+];
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(px(x),px(y),px(w),px(h));}
+function strokeRect(x,y,w,h,c=colors.line,l=3){ctx.strokeStyle=c;ctx.lineWidth=l;ctx.strokeRect(px(x)+.5,px(y)+.5,px(w),px(h));}
+function text(t,x,y,size=12,c=colors.line,align='center',weight='800'){ctx.fillStyle=c;ctx.font=`${weight} ${size}px Microsoft YaHei, sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(t,px(x),px(y));}
+function drawGround(){
+  rect(0,0,W,H,night?'#2f3544':'#efe4d2');
+  const horizon=H*.18;
+  rect(0,horizon,W,H-horizon,night?'#536b63':'#8fb083');
+  for(let y=horizon;y<H;y+=18){for(let x=(Math.floor(y/18)%2)*9;x<W;x+=18){rect(x,y,8,8,night?'rgba(117,145,122,.22)':'rgba(250,247,242,.18)');}}
+  const road=night?'#9f856f':'#d6bf9d';
+  ctx.strokeStyle=road;ctx.lineWidth=34;ctx.lineCap='square';
+  ctx.beginPath();ctx.moveTo(W*.50,H*.61);ctx.lineTo(W*.50,H*.43);ctx.lineTo(W*.68,H*.36);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(W*.50,H*.61);ctx.lineTo(W*.26,H*.62);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(W*.50,H*.61);ctx.lineTo(W*.78,H*.68);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(W*.50,H*.61);ctx.lineTo(W*.52,H*.78);ctx.stroke();
+  ctx.strokeStyle=colors.line;ctx.lineWidth=3;ctx.setLineDash([9,9]);
+  ctx.beginPath();ctx.moveTo(W*.50,H*.61);ctx.lineTo(W*.50,H*.43);ctx.stroke();ctx.setLineDash([]);
+  for(let i=0;i<22;i++){const x=(i*83+tick*.05)%W;const y=horizon+32+(i*47%(H-horizon-80));drawTree(x,y,0.8+(i%3)*.16)}
+}
+function drawTree(x,y,s=1){
+  rect(x-6*s,y-2*s,12*s,16*s,night?'#4b3324':'#7a5238');
+  rect(x-18*s,y-24*s,36*s,24*s,night?'#405d45':'#5f8a62');
+  rect(x-12*s,y-36*s,24*s,18*s,night?'#527155':'#7ba88b');
+  rect(x-24*s,y-17*s,12*s,12*s,night?'#47684d':'#719f72');
+  rect(x+12*s,y-18*s,12*s,12*s,night?'#47684d':'#719f72');
+}
+function drawBuilding(b){
+  const x=W*b.x,y=H*b.y,w=b.w,h=b.h;
+  rect(x+10,y+24,w-20,h-24,night?'#5a504b':colors.cream);strokeRect(x+10,y+24,w-20,h-24);
+  rect(x+22,y+42,w-44,h-44,b.c);strokeRect(x+22,y+42,w-44,h-44,colors.line,2);
+  ctx.fillStyle=b.c;ctx.beginPath();ctx.moveTo(x+2,y+26);ctx.lineTo(x+w/2,y);ctx.lineTo(x+w-2,y+26);ctx.closePath();ctx.fill();ctx.strokeStyle=colors.line;ctx.lineWidth=3;ctx.stroke();
+  for(let i=0;i<3;i++){const wx=x+34+i*(w-68)/2;const lit=b.lit&&(Math.sin(tick*.08+i)>-.4);rect(wx,y+55,18,18,lit?'#ffe18a':'#6d5b51');strokeRect(wx,y+55,18,18,colors.line,2)}
+  rect(x+w/2-14,y+h-28,28,28,night?'#5a4036':'#8d6b52');strokeRect(x+w/2-14,y+h-28,28,28,colors.line,2);
+  rect(x+w-42,y+8,28,24,colors.cream);strokeRect(x+w-42,y+8,28,24,colors.line,2);text(b.sign,x+w-28,y+21,13,colors.line);
+  text(b.name,x+w/2,y+h+18,12,night?'#f7ead5':colors.line);
+  if(b.id==='hall'){drawMail(x+w-20,y+34);drawPackage(x+24,y+h-24,'#d87a5f')}
+  if(b.id==='gallery'){for(let i=0;i<4;i++)drawTinyPoster(x+24+i*40,y+38,i)}
+  if(b.id==='tower'){drawBeacon(x+w/2,y-10)}
+}
+function drawMail(x,y){const pulse=2+Math.sin(tick*.1)*2;rect(x-pulse,y-pulse,34+pulse*2,26+pulse*2,'rgba(196,85,59,.18)');rect(x,y,34,26,'#fff8ea');strokeRect(x,y,34,26,colors.line,2);ctx.strokeStyle=colors.accent;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+2,y+3);ctx.lineTo(x+17,y+15);ctx.lineTo(x+32,y+3);ctx.stroke();}
+function drawPackage(x,y,c){rect(x,y,28,24,c);strokeRect(x,y,28,24,colors.line,2);ctx.strokeStyle=colors.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+14,y);ctx.lineTo(x+14,y+24);ctx.moveTo(x,y+9);ctx.lineTo(x+28,y+9);ctx.stroke();}
+function drawTinyPoster(x,y,i){const cs=['#d87a5f','#65a094','#d6a645','#5d8c9c'];rect(x,y,25,34,cs[i]);strokeRect(x,y,25,34,colors.line,2);rect(x+5,y+7,15,4,'#fff8ea');rect(x+5,y+15,10,12,'#fff8ea')}
+function drawBeacon(x,y){const a=.18+Math.sin(tick*.05)*.08;ctx.fillStyle=`rgba(255,225,138,${a})`;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-170,y+90);ctx.lineTo(x+170,y+90);ctx.closePath();ctx.fill();rect(x-14,y,28,22,'#ffe18a');strokeRect(x-14,y,28,22,colors.line,2)}
+function drawResident(r){
+  r.x += (r.tx-r.x)*.012; r.y += (r.ty-r.y)*.012;
+  const bob=Math.sin(tick*.12 + r.x*20)*2;
+  const x=W*r.x,y=H*r.y+bob;
+  rect(x-12,y+15,24,6,'rgba(58,42,36,.25)');
+  rect(x-9,y-8,18,22,r.c);strokeRect(x-9,y-8,18,22,colors.line,2);
+  rect(x-7,y-22,14,14,r.c);strokeRect(x-7,y-22,14,14,colors.line,2);
+  rect(x-4,y-18,3,3,'#fff8ea');rect(x+2,y-18,3,3,'#fff8ea');rect(x-3,y-17,2,2,colors.line);rect(x+3,y-17,2,2,colors.line);
+  const step=Math.sin(tick*.18)>0?1:-1;rect(x-8,y+14,6,8,colors.line);rect(x+2,y+14+step,6,8,colors.line);
+  if(r.item==='poster')drawPackage(x+12,y-8,'#d87a5f');
+  if(r.item==='paper')drawPaper(x+10,y-11);
+  if(r.item==='tool')drawTool(x+10,y-10);
+  if(r.item==='note')drawPaper(x+10,y-11,'#ffe18a');
+  if(r.id===focus){ctx.strokeStyle=colors.accent;ctx.lineWidth=3;ctx.setLineDash([5,4]);ctx.strokeRect(x-18,y-29,36,54);ctx.setLineDash([])}
+  if(r.mood==='work')bubble(x,y-45,'工作中');
+  if(r.mood==='wait')bubble(x,y-45,'等评价');
+  if(r.mood==='watch')bubble(x,y-45,'守护');
+}
+function drawPaper(x,y,c='#fff8ea'){rect(x,y,16,18,c);strokeRect(x,y,16,18,colors.line,2);rect(x+4,y+5,8,2,colors.line);rect(x+4,y+10,7,2,colors.line)}
+function drawTool(x,y){ctx.strokeStyle=colors.line;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+14,y+14);ctx.stroke();rect(x+9,y+10,9,6,'#6f936d');strokeRect(x+9,y+10,9,6,colors.line,2)}
+function bubble(x,y,t){rect(x-28,y-11,56,22,'rgba(255,248,234,.94)');strokeRect(x-28,y-11,56,22,colors.line,2);text(t,x,y,10,colors.line)}
+function drawLifeDetails(){
+  const boardX=W*.37,boardY=H*.41;rect(boardX,boardY,70,52,'#fff8ea');strokeRect(boardX,boardY,70,52);text('公告栏',boardX+35,boardY+12,11);rect(boardX+13,boardY+25,44,6,colors.accent);rect(boardX+13,boardY+36,32,5,colors.line);
+  const pondX=W*.18,pondY=H*.74;rect(pondX,pondY,110,48,'#7fb0bb');strokeRect(pondX,pondY,110,48);for(let i=0;i<5;i++)rect(pondX+15+i*18,pondY+14+Math.sin(tick*.04+i)*5,10,3,'#fff8ea');
+}
+function draw(){tick++;drawGround();buildings.forEach(drawBuilding);drawLifeDetails();residents.forEach(drawResident);requestAnimationFrame(draw)}
+draw();
+function setSpeech(who,text){document.querySelector('.speech .who').textContent=who;document.getElementById('speechText').textContent=text;}
+document.getElementById('btnTask').onclick=()=>{focus='zhishi';residents.find(r=>r.id==='zhishi').tx=.43;residents.find(r=>r.id==='zhishi').ty=.50;setSpeech('芝士','我把这个想法先放进奏折。批准后，它会变成真正的悬赏，而不是散在列表里。')};
+document.getElementById('btnRate').onclick=()=>{focus='ahua';residents.find(r=>r.id==='ahua').mood='work';residents.find(r=>r.id==='ahua').tx=.19;residents.find(r=>r.id==='ahua').ty=.58;setSpeech('阿画','收到这句评价了。我会把这次的构图经验贴到工坊墙上，下次继续变好。')};
+document.getElementById('btnNight').onclick=()=>{night=!night;setSpeech('北北守护灵',night?'天黑了，作品长廊和工坊还亮着。小镇不是页面，它会继续生活。':'天亮了，居民开始各自出门。今天先处理最重要的一件事就好。')};
+document.querySelectorAll('.resident-card').forEach(card=>card.onclick=()=>{document.querySelectorAll('.resident-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');focus=card.dataset.focus;const names={ahua:['阿画','我在等久久看这张作品。评价不是结束，是下一次变好的开始。'],xiaowen:['小文','我把新标题贴到公告栏了，想让小镇一眼就知道今天发生了什么。'],acheng:['阿程','工程屋灯亮着，说明我在跑测试。修好以后，小镇会少一个断点。'],zhishi:['芝士','我在看用户路径。重复的入口要合并，真正重要的动作要浮出来。'],beibei:['北北守护灵','我会守住闭环：任务、交付、评价、成长，一步都不断。']};setSpeech(names[focus][0],names[focus][1]);});
+</script>
+</body>
+</html>
