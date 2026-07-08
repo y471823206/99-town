@@ -179,7 +179,6 @@ body {
     <div class="town-stat">
       <i class="stat-dot"></i><div><span class="dash-label">健康度</span><b class="dash-value" id="stat-health">100</b><span class="dash-hint">待办与反馈压力</span></div>
     </div>
-    <span style="display:none"><b id="stat-tasks">0</b><b id="stat-done">0</b><b id="stat-day">0</b></span>
     <div id="reminder-list" class="reminder-list"></div>
   </aside>
 
@@ -534,17 +533,18 @@ function derivedTownState() {
   return {tasks, quests, suggestions, activeTasks, bountyTasks, exploreIdeas, doneQuests, unratedQuests, ratedQuests, todayDone, pendingSuggestions, health};
 }
 
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 function renderMayorDashboard() {
   const d = derivedTownState();
   const done = d.doneQuests.length;
 
-  document.getElementById('stat-tasks').textContent = d.activeTasks.length;
-  document.getElementById('stat-done').textContent = done;
-  document.getElementById('stat-day').textContent = d.todayDone;
-  document.getElementById('stat-pending').textContent = d.activeTasks.length;
-  document.getElementById('stat-unrated').textContent = d.unratedQuests.length;
-  document.getElementById('stat-today-done').textContent = d.todayDone;
-  document.getElementById('stat-health').textContent = d.health;
+  setText('stat-pending', d.activeTasks.length);
+  setText('stat-unrated', d.unratedQuests.length);
+  setText('stat-today-done', d.todayDone);
+  setText('stat-health', d.health);
 
   let advice = '小镇运转顺畅，可以去作品长廊看看新成果。';
   if (d.unratedQuests.length > 0) advice = `有 ${d.unratedQuests.length} 件作品等你评价，居民会根据评价进化。`;
