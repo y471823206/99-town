@@ -16,8 +16,30 @@ DEFAULT_AGENTS = [
     ("reviewer", "审哥", "审核员", "🔍", "#2a9d8f"),
     ("engineer", "阿程", "全栈工程师", "💻", "#457b9d"),
     ("pm", "芝士", "产品经理", "🧀", "#e9c46a"),
+    ("craftsman", "小匠", "技能官", "🛠️", "#8d6e63"),
     ("mayor", "久久", "镇长", "🏛️", "#c4553b"),
 ]
+AGENT_NAMES = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm","小匠":"craftsman"}
+AGENT_KEYWORDS = {
+    "designer": ["设计", "海报", "视觉", "配色", "排版", "绘图", "漫画", "画"],
+    "writer": ["文案", "推文", "日报", "写作", "撰稿", "谐音梗", "晨报", "写"],
+    "reviewer": ["审核", "品质", "检查", "报告", "复盘"],
+    "engineer": ["代码", "bug", "技术", "修复", "架构", "性能", "cron", "调度", "备份", "配置", "TDD", "测试"],
+    "pm": ["产品", "体验", "用户", "需求", "规划", "功能", "积压"],
+    "craftsman": ["技能", "skill", "插件", "能力", "安装", "安全检查", "修复bug", "优化"],
+}
+AGENT_DISPLAY_NAMES = {aid: name for aid, name, *_ in DEFAULT_AGENTS}
+
+def infer_agent_for_text(text):
+    """Infer the owning town resident from explicit names first, then keywords."""
+    text = text or ""
+    for name, aid in AGENT_NAMES.items():
+        if text.startswith(name) or text.startswith("@" + name) or name in text:
+            return aid
+    for aid, keywords in AGENT_KEYWORDS.items():
+        if any(kw in text for kw in keywords):
+            return aid
+    return ""
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS agents (
@@ -139,7 +161,42 @@ def ensure_schema():
             )
         conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_xp','0')")
         conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_gold','0')")
+        # 任务记录以 scores 为事实账本；历史 done 任务若漏写 scores，会在前端消失。
+        # 启动和 /api/state 时补齐，保证以往任务记录可见且 /api/rate 能写入 feedback_log。
+        conn.execute("""
+            INSERT OR IGNORE INTO scores(quest_id,title,agent,agent_name,status,xp,coins,output,completed)
+            SELECT id,title,assignee,assignee_name,status,xp,coins,output,completed
+            FROM tasks
+            WHERE status IN ('done','failed','backlog')
+              AND COALESCE(assignee,'') != ''
+        """)
+        conn.execute("""
+            UPDATE scores
+            SET agent=COALESCE(NULLIF(agent,''), (SELECT tasks.assignee FROM tasks WHERE tasks.id=scores.quest_id)),
+                agent_name=COALESCE(NULLIF(agent_name,''), (SELECT tasks.assignee_name FROM tasks WHERE tasks.id=scores.quest_id)),
+                status=(SELECT tasks.status FROM tasks WHERE tasks.id=scores.quest_id),
+                output=COALESCE(NULLIF((SELECT tasks.output FROM tasks WHERE tasks.id=scores.quest_id),''), output),
+                completed=COALESCE(NULLIF((SELECT tasks.completed FROM tasks WHERE tasks.id=scores.quest_id),''), completed)
+            WHERE EXISTS (SELECT 1 FROM tasks WHERE tasks.id=scores.quest_id AND tasks.status IN ('done','failed','backlog'))
+        """)
+        for row in conn.execute("""
+            SELECT s.quest_id, COALESCE(t.title, s.title, '') AS title
+            FROM scores s
+            LEFT JOIN tasks t ON t.id=s.quest_id
+            WHERE s.status='done' AND COALESCE(s.agent,'')=''
+        """):
+            inferred = infer_agent_for_text(row[1])
+            if inferred:
+                conn.execute(
+                    "UPDATE scores SET agent=?, agent_name=? WHERE quest_id=?",
+                    (inferred, AGENT_DISPLAY_NAMES.get(inferred, ""), row[0]),
+                )
+                conn.execute(
+                    "UPDATE tasks SET assignee=?, assignee_name=? WHERE id=? AND COALESCE(assignee,'')=''",
+                    (inferred, AGENT_DISPLAY_NAMES.get(inferred, ""), row[0]),
+                )
         conn.commit()
+
     finally:
         conn.close()
 
@@ -199,6 +256,7 @@ class TownHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
 
         if path == "/api/state":
+            ensure_schema()
             agents = {a["id"]: {k: a[k] for k in ["name","role","emoji","color","xp","coins","gold","level","equipped_skills","last_decision"]} for a in query("SELECT * FROM agents")}
             agents_d = {a["id"]: a for a in query("SELECT * FROM agents")}
             tasks = query("SELECT * FROM tasks")
@@ -335,32 +393,15 @@ class TownHandler(BaseHTTPRequestHandler):
             title = body.get("title", "").strip()
             if not title: return self._send_json({"error":"empty title"}, 400)
 
-            # Agent 匹配: 1) 人名前缀 2) 关键词 3) 留空
-            agent_names = {"阿画":"designer","小文":"writer","审哥":"reviewer","阿程":"engineer","芝士":"pm"}
-            matched = ""
-            for name, aid in agent_names.items():
-                if title.startswith(name) or title.startswith("@" + name):
-                    matched = aid
-                    break
-            if not matched:
-                agent_map = {
-                    "designer": ["设计","海报","视觉","配色","排版","绘图","漫画","画"],
-                    "writer": ["文案","推文","日报","写作","撰稿","谐音梗","晨报","写"],
-                    "reviewer": ["审核","品质","检查","报告","复盘"],
-                    "engineer": ["代码","bug","技术","修复","架构","性能"],
-                    "pm": ["产品","体验","用户","需求","规划","功能"],
-                }
-                for aid, keywords in agent_map.items():
-                    if any(kw in title for kw in keywords):
-                        matched = aid
-                        break
-
+            # Agent 匹配: 1) 人名前缀/正文提及 2) 关键词 3) 留空
             description = body.get("description", "")
+            matched = infer_agent_for_text(title + " " + description)
+            agent_name = AGENT_DISPLAY_NAMES.get(matched, "")
             tid = new_task_id()
             execute("INSERT INTO tasks(id,title,body,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?,?)",
-                (tid, title, description, matched, "", "pending", 10, 5, now()))
+                (tid, title, description, matched, agent_name, "pending", 10, 5, now()))
             execute("INSERT INTO scores(quest_id,title,agent,agent_name,status,xp,coins) VALUES(?,?,?,?,?,?,?)",
-                (tid, title, matched, "", "pending", 10, 5))
+                (tid, title, matched, agent_name, "pending", 10, 5))
             if matched:
                 execute("INSERT INTO dispatch_queue(task_id,agent,title,time) VALUES(?,?,?,?)",
                     (tid, matched, title, now()))
@@ -402,21 +443,10 @@ class TownHandler(BaseHTTPRequestHandler):
             if action == "approved":
                 # 用奏折实际标题+描述作为任务内容
                 desc = (sugg["title"] + " " + (sugg["description"] or "")).strip()
-                agent_map = {
-                    "designer": ["设计", "海报", "视觉", "配色", "排版", "绘图"],
-                    "writer": ["文案", "推文", "日报", "写作", "撰稿", "谐音梗", "晨报", "检查项"],
-                    "reviewer": ["审核", "品质", "检查", "报告", "复盘"],
-                    "engineer": ["代码", "bug", "技术", "修复", "架构", "性能", "cron", "调度", "备份", "配置"],
-                    "pm": ["产品", "体验", "用户", "需求", "规划", "功能", "积压", "调度"],
-                }
-                matched = ""
-                for aid, keywords in agent_map.items():
-                    if any(kw in desc for kw in keywords):
-                        matched = aid
-                        break
+                matched = infer_agent_for_text(desc)
                 tid = new_task_id()
                 task_title = f"奏折任务: {sugg['title'][:40]}"
-                agent_name = {"designer":"阿画","writer":"小文","reviewer":"审哥","engineer":"阿程","pm":"芝士"}.get(matched, "")
+                agent_name = AGENT_DISPLAY_NAMES.get(matched, "")
                 execute("INSERT INTO tasks(id,title,assignee,assignee_name,status,xp,coins,created) VALUES(?,?,?,?,?,?,?,?)",
                     (tid, task_title, matched, agent_name, "pending", 15, 8, now()))
                 execute("INSERT INTO scores(quest_id,title,agent,agent_name,status,xp,coins) VALUES(?,?,?,?,?,?,?)",
@@ -466,6 +496,12 @@ class TownHandler(BaseHTTPRequestHandler):
                 execute("UPDATE tasks SET output=? WHERE id=?", ("(无产出文件)", tid))
 
             execute("UPDATE tasks SET status='done',completed=? WHERE id=?", (now(), tid))
+            if not task["assignee"]:
+                inferred = infer_agent_for_text((task["title"] or "") + " " + (task.get("body") or ""))
+                if inferred:
+                    task["assignee"] = inferred
+                    task["assignee_name"] = AGENT_DISPLAY_NAMES.get(inferred, "")
+                    execute("UPDATE tasks SET assignee=?,assignee_name=? WHERE id=?", (task["assignee"], task["assignee_name"], tid))
             decisions = []
             if task["assignee"]:
                 execute("UPDATE agents SET xp=xp+?,coins=coins+? WHERE id=?", (task["xp"], task["coins"], task["assignee"]))
