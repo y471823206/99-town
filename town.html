@@ -44,24 +44,27 @@ body {
 }
 .ghost-btn:hover, .pixel-btn:hover, .reminder-action:hover { transform:translate(2px,2px); box-shadow:2px 2px 0 rgba(58,42,36,.22); }
 .pixel-btn.primary { background:var(--accent); color:#fff8ea; }
-.town-speech { position:absolute; left:112px; top:132px; z-index:4; width:350px; padding:14px 15px; }
+.town-speech { position:absolute; left:112px; top:132px; z-index:4; width:360px; padding:16px 16px 14px; }
 .town-speech:after { content:""; position:absolute; left:35px; bottom:-15px; width:18px; height:18px; background:rgba(255,248,234,.96); border-right:3px solid var(--line); border-bottom:3px solid var(--line); transform:rotate(45deg); }
 .guardian-kicker, .status-title, .dash-label { font-size:11px; letter-spacing:2px; color:var(--accent); font-weight:900; }
-.guardian-advice { font-size:15px; line-height:1.55; font-weight:750; margin-top:7px; }
+.guardian-advice { font-size:16px; line-height:1.55; font-weight:850; margin-top:7px; }
+.guardian-primary-action { margin-top:12px; width:100%; background:var(--accent); color:#fff8ea; text-align:center; }
 .town-board { position:absolute; right:28px; bottom:26px; z-index:4; width:340px; padding:15px; }
-.town-stat { display:grid; grid-template-columns:26px 1fr; gap:9px; border-top:2px solid #eadbc8; padding:10px 0; background:transparent; text-align:left; width:100%; }
+.town-board-subtle { opacity:.88; transform:scale(.96); transform-origin:right bottom; }
+.town-stat { display:grid; grid-template-columns:18px 1fr; gap:8px; border-top:2px solid #eadbc8; padding:8px 0; background:transparent; text-align:left; width:100%; }
 .town-stat:first-of-type { border-top:0; padding-top:0; }
-.stat-dot { width:18px; height:18px; border:3px solid var(--line); margin-top:2px; box-shadow:2px 2px 0 rgba(58,42,36,.16); background:var(--amber); }
+.stat-dot { width:13px; height:13px; border:2px solid var(--line); margin-top:4px; box-shadow:1px 1px 0 rgba(58,42,36,.16); background:var(--amber); }
 .stat-dot.red { background:var(--accent); } .stat-dot.green { background:var(--accent-teal); }
-.dash-value { font-size:22px; line-height:1; font-weight:900; color:var(--ink); margin-right:6px; }
-.dash-hint { font-size:12px; color:var(--muted); line-height:1.45; }
+.dash-value { font-size:18px; line-height:1; font-weight:900; color:var(--ink); margin-right:6px; }
+.dash-hint { font-size:11px; color:var(--muted); line-height:1.35; }
 .town-dock { position:absolute; left:28px; bottom:26px; z-index:4; display:flex; gap:10px; align-items:flex-end; }
-.resident-chip { width:128px; padding:10px; cursor:pointer; }
+.resident-chip { width:104px; padding:9px; cursor:pointer; }
 .resident-chip:hover, .resident-chip.active { transform:translateY(-6px); background:#fff2d3; }
 .agent-mini { display:block; }
-.agent-mini .avatar { width:28px; height:28px; border:3px solid var(--line); box-shadow:2px 2px 0 rgba(58,42,36,.18); margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-size:0; }
+.agent-mini .avatar { width:24px; height:24px; border:3px solid var(--line); box-shadow:2px 2px 0 rgba(58,42,36,.18); margin-bottom:7px; display:flex; align-items:center; justify-content:center; font-size:0; }
 .agent-mini .name { font-size:13px; font-weight:900; color:var(--ink); }
-.agent-mini .status { font-size:11px; color:var(--muted); line-height:1.4; white-space:normal; overflow:hidden; display:block; margin-top:4px; }
+.agent-mini .status { font-size:11px; color:var(--muted); line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-top:4px; }
+.agent-mini .status-detail { display:none; }
 .agent-mini .score { display:none; }
 .town-log { position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:4; width:min(420px,32vw); padding:10px 12px; font-size:12px; max-height:74px; overflow:hidden; }
 .log-feed { font-size:12px; line-height:1.55; color:#5d4b42; }
@@ -110,7 +113,9 @@ body {
 .pub-form input { flex:1; background:#fffdf8; border:2px solid var(--line); padding:10px 14px; color:var(--ink); font-size:14px; outline:none; }
 .pub-form input:focus { border-color:var(--accent); }
 .pub-form button { background:var(--accent); color:#fff8ea; border:2px solid var(--line); padding:10px 20px; font-weight:800; cursor:pointer; font-size:14px; }
-.building-tip { position:absolute; display:none; background:var(--panel); border:2px solid var(--line); padding:8px 14px; font-size:13px; pointer-events:none; z-index:50; }
+.building-tip { position:absolute; display:none; background:var(--panel); border:2px solid var(--line); box-shadow:4px 4px 0 rgba(58,42,36,.18); padding:8px 12px; font-size:13px; pointer-events:none; z-index:50; max-width:190px; }
+.building-tip b { display:block; font-size:13px; color:var(--ink); margin-bottom:3px; }
+.building-tip span { display:block; font-size:11px; color:var(--muted); line-height:1.35; }
 .rate-btns { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
 .rate-btn { padding:5px 12px; border:2px solid var(--line); background:#fffdf8; color:var(--ink); cursor:pointer; font-size:12px; transition:all 0.2s; }
 .rate-btn:hover { background:#fff2d3; }
@@ -163,9 +168,10 @@ body {
   <aside class="pixel-panel town-speech" aria-label="北北提醒">
     <div class="guardian-kicker">北北守护灵</div>
     <div class="guardian-advice" id="guardian-advice">正在观察小镇...</div>
+    <button class="reminder-action guardian-primary-action" id="guardian-primary-action" onclick="openTownHall()">看看待办</button>
   </aside>
 
-  <aside class="pixel-panel town-board" aria-label="今日小镇">
+  <aside class="pixel-panel town-board town-board-subtle" aria-label="今日小镇">
     <div class="status-title">今日小镇</div>
     <div class="town-stat">
       <i class="stat-dot red"></i><div><span class="dash-label">待处理</span><b class="dash-value" id="stat-pending">0</b><span class="dash-hint">悬赏与执行队列</span></div>
@@ -185,6 +191,7 @@ body {
   <nav class="town-dock" aria-label="居民状态" id="agent-list"></nav>
   <aside class="pixel-panel town-log" aria-label="小镇日报"><div class="log-feed" id="log-feed"></div></aside>
   <div class="map-legend" id="map-legend"></div>
+  <div class="building-tip" id="building-tip" role="status" aria-live="polite"></div>
 </main>
 
 <!-- Town Hall Modal -->
@@ -551,6 +558,20 @@ function renderMayorDashboard() {
   else if (d.pendingSuggestions.length > 0) advice = `有 ${d.pendingSuggestions.length} 份奏折等你批示，批准后会进入悬赏板。`;
   else if (d.activeTasks.length > 0) advice = `有 ${d.activeTasks.length} 个悬赏正在排队，建议先看悬赏板。`;
   document.getElementById('guardian-advice').textContent = advice;
+  setGuardianPrimaryAction(d);
+}
+
+function setGuardianPrimaryAction(d) {
+  const btn = document.getElementById('guardian-primary-action');
+  if (!btn) return;
+  let label = '看看待办';
+  let tab = 'todo';
+  if (d.unratedQuests.length > 0) { label = `去评分（${d.unratedQuests.length}）`; tab = 'history'; }
+  else if (d.pendingSuggestions.length > 0) { label = `批奏折（${d.pendingSuggestions.length}）`; tab = 'zouzhe'; }
+  else if (d.activeTasks.length > 0) { label = `看悬赏板（${d.activeTasks.length}）`; tab = 'quests'; }
+  else if ((townState.assets || []).length > 0) { label = '逛作品长廊'; tab = 'gallery'; }
+  btn.textContent = label;
+  btn.onclick = () => tab === 'gallery' ? openGallery() : openTownHallTab(tab);
 }
 
 function renderSidebar() {
@@ -567,15 +588,14 @@ function renderSidebar() {
     const sc = scores[a.id] || {};
     const processing = tasks.find(t => t.assignee === a.id && t.status === 'processing');
     const pendingFeedback = quests.find(q => q.agent === a.id && q.status === 'done' && !q.rating);
-    const recent = processing || tasks.find(t => t.assignee === a.id && t.status === 'pending') || tasks.find(t => t.assignee === a.id && t.status === 'done');
-    const status = processing ? `处理中：${processing.title.slice(0,16)}…` : pendingFeedback ? '需要评价反馈' : (a.role || '待命中');
+    const status = processing ? '工作中' : pendingFeedback ? '等评价' : (a.role || '待命中');
     const isMayor = a.id === 'mayor';
     return `<div class="agent-mini resident-chip ${activeAgentId === a.id ? 'active' : ''}" onclick="clickAgent('${a.id}')">
           <div class="avatar" style="background:${a.color}">${a.emoji}</div>
       <div class="info">
-        <div class="name">${a.name} ${isMayor?'👑':''}</div>
+        <div class="name">${a.name}${isMayor?' · 守护':''}</div>
         <div class="status">${status}</div>
-        <div class="status">积分 ${sc.xp || 0} · Lv.${sc.level || 1}${recent ? ' · 最近：' + recent.title.slice(0,12) + '…' : ''}</div>
+        <div class="status status-detail">Lv.${sc.level || 1}</div>
       </div>
       <div class="score">${sc.xp || 0}</div>
     </div>`;
@@ -846,6 +866,26 @@ function openBuilding(b) {
   else if (b.id === 'tower' || b.id === 'pm') openTownHallTab('zouzhe');
   else if (b.agent) clickAgent(b.agent);
 }
+function hoverAction(b) {
+  if (!b) return '';
+  if (b.id === 'townhall') return '打开待办，处理评分、奏折和悬赏';
+  if (b.id === 'gallery') return '查看已沉淀作品';
+  if (b.id === 'craftsman') return '查看成长与智库';
+  if (b.id === 'tower' || b.id === 'pm') return '查看奏折与治理建议';
+  return '查看居民状态';
+}
+function showBuildingTip(b, e) {
+  const tip = document.getElementById('building-tip');
+  if (!tip || !b) return;
+  tip.innerHTML = `<b>${b.name}</b><span>${hoverAction(b)}</span>`;
+  tip.style.display = 'block';
+  tip.style.left = Math.min(window.innerWidth - 220, e.clientX + 14) + 'px';
+  tip.style.top = Math.max(18, e.clientY - 12) + 'px';
+}
+function hideBuildingTip() {
+  const tip = document.getElementById('building-tip');
+  if (tip) tip.style.display = 'none';
+}
 canvas.addEventListener('click', e => {
   const {x:mx, y:my} = eventPoint(e);
   const b = hitBuilding(mx, my);
@@ -857,10 +897,14 @@ canvas.addEventListener('click', e => {
 
 canvas.addEventListener('mousemove', e => {
   const {x:mx, y:my} = eventPoint(e);
-  let cursor = hitBuilding(mx, my) ? 'pointer' : 'default';
+  const b = hitBuilding(mx, my);
+  let cursor = b ? 'pointer' : 'default';
+  if (b) showBuildingTip(b, e);
+  else hideBuildingTip();
   for (const a of agents) if (Math.abs(mx-a.x) < 18 && Math.abs(my-a.y) < 28) cursor = 'pointer';
   canvas.style.cursor = cursor;
 });
+canvas.addEventListener('mouseleave', hideBuildingTip);
 
 // ============================================================
 // Game loop
