@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>作品长廊 | 久久光合社</title>
+<style>
+:root {
+  --paper: #f4efe7;
+  --ink: #191512;
+  --muted: #746a60;
+  --line: #d6cbbb;
+  --panel: #fffaf1;
+  --accent: #b64f3b;
+  --moss: #65765b;
+  --blue: #3f6f91;
+  --shadow: 0 18px 46px rgba(35, 25, 16, 0.16);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgba(25,21,18,0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(25,21,18,0.035) 1px, transparent 1px),
+    var(--paper);
+  background-size: 44px 44px;
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+}
+button { font: inherit; }
+.shell { width: min(1220px, calc(100vw - 40px)); margin: 0 auto; }
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: grid; gap: 4px; }
+.brand-name { font-size: 17px; font-weight: 900; }
+.brand-sub { color: var(--muted); font-size: 12px; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-bottom: 2px solid transparent;
+}
+.nav a.active { color: var(--ink); border-color: var(--ink); }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  gap: 28px;
+  min-height: calc(100vh - 86px);
+  padding: 34px 0 28px;
+  align-items: stretch;
+}
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 560px;
+  padding: 8px 0 10px;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(46px, 7vw, 96px);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+.lead {
+  max-width: 520px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.95;
+}
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 36px;
+}
+.stat {
+  border-top: 2px solid var(--ink);
+  padding-top: 11px;
+}
+.stat strong { display: block; font-size: 30px; line-height: 1; }
+.stat span { color: var(--muted); font-size: 12px; }
+.curator-note {
+  margin-top: 36px;
+  padding-left: 16px;
+  border-left: 3px solid var(--moss);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.feature {
+  position: relative;
+  min-height: 560px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.24)),
+    #eee8db;
+  border: 1px solid rgba(25,21,18,0.18);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.feature iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  padding: 34px 0 18px;
+  border-top: 1px solid var(--line);
+}
+.section-head h2 { margin: 0; font-size: 26px; letter-spacing: 0; }
+.section-head p { margin: 0; max-width: 520px; color: var(--muted); line-height: 1.8; font-size: 14px; }
+.filters {
+  display: flex;
+  gap: 8px;
+  overflow: auto;
+  padding: 0 0 18px;
+  scrollbar-width: thin;
+}
+.chip {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: rgba(255,250,241,0.58);
+  color: var(--muted);
+  padding: 9px 13px;
+  cursor: pointer;
+}
+.chip.active {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  padding-bottom: 56px;
+}
+.work {
+  grid-column: span 4;
+  min-height: 430px;
+  border: 1px solid rgba(25,21,18,0.16);
+  background: var(--panel);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+.work:nth-child(6n + 1),
+.work:nth-child(6n + 4) { grid-column: span 7; }
+.work:nth-child(6n + 2),
+.work:nth-child(6n + 5) { grid-column: span 5; }
+.work:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(35, 25, 16, 0.13);
+  border-color: rgba(25,21,18,0.32);
+}
+.thumb {
+  position: relative;
+  height: 310px;
+  background: #fff;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(25,21,18,0.12);
+}
+.thumb iframe {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1200px;
+  height: 820px;
+  border: 0;
+  background: #fff;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.34);
+  transform-origin: center;
+}
+.work-body {
+  display: grid;
+  gap: 10px;
+  padding: 15px 16px 17px;
+  flex: 1;
+}
+.work-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.resident {
+  color: var(--blue);
+  font-weight: 800;
+}
+.work h3 {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.28;
+  letter-spacing: 0;
+}
+.work p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+.empty {
+  display: none;
+  color: var(--muted);
+  background: rgba(255,250,241,0.68);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin-bottom: 56px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 20;
+  background: rgba(17,14,12,0.78);
+}
+.modal.opened {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+}
+.modal-side {
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+  padding: 22px;
+  overflow: auto;
+}
+.close {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 9px 12px;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+.modal-side h2 { margin: 0; font-size: 30px; line-height: 1.2; letter-spacing: 0; }
+.modal-side p { color: var(--muted); line-height: 1.9; }
+.modal-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.pill {
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: rgba(255,250,241,0.75);
+  padding: 5px 8px;
+  font-size: 12px;
+}
+.modal-frame { background: #fff; min-width: 0; }
+.modal-frame iframe { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
+@media (max-width: 980px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-copy { min-height: auto; }
+  .feature { min-height: 520px; }
+  .work,
+  .work:nth-child(n) { grid-column: span 6; }
+}
+@media (max-width: 680px) {
+  .shell { width: min(100% - 28px, 1220px); }
+  .topbar { align-items: flex-start; flex-direction: column; }
+  .hero { padding-top: 24px; }
+  .hero-meta { grid-template-columns: 1fr; }
+  .feature { min-height: 420px; }
+  .section-head { align-items: flex-start; flex-direction: column; }
+  .work,
+  .work:nth-child(n) { grid-column: span 12; min-height: 390px; }
+  .thumb { height: 260px; }
+  .thumb iframe { transform: translate(-50%, -50%) scale(0.29); }
+  .modal.opened { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .modal-side { max-height: 42vh; border-right: 0; border-bottom: 1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-name">久久光合社</div>
+      <div class="brand-sub">和 AI 居民一起，收藏灵感发光的时刻</div>
+    </div>
+    <nav class="nav" aria-label="主导航">
+      <a class="active" href="gallery.html">作品长廊</a>
+      <a href="/">久久小镇</a>
+      <a href="docs/IA-DATA-MODEL.md">天机阁</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <div>
+        <h1>作品<br>长廊</h1>
+        <p class="lead">这里收藏久久和小镇居民一起完成的作品。有猫，有晚风，有方法，也有慢慢长出来的生活方式。</p>
+        <div class="curator-note" id="curatorNote">今日这一页，来自小镇的夜风、月亮和一只坐在屋顶上的猫。</div>
+      </div>
+      <div class="hero-meta">
+        <div class="stat"><strong id="statWorks">0</strong><span>精选作品</span></div>
+        <div class="stat"><strong id="statCats">0</strong><span>展览主题</span></div>
+        <div class="stat"><strong id="statResidents">0</strong><span>创作居民</span></div>
+      </div>
+    </div>
+    <article class="feature" id="feature" aria-label="主展品">
+      <iframe id="featureFrame" title="主展品预览" scrolling="no"></iframe>
+    </article>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>展墙</h2>
+      </div>
+      <p>有些作品适合远远看，有些适合慢慢读。长廊会把它们安放在各自舒服的位置。</p>
+    </div>
+    <div class="filters" id="filters" aria-label="作品主题筛选"></div>
+    <main class="gallery" id="gallery"></main>
+    <div class="empty" id="empty">这一面墙还空着，等下一阵风把新作品吹来。</div>
+  </section>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="作品预览">
+  <aside class="modal-side">
+    <button class="close" onclick="closeWork()">关闭预览</button>
+    <h2 id="modalTitle"></h2>
+    <div class="modal-meta" id="modalMeta"></div>
+    <p id="modalNote"></p>
+  </aside>
+  <div class="modal-frame">
+    <iframe id="modalFrame" title="作品预览"></iframe>
+  </div>
+</div>
+
+<script>
+const fallbackWorks = [
+  {
+    id: "work_color_palette",
+    title: "苔隐配色体系",
+    file_path: "town_output/color_palette.html",
+    work_type: "experiment",
+    gallery_category: "图片",
+    gallery_subcategory: "光合视觉",
+    primary_resident: "阿画",
+    tags: ["视觉体系", "配色", "小镇美学", "设计方法"],
+    curator_note: "小镇视觉体系探索，适合作为久久光合社的设计方法资产。"
+  }
+];
+
+let works = [];
+let activeCategory = "全部";
+
+function uniq(items) {
+  return [...new Set(items)].filter(Boolean);
+}
+
+function outputUrl(filePath) {
+  return "/outputs/" + encodeURIComponent(filePath.replace(/^town_output[\\/]/, ""));
+}
+
+function assetUrl(filePath) {
+  return "/outputs/" + encodeURIComponent(filePath.replace(/^town_output[\\/]/, ""));
+}
+
+function escapeAttr(value) {
+  return String(value || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
+function currentWorks() {
+  return works.filter(work => activeCategory === "全部" || work.gallery_category === activeCategory);
+}
+
+function approvedWorks() {
+  const explicitlyApproved = works.filter(work => work.review_status === "approved");
+  return explicitlyApproved.length ? explicitlyApproved : works;
+}
+
+function reviewTime(work) {
+  return Date.parse(work.reviewed_at || work.published_at || work.created_at || "") || 0;
+}
+
+function calendarTime(work) {
+  return Date.parse(work.calendar_date || work.reviewed_at || "") || 0;
+}
+
+function formatReviewDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+}
+
+function chooseFeature() {
+  const calendars = approvedWorks().filter(work => work.series_id === "town_calendar");
+  if (calendars.length) {
+    return [...calendars].sort((a, b) => calendarTime(b) - calendarTime(a) || reviewTime(b) - reviewTime(a))[0];
+  }
+  return [...approvedWorks()].sort((a, b) => reviewTime(b) - reviewTime(a))[0]
+    || works[0];
+}
+
+function renderStats() {
+  document.getElementById("statWorks").textContent = works.length;
+  document.getElementById("statCats").textContent = uniq(works.map(w => w.gallery_subcategory || w.gallery_category)).length;
+  document.getElementById("statResidents").textContent = uniq(works.map(w => w.primary_resident)).length;
+}
+
+function renderFeature() {
+  const work = chooseFeature();
+  if (!work) return;
+  const frame = document.getElementById("featureFrame");
+  frame.src = outputUrl(work.file_path);
+  frame.onload = () => {
+    try {
+      const doc = frame.contentDocument;
+      const style = doc.createElement("style");
+      style.textContent = `
+        html, body {
+          overflow: hidden !important;
+          background: transparent !important;
+        }
+        body {
+          padding: 0 !important;
+          min-height: 100vh !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+      `;
+      doc.head.appendChild(style);
+    } catch (error) {
+      // Same-origin town outputs should be editable; ignore if a future source is not.
+    }
+  };
+  document.getElementById("feature").onclick = () => openWork(work.id);
+}
+
+function renderFilters() {
+  const filters = document.getElementById("filters");
+  const categories = ["全部", ...uniq(works.map(w => w.gallery_category))];
+  filters.innerHTML = categories.map(category => `
+    <button class="chip${category === activeCategory ? " active" : ""}" onclick="setCategory('${escapeAttr(category)}')">${category}</button>
+  `).join("");
+}
+
+function setCategory(category) {
+  activeCategory = category;
+  render();
+}
+
+function renderCards() {
+  const gallery = document.getElementById("gallery");
+  const filtered = currentWorks();
+  document.getElementById("empty").style.display = filtered.length ? "none" : "block";
+  gallery.innerHTML = filtered.map(work => `
+    <article class="work" onclick="openWork('${escapeAttr(work.id)}')" tabindex="0" onkeydown="openFromKeyboard(event, '${escapeAttr(work.id)}')">
+      <div class="thumb"><iframe src="${outputUrl(work.file_path)}" title="${escapeAttr(work.title)}缩略预览" loading="lazy"></iframe></div>
+      <div class="work-body">
+        <div class="work-top">
+          <span>${work.gallery_category || ""} / ${work.gallery_subcategory || ""}</span>
+          <span class="resident">${work.primary_resident || ""}</span>
+        </div>
+        <h3>${work.title}</h3>
+        <p>${work.curator_note || ""}</p>
+      </div>
+    </article>
+  `).join("");
+}
+
+function openFromKeyboard(event, id) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openWork(id);
+  }
+}
+
+function openWork(id) {
+  const work = works.find(item => item.id === id);
+  if (!work) return;
+  document.getElementById("modalTitle").textContent = work.title;
+  document.getElementById("modalNote").textContent = work.curator_note || "";
+  document.getElementById("modalMeta").innerHTML = `
+    <span class="pill">${work.gallery_category || ""}</span>
+    <span class="pill">${work.gallery_subcategory || ""}</span>
+    <span class="pill">${work.primary_resident || ""}</span>
+  `;
+  document.getElementById("modalFrame").src = outputUrl(work.file_path);
+  document.getElementById("modal").classList.add("opened");
+}
+
+function closeWork() {
+  document.getElementById("modal").classList.remove("opened");
+  document.getElementById("modalFrame").src = "about:blank";
+}
+
+function render() {
+  renderStats();
+  renderFeature();
+  renderFilters();
+  renderCards();
+}
+
+async function loadCuratedWorks() {
+  try {
+    const response = await fetch("/docs/curation/featured-works.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    works = Array.isArray(data.works) ? data.works : fallbackWorks;
+  } catch (error) {
+    console.warn("使用页面内置作品数据作为兜底", error);
+    works = fallbackWorks;
+  }
+}
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeWork();
+});
+
+loadCuratedWorks().finally(render);
+</script>
+</body>
+</html>

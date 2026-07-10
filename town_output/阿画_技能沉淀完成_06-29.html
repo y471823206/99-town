@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阿画技能沉淀 · 已毕</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Ma+Shan+Zheng&display=swap');
+
+  :root {
+    --paper: #faf7f2;
+    --ink: #1a1a1a;
+    --clay: #c4553b;
+    --gold: #b8860b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ede8df;
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .scroll {
+    max-width: 640px;
+    width: 100%;
+    background: var(--paper);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.10);
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+  }
+
+  .scroll::before {
+    content: '';
+    position: absolute;
+    top: 14px; left: 14px; right: 14px; bottom: 14px;
+    border: 1.5px solid rgba(196,85,59,0.10);
+    pointer-events: none;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--clay);
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    line-height: 58px;
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.4rem;
+    color: var(--clay);
+    transform: rotate(-8deg);
+    margin-bottom: 1.2rem;
+    opacity: 0.8;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.4rem;
+  }
+
+  .header .date {
+    font-size: 0.72rem;
+    color: rgba(26,26,26,0.35);
+    letter-spacing: 0.25em;
+  }
+
+  .divider {
+    border: none;
+    border-top: 2px double var(--ink);
+    margin: 2rem 0;
+    opacity: 0.45;
+  }
+
+  .section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--clay);
+    margin-bottom: 1.2rem;
+  }
+
+  /* Skill cards */
+  .skill-card {
+    border: 1px solid rgba(26,26,26,0.10);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    position: relative;
+    transition: all 0.2s;
+    background: rgba(250,247,242,0.6);
+  }
+
+  .skill-card:hover {
+    border-color: var(--clay);
+    box-shadow: 2px 2px 0 rgba(196,85,59,0.06);
+  }
+
+  .skill-card .name {
+    font-weight: 700;
+    font-size: 0.92rem;
+    margin-bottom: 4px;
+  }
+
+  .skill-card .desc {
+    font-size: 0.72rem;
+    color: rgba(26,26,26,0.50);
+    line-height: 1.6;
+  }
+
+  .skill-card .version {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    font-size: 0.58rem;
+    color: rgba(26,26,26,0.25);
+    letter-spacing: 0.15em;
+  }
+
+  .skill-card .tag {
+    display: inline-block;
+    font-size: 0.58rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(196,85,59,0.08);
+    color: var(--clay);
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+  }
+
+  /* Lessons */
+  .lesson {
+    border-left: 3px solid var(--clay);
+    padding: 10px 16px;
+    margin-bottom: 10px;
+    background: rgba(196,85,59,0.03);
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: rgba(26,26,26,0.75);
+  }
+
+  .lesson .star {
+    color: var(--clay);
+    margin-right: 6px;
+  }
+
+  /* Stats */
+  .stat-bar {
+    display: flex;
+    gap: 16px;
+    margin: 1.5rem 0;
+  }
+
+  .stat {
+    flex: 1;
+    text-align: center;
+    padding: 14px 8px;
+    border: 1px solid rgba(26,26,26,0.08);
+    border-radius: 4px;
+  }
+
+  .stat .num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--clay);
+    line-height: 1;
+  }
+
+  .stat .label {
+    font-size: 0.6rem;
+    color: rgba(26,26,26,0.35);
+    letter-spacing: 0.2em;
+    margin-top: 5px;
+  }
+
+  .signature {
+    text-align: right;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(26,26,26,0.08);
+  }
+
+  .signature .name {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.1rem;
+    color: var(--clay);
+    letter-spacing: 0.2em;
+  }
+
+  .signature .time {
+    font-size: 0.65rem;
+    color: rgba(26,26,26,0.30);
+    margin-top: 4px;
+  }
+
+  .cat-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.65rem;
+    color: rgba(26,26,26,0.20);
+    letter-spacing: 0.3em;
+  }
+
+  @media (max-width: 500px) {
+    .scroll { padding: 2rem 1.5rem 1.8rem; }
+    .stat-bar { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+  <div class="scroll">
+    <div class="header">
+      <div class="stamp">已毕</div>
+      <h1>阿画技能沉淀</h1>
+      <div class="date">永和元年 · 陆月廿九 · 亥时</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-title">✦ 技能档案</div>
+
+    <div class="skill-card">
+      <div class="version">v1.4.0</div>
+      <div class="name">ahua-design-lessons</div>
+      <div class="desc">阿画的设计心得——来自久久评价的反馈和成长记录。包含两种四格漫画已验证模板（1×4横排和2×2田字）。</div>
+      <span class="tag">四格漫画</span>
+      <span class="tag">模板验证</span>
+      <span class="tag">合规自检</span>
+    </div>
+
+    <div class="skill-card">
+      <div class="version">v1.0.0</div>
+      <div class="name">comic-4panel-template</div>
+      <div class="desc">两种已验证四格漫画模板——格式一 1×4 横排叙事型、格式二 2×2 田字对比型。含完整 CSS 规范和气泡定位规则。</div>
+      <span class="tag">CSS 规范</span>
+      <span class="tag">气泡定位</span>
+    </div>
+
+    <div class="skill-card">
+      <div class="version">v1.0.0</div>
+      <div class="name">comic-compliance-checklist</div>
+      <div class="desc">四格漫画逐项自检清单——两种格式共 21 项硬规则，提交前逐条核验，杜绝模板偏离。</div>
+      <span class="tag">质量保障</span>
+      <span class="tag">17 项检查</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-title">✦ 核心教训</div>
+
+    <div class="lesson">
+      <span class="star">★</span> 四格漫画必须用模板——不能自己理解成散文或 typography 作品
+    </div>
+    <div class="lesson">
+      <span class="star">★</span> 模板约束是硬规则，不是建议——overflow、min-height、padding、气泡位置、scene height 必须逐条核对。不遵守 = 退步
+    </div>
+    <div class="lesson">
+      <span class="star">★</span> 对标自己最好的作品——吸猫四格和猫猫海报是审美基准线
+    </div>
+    <div class="lesson">
+      <span class="star">★</span> 根据内容选格式——叙事用 1×4，对比用 2×2
+    </div>
+    <div class="lesson">
+      <span class="star">★</span> 产出前对照合规自检清单逐项确认
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-title">✦ 久久评价记录</div>
+
+    <div class="stat-bar">
+      <div class="stat">
+        <div class="num">2</div>
+        <div class="label">卓 越</div>
+      </div>
+      <div class="stat">
+        <div class="num">1</div>
+        <div class="label">一 般</div>
+      </div>
+      <div class="stat">
+        <div class="num">2</div>
+        <div class="label">不 好</div>
+      </div>
+      <div class="stat">
+        <div class="num">3</div>
+        <div class="label">待 评</div>
+      </div>
+    </div>
+
+    <p style="font-size:0.72rem; line-height:2; color:rgba(26,26,26,0.5); text-align:center; margin-top:1rem;">
+      两度退回重做，方知模板非儿戏。<br>
+      卓越作品永远是下一件。
+    </p>
+
+    <div class="signature">
+      <div class="name">阿画 谨记</div>
+      <div class="time">永和元年陆月廿九 · 亥时</div>
+    </div>
+
+    <div class="cat-footer">
+      🐾 久久小镇 · 阿画 · 纯CSS手绘 🐾
+    </div>
+  </div>
+</body>
+</html>
