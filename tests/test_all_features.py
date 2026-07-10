@@ -460,6 +460,24 @@ def test_frontend_ux_noise_reduction_p0():
     assert "hoverAction" in html, "建筑 hover 标签缺少动作提示"
 
 
+@test("P1视觉层级收敛: 任务记录分层、body折叠、日报固定露出8-12条")
+def test_frontend_p1_visual_hierarchy():
+    html = read_html()
+    assert "P1-VISUAL-HIERARCHY" in html, "缺少P1视觉层级收敛标记"
+    assert "renderTaskBody" in html and "task-body-collapsed" in html, "任务 body 未做两行折叠呈现"
+    assert "task-output-links" in html, "产出链接未单独分层呈现"
+    assert "delivery-pending-rating" in html, "待评分交付未置顶强调"
+    assert "delivery-rated" in html, "已评分完成未降权分层"
+    assert "delivery-exception" in html, "failed/backlog 未作为异常层级保留"
+    assert "sortDeliveriesForVisualHierarchy" in html, "交付/任务记录缺少待评分→已评分→异常排序"
+    assert "LOG_VISIBLE_LIMIT" in html, "小镇日报缺少默认露出条数常量"
+    assert re.search(r"LOG_VISIBLE_LIMIT\s*=\s*(8|9|10|11|12)", html), "小镇日报默认露出条数必须为8-12条"
+    log_css = re.search(r"\.town-log\s*\{([^}]*)\}", html, re.S)
+    assert log_css and "max-height" in log_css.group(1) and "overflow" in log_css.group(1), "小镇日报必须固定高度并隐藏溢出"
+    quest_css = re.search(r"\.quest-item\s*\{([^}]*)\}", html, re.S)
+    assert quest_css and "align-items:flex-start" in quest_css.group(1), "任务记录应按标题/meta/链接纵向分层"
+
+
 @test("小匠技能官: 后端、前端、脚本与技能卡齐备")
 def test_skill_officer_configuration():
     html = read_html()
@@ -598,6 +616,7 @@ if __name__ == "__main__":
         test_frontend_mayor_dashboard,
         test_frontend_no_duplicate_townhall_and_metrics,
         test_frontend_ux_noise_reduction_p0,
+        test_frontend_p1_visual_hierarchy,
         test_skill_officer_configuration,
         test_task_history_healing_in_server,
     ])

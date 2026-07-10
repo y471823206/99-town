@@ -66,7 +66,7 @@ body {
 .agent-mini .status { font-size:11px; color:var(--muted); line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-top:4px; }
 .agent-mini .status-detail { display:none; }
 .agent-mini .score { display:none; }
-.town-log { position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:4; width:min(420px,32vw); padding:10px 12px; font-size:12px; max-height:74px; overflow:hidden; }
+.town-log { position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:4; width:min(420px,32vw); padding:10px 12px; font-size:12px; max-height:150px; overflow:hidden; opacity:.82; }
 .log-feed { font-size:12px; line-height:1.55; color:#5d4b42; }
 .log-feed .entry { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .log-feed .time { color:var(--accent); margin-right:6px; font-weight:800; }
@@ -87,6 +87,9 @@ body {
 .tab:hover { background:#fff2d3; }
 .tab.active { background:var(--accent); color:#fff8ea; }
 .quest-item { padding:12px; margin-bottom:8px; display:flex; gap:12px; align-items:flex-start; border:2px solid rgba(58,42,36,.22); background:rgba(255,253,248,.6); }
+.quest-item.delivery-pending-rating { border-color:var(--accent); background:#fff2d3; box-shadow:4px 4px 0 rgba(196,85,59,.16); }
+.quest-item.delivery-rated { opacity:.82; background:rgba(255,253,248,.48); }
+.quest-item.delivery-exception { border-style:dashed; background:#f1e5d2; }
 .quest-item .q-status { width:10px; height:10px; margin-top:6px; flex-shrink:0; border:2px solid var(--line); }
 .quest-item .q-status.pending { background:var(--muted); }
 .quest-item .q-status.processing { background:var(--accent-teal); animation:pulse 1.5s infinite; }
@@ -96,6 +99,11 @@ body {
 .quest-item .q-title { font-size:14px; font-weight:800; }
 .quest-item .q-agent { font-size:11px; opacity:0.68; margin-top:3px; }
 .quest-item .q-meta { font-size:11px; margin-top:4px; display:flex; gap:12px; color:var(--muted); }
+.quest-item .q-meta-line { font-size:11px; margin-top:4px; color:var(--muted); line-height:1.45; }
+.task-body-collapsed { margin-top:6px; font-size:12px; line-height:1.45; color:var(--muted); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; cursor:pointer; }
+.task-body-collapsed.expanded { display:block; -webkit-line-clamp:unset; overflow:visible; }
+.task-output-links { margin-top:7px; padding-top:6px; border-top:1px solid rgba(58,42,36,.14); }
+.task-output-links a { color:var(--accent-teal); font-size:11px; text-decoration:underline; margin-right:10px; overflow-wrap:anywhere; }
 .quest-item .q-rating { font-size:13px; }
 .quest-item .q-rating.excellent { color:#b78318; }
 .quest-item .q-rating.good { color:#3f8177; }
@@ -240,6 +248,8 @@ body {
 // Town Data
 // ============================================================
 const API = 'http://localhost:8700';
+const VISUAL_HIERARCHY_VERSION = 'P1-VISUAL-HIERARCHY';
+const LOG_VISIBLE_LIMIT = 10;
 let townState = window.__INIT_STATE__ || { tasks: [], agents: {}, quests: [], log: [], scoring_rules: {} };
 
 async function fetchState() {
@@ -518,6 +528,26 @@ function outputsForTask(task) {
   }
   return task.output ? [task.output] : [];
 }
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function renderTaskBody(task) {
+  if (!task || !task.body) return '';
+  return `<div class="task-body-collapsed" title="点击展开完整任务说明" onclick="this.classList.toggle('expanded')">${escapeHtml(task.body)}</div>`;
+}
+function deliveryLayer(q, task) {
+  if (task && (task.status === 'failed' || task.status === 'backlog')) return 'exception';
+  return q && q.rating ? 'rated' : 'pending-rating';
+}
+function sortDeliveriesForVisualHierarchy(items) {
+  const rank = { 'pending-rating': 0, rated: 1, exception: 2 };
+  return items.sort((a, b) => {
+    const ar = rank[a.layer] ?? 3;
+    const br = rank[b.layer] ?? 3;
+    if (ar !== br) return ar - br;
+    return String(b.time || '').localeCompare(String(a.time || ''));
+  });
+}
 function derivedTownState() {
   const tasks = townState.tasks || [];
   const quests = townState.quests || [];
@@ -602,7 +632,7 @@ function renderSidebar() {
   }).join('');
 
   const log = townState.log || [];
-  document.getElementById('log-feed').innerHTML = log.slice(-15).reverse().map(e =>
+  document.getElementById('log-feed').innerHTML = log.slice(-LOG_VISIBLE_LIMIT).reverse().map(e =>
     `<div class="entry"><span class="time">${e.time}</span>${e.agent==='系统'?'':e.agent+'：'}${e.text}</div>`
   ).join('');
 }
@@ -646,9 +676,9 @@ function renderOutputLinks(fileList, assets) {
     // Try assets match first, then /outputs/ fallback
     const asset = assets.find(a => a.file === fname || a.file === f);
     const url = asset ? asset.url : ('/outputs/' + encodeURIComponent(fname));
-    links.push('<a href="' + url + '" target=_blank style="color:var(--accent-teal);font-size:11px;text-decoration:underline;margin-right:10px">' + fname + '</a>');
+    links.push('<a href="' + url + '" target=_blank>' + fname + '</a>');
   }
-  return links.length ? '<div style=\"margin-top:6px\">' + links.join('') + '</div>' : '';
+  return links.length ? '<div class="task-output-links">' + links.join('') + '</div>' : '';
 }
 
 function renderModal() {
@@ -687,43 +717,59 @@ function renderModal() {
       return `<div class="quest-item">
         <div class="q-status ${t.status}"></div>
         <div class="q-info">
-          <div class="q-title">${t.title}</div>
-          <div class="q-agent">${label} · ${ag ? ag.emoji+' '+ag.name : '未分配'} · 积分 ${t.xp || t.base_score || 0}</div>
-          ${t.body ? `<div class="q-meta">${t.body}</div>` : ''}
+          <div class="q-title">${escapeHtml(t.title)}</div>
+          <div class="q-agent">${label} · ${ag ? ag.name : '未分配'} · 积分 ${t.xp || t.base_score || 0}</div>
+          ${renderTaskBody(t)}
         </div>
       </div>`;
     }).join('') || '<p style="opacity:0.4;text-align:center;padding:20px;">暂无活跃悬赏：没有待分配或进行中的镇长任务</p>'}`;
 
   // 交付 / 任务记录：已进入任务生命周期的事实账本，未评分首要动作是评分。
   const failedOrBacklog = tasks.filter(t => t.status === 'failed' || t.status === 'backlog');
-  const doneHtml = d.doneQuests.slice().reverse().map(q => {
+  const deliveryItems = [];
+  d.doneQuests.forEach(q => {
+    const task = taskForQuest(q, taskMap);
+    deliveryItems.push({ kind:'quest', q, task, layer:deliveryLayer(q, task), time:q.completed || task.completed || '' });
+  });
+  failedOrBacklog.forEach(t => deliveryItems.push({ kind:'exception', task:t, layer:'exception', time:t.completed || t.created || '' }));
+  const deliveryHtml = sortDeliveriesForVisualHierarchy(deliveryItems).map(item => {
+    if (item.kind === 'exception') {
+      const t = item.task;
+      return `<div class="quest-item delivery-exception">
+        <div class="q-status pending"></div>
+        <div class="q-info">
+          <div class="q-title">${escapeHtml(t.title)}</div>
+          <div class="q-agent">异常留档 · ${t.status} · 需要回溯处理</div>
+          ${renderTaskBody(t)}
+          ${renderOutputLinks(outputsForTask(t), assets)}
+        </div>
+      </div>`;
+    }
+    const q = item.q;
+    const task = item.task;
     const ag = agents.find(a=>a.id===q.agent);
     const ratingHtml = q.rating
-      ? `<span class="q-rating ${q.rating}">${({excellent:'卓越',good:'好评',ok:'一般',poor:'差评'})[q.rating]||q.rating} · ${q.total_score||q.base_score||0}积分</span>` + (q.review ? `<span style="font-size:11px;opacity:0.5;margin-left:8px">「${q.review}」</span>` : '')
+      ? `<span class="q-rating ${q.rating}">${({excellent:'卓越',good:'好评',ok:'一般',poor:'差评'})[q.rating]||q.rating} · ${q.total_score||q.base_score||0}积分</span>` + (q.review ? `<span style="font-size:11px;opacity:0.5;margin-left:8px">「${escapeHtml(q.review)}」</span>` : '')
       : `<span class="rate-btns" style="display:inline-flex;gap:4px;margin-top:4px">
            <button class="rate-btn sel-excellent" onclick="event.stopPropagation();rateQuest('${q.quest_id}','excellent')">卓越</button>
            <button class="rate-btn sel-good" onclick="event.stopPropagation();rateQuest('${q.quest_id}','good')">好评</button>
            <button class="rate-btn sel-ok" onclick="event.stopPropagation();rateQuest('${q.quest_id}','ok')">一般</button>
            <button class="rate-btn sel-poor" onclick="event.stopPropagation();rateQuest('${q.quest_id}','poor')">差评</button>
          </span>`;
-    const task = taskForQuest(q, taskMap);
-    const outLinks = renderOutputLinks(outputsForTask(task), assets);
-    return `<div class="quest-item">
+    return `<div class="quest-item delivery-${item.layer}">
       <div class="q-status done"></div>
       <div class="q-info">
-        <div class="q-title">${q.title}</div>
-        <div class="q-agent">${ag ? ag.emoji+' '+ag.name : ''} ${ratingHtml}</div>
-        <div class="q-meta">完成：${q.completed || task.completed || '-'} · 状态：${q.rating ? '已评分' : '待评分'}</div>
-        ${outLinks}
+        <div class="q-title">${escapeHtml(q.title)}</div>
+        <div class="q-agent">${ag ? ag.name : ''} ${ratingHtml}</div>
+        <div class="q-meta-line">完成：${q.completed || task.completed || '-'} · 状态：${q.rating ? '已评分' : '待评分'}</div>
+        ${renderTaskBody(task)}
+        ${renderOutputLinks(outputsForTask(task), assets)}
       </div>
     </div>`;
   }).join('');
-  const exceptionHtml = failedOrBacklog.map(t => `<div class="quest-item">
-    <div class="q-status pending"></div><div class="q-info"><div class="q-title">${t.title}</div><div class="q-agent">${t.status} · 需要回溯处理</div></div>
-  </div>`).join('');
   document.getElementById('tab-history').innerHTML = `
-    <div class="lifecycle-note"><span class="stage-chip">交付 / 任务记录</span>事实账本：done/failed/backlog、产出链接、评分入口与评价记录。</div>
-    ${doneHtml}${exceptionHtml || ''}${(!doneHtml && !exceptionHtml) ? '<p style="opacity:0.4;text-align:center;padding:20px;">暂无完成记录</p>' : ''}`;
+    <div class="lifecycle-note"><span class="stage-chip">交付 / 任务记录</span>事实账本完整保留；按待评分、已评分、异常留档分层呈现，body 默认两行折叠，产出链接单独一行。</div>
+    ${deliveryHtml || '<p style="opacity:0.4;text-align:center;padding:20px;">暂无完成记录</p>'}`;
 
   // 成长 / 智库：积分榜、评价沉淀、资产入口。保留“积分榜”文案以兼容现有验收。
   const maxScore = Math.max(1, ...Object.values(scores).map(s=>s.xp||0));
