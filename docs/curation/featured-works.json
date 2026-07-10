@@ -1,0 +1,320 @@
+{
+  "collection": {
+    "id": "featured_works_v0_1",
+    "title": "久久光合社首批精选作品",
+    "description": "久久手选的第一批满意作品，用于作品长廊、天机阁和久久小镇入口的初始策展。",
+    "curator": "久久",
+    "status": "draft",
+    "created_at": "2026-07-04"
+  },
+  "works": [
+    {
+      "id": "work_color_palette",
+      "title": "苔隐配色体系",
+      "file_path": "town_output/color_palette.html",
+      "work_type": "experiment",
+      "gallery_category": "图片",
+      "gallery_subcategory": "光合视觉",
+      "primary_resident": "阿画",
+      "sections": [
+        "作品长廊",
+        "天机阁"
+      ],
+      "tags": [
+        "视觉体系",
+        "配色",
+        "小镇美学",
+        "设计方法"
+      ],
+      "curator_note": "小镇视觉体系的最新审核作品，把久久光合社的配色、气质和设计方法收束成一套可继续生长的美学资产。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-07-04T23:10:00+08:00",
+      "display_mode": "immersive"
+    },
+    {
+      "id": "work_ahua_skill_archive",
+      "title": "阿画技能沉淀",
+      "file_path": "town_output/阿画_技能沉淀完成_06-29.html",
+      "work_type": "method",
+      "gallery_category": "文章",
+      "gallery_subcategory": "教程",
+      "primary_resident": "阿画",
+      "sections": [
+        "天机阁",
+        "久久小镇"
+      ],
+      "tags": [
+        "技能沉淀",
+        "四格漫画",
+        "居民成长"
+      ],
+      "curator_note": "展示阿画如何从久久评价中沉淀出稳定创作方法。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T20:14:00+08:00",
+      "display_mode": "method_archive"
+    },
+    {
+      "id": "work_beibei_evening_report",
+      "title": "北北晚间奏折",
+      "file_path": "town_output/北北_晚间奏折_06-29.html",
+      "work_type": "town_life",
+      "gallery_category": "小镇生活",
+      "gallery_subcategory": "奏折",
+      "primary_resident": "北北",
+      "sections": [
+        "久久小镇"
+      ],
+      "tags": [
+        "奏折",
+        "治理",
+        "小镇状态",
+        "守护灵"
+      ],
+      "curator_note": "北北作为守护灵观察小镇、汇报状态的代表作品。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T20:21:00+08:00",
+      "display_mode": "town_paper"
+    },
+    {
+      "id": "work_ahua_summer_night",
+      "title": "久久小镇 · 夏夜晚风",
+      "file_path": "town_output/久久_阿画_创作_06-29.html",
+      "work_type": "image",
+      "gallery_category": "小镇生活",
+      "gallery_subcategory": "小镇日历",
+      "primary_resident": "阿画",
+      "sections": [
+        "作品长廊",
+        "久久小镇"
+      ],
+      "tags": [
+        "海报",
+        "小镇生活",
+        "夏夜",
+        "温度感",
+        "小镇日历",
+        "每日一页"
+      ],
+      "curator_note": "久久小镇日历的第一页，用夏夜、月亮、屋顶和猫记录小镇当日的气息。它不是单张海报，而是未来每日一页的起点。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-07-04T23:20:00+08:00",
+      "display_mode": "calendar_page",
+      "series_id": "town_calendar",
+      "series_title": "久久小镇日历",
+      "calendar_date": "2026-07-04",
+      "calendar_theme": "夏夜晚风",
+      "calendar_no": 1
+    },
+    {
+      "id": "work_evening_daily",
+      "title": "久久小镇日报 · 晚间版",
+      "file_path": "town_output/久久小镇日报_20260629_晚间版.html",
+      "work_type": "article",
+      "gallery_category": "小镇生活",
+      "gallery_subcategory": "小镇晚报",
+      "primary_resident": "小文",
+      "sections": [
+        "作品长廊",
+        "久久小镇"
+      ],
+      "tags": [
+        "小镇日报",
+        "生活记录",
+        "猫系作品",
+        "温度感"
+      ],
+      "curator_note": "有生活感和叙事感的小镇日报，能体现小文的文字温度。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T20:35:00+08:00",
+      "display_mode": "town_paper"
+    },
+    {
+      "id": "work_cat_jealous_comic",
+      "title": "猫主子的占有欲是认真的",
+      "file_path": "town_output/猫猫吃醋四格.html",
+      "work_type": "comic",
+      "gallery_category": "图片",
+      "gallery_subcategory": "猫是命",
+      "primary_resident": "阿画",
+      "sections": [
+        "作品长廊"
+      ],
+      "tags": [
+        "四格漫画",
+        "猫",
+        "纯CSS手绘",
+        "有趣"
+      ],
+      "curator_note": "阿画四格漫画能力的代表作，兼具有趣和完成度。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T21:42:00+08:00",
+      "display_mode": "poster_wall"
+    },
+    {
+      "id": "work_cat_poster",
+      "title": "猫猫海报",
+      "file_path": "town_output/猫猫海报.html",
+      "work_type": "image",
+      "gallery_category": "图片",
+      "gallery_subcategory": "猫是命",
+      "primary_resident": "阿画",
+      "sections": [
+        "作品长廊"
+      ],
+      "tags": [
+        "海报",
+        "猫",
+        "视觉作品"
+      ],
+      "curator_note": "适合作为作品长廊视觉类入口的代表作品。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T21:49:00+08:00",
+      "display_mode": "poster_wall"
+    },
+    {
+      "id": "work_wanshan_poster",
+      "title": "万山无阻海报",
+      "file_path": "town_output/万山无阻海报.html",
+      "work_type": "image",
+      "gallery_category": "图片",
+      "gallery_subcategory": "光合视觉",
+      "primary_resident": "阿画",
+      "sections": [
+        "作品长廊"
+      ],
+      "tags": [
+        "海报",
+        "typography",
+        "商业表达"
+      ],
+      "curator_note": "更偏实用传播场景的海报作品，可展示 AI 辅助自媒体视觉能力。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T21:56:00+08:00",
+      "display_mode": "poster_wall"
+    },
+    {
+      "id": "work_cat_absorb_comic",
+      "title": "吸猫四格",
+      "file_path": "town_output/吸猫四格.html",
+      "work_type": "comic",
+      "gallery_category": "图片",
+      "gallery_subcategory": "猫是命",
+      "primary_resident": "阿画",
+      "sections": [
+        "作品长廊"
+      ],
+      "tags": [
+        "四格漫画",
+        "猫",
+        "生活趣味"
+      ],
+      "curator_note": "早期四格漫画代表作，可与后续作品形成成长对照。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T21:03:00+08:00",
+      "display_mode": "poster_wall"
+    },
+    {
+      "id": "work_xiaowen_checklist",
+      "title": "小文写作检查清单",
+      "file_path": "town_output/小文_写作检查清单_06-29.html",
+      "work_type": "method",
+      "gallery_category": "文章",
+      "gallery_subcategory": "教程",
+      "primary_resident": "小文",
+      "sections": [
+        "天机阁",
+        "作品长廊"
+      ],
+      "tags": [
+        "写作方法",
+        "自媒体",
+        "日常感",
+        "技能沉淀"
+      ],
+      "curator_note": "小文从久久评价中沉淀出的写作方法，适合进入天机阁。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T21:10:00+08:00",
+      "display_mode": "method_archive"
+    },
+    {
+      "id": "work_xiaowen_night_talk",
+      "title": "小文夜话",
+      "file_path": "town_output/小文夜话_20260629_2205.html",
+      "work_type": "article",
+      "gallery_category": "文章",
+      "gallery_subcategory": "成长",
+      "primary_resident": "小文",
+      "sections": [
+        "作品长廊",
+        "久久小镇"
+      ],
+      "tags": [
+        "夜话",
+        "文章",
+        "生活感",
+        "小文"
+      ],
+      "curator_note": "温柔、日常、有陪伴感的文字作品。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T21:17:00+08:00",
+      "display_mode": "article_reading"
+    },
+    {
+      "id": "work_town_morning",
+      "title": "小镇晨报",
+      "file_path": "town_output/小镇晨报.html",
+      "work_type": "article",
+      "gallery_category": "小镇生活",
+      "gallery_subcategory": "小镇晨报",
+      "primary_resident": "小文",
+      "sections": [
+        "作品长廊",
+        "久久小镇"
+      ],
+      "tags": [
+        "晨报",
+        "小镇生活",
+        "居民动态"
+      ],
+      "curator_note": "适合作为小镇生活流的入口作品。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T22:24:00+08:00",
+      "display_mode": "town_paper"
+    },
+    {
+      "id": "work_product_report",
+      "title": "芝士产品体验报告",
+      "file_path": "town_output/芝士产品体验报告.html",
+      "work_type": "report",
+      "gallery_category": "小镇生活",
+      "gallery_subcategory": "产品体验报告",
+      "primary_resident": "芝士",
+      "sections": [
+        "作品长廊",
+        "久久小镇"
+      ],
+      "tags": [
+        "产品报告",
+        "小镇治理",
+        "体验分析"
+      ],
+      "curator_note": "虽然芝士不是 MVP 常驻居民，但这份报告是小镇产品意识的早期代表。",
+      "review_status": "approved",
+      "reviewed_by": "久久",
+      "reviewed_at": "2026-06-29T22:31:00+08:00",
+      "display_mode": "town_paper"
+    }
+  ]
+}

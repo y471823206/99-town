@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猫主子的占有欲是认真的 · 四格漫画</title>
+<style>
+  :root {
+    --bg: #fdf6ee;
+    --panel-bg: #fffef9;
+    --ink: #3a3226;
+    --cat-orange: #e8943a;
+    --cat-light: #f5c98e;
+    --cat-dark: #c4722a;
+    --cat-nose: #e8877c;
+    --accent: #e0553d;
+    --soft-gray: #b8b0a4;
+    --speech-bg: #ffffff;
+    --skin: #f5dfc6;
+    --hair: #3a3226;
+    --cat-white: #faf8f5;
+    --cat-white-dark: #e8e2d8;
+    --cat-pink: #f0a0a0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Noto Sans SC", "LXGW WenKai", "Microsoft YaHei", -apple-system, sans-serif;
+    background: #f0e8db;
+    background-image:
+      radial-gradient(circle, rgba(180,160,140,0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .poster {
+    width: 720px;
+    max-width: 100%;
+    background: var(--bg);
+    border: 6px solid #3a3226;
+    border-radius: 4px;
+    padding: 32px 24px 24px;
+    position: relative;
+    box-shadow:
+      8px 8px 0 rgba(58,50,38,0.12),
+      16px 16px 0 rgba(58,50,38,0.05);
+  }
+
+  /* Title area */
+  .title-area {
+    text-align: center;
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  .title-label {
+    display: inline-block;
+    background: #3a3226;
+    color: #fdf6ee;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    padding: 4px 16px;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    font-family: "Courier New", "Source Code Pro", monospace;
+  }
+
+  .main-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #3a3226;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #8a7e6e;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Comic panels - 4 horizontal */
+  .comic-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    border: 3px solid #3a3226;
+    border-radius: 3px;
+    padding: 16px 10px 12px;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.2s;
+    box-shadow: 3px 3px 0 rgba(58,50,38,0.08);
+  }
+
+  .panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0 rgba(58,50,38,0.12);
+  }
+
+  .panel-number {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    font-size: 10px;
+    font-weight: 900;
+    color: #c4b8a4;
+    font-family: "Courier New", monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .panel-time {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b8a894;
+  }
+
+  /* ---------- Shared Scene ---------- */
+  .scene-base {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    margin-top: 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* ---------- Speech Bubble ---------- */
+  .speech-bubble {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #3a3226;
+    border-radius: 12px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #3a3226;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 2px 2px 0 rgba(58,50,38,0.08);
+    line-height: 1.5;
+  }
+
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    width: 10px;
+    height: 6px;
+    background: #fff;
+    border-right: 2px solid #3a3226;
+    border-bottom: 2px solid #3a3226;
+    transform: rotate(45deg);
+  }
+
+  /* Thought bubble */
+  .thought-cloud {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #3a3226;
+    border-radius: 14px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b5f4e;
+    z-index: 10;
+    white-space: nowrap;
+  }
+
+  .thought-cloud::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 12px;
+    width: 5px;
+    height: 5px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+  }
+
+  .thought-cloud::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 6px;
+    width: 3px;
+    height: 3px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+  }
+
+  /* Floor shadow */
+  .floor-shadow {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 6px;
+    background: rgba(58,50,38,0.1);
+    border-radius: 50%;
+  }
+
+  .floor-shadow.wide {
+    width: 90px;
+  }
+
+  /* ---------- CSS Person ---------- */
+  .person-head {
+    width: 22px;
+    height: 22px;
+    background: var(--skin);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+  }
+
+  .person-head.hair::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -3px;
+    width: 28px;
+    height: 14px;
+    background: #3a3226;
+    border-radius: 14px 14px 0 0;
+    z-index: 3;
+  }
+
+  /* Happy eyes */
+  .eyes-happy {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+  }
+  .eyes-happy .eye {
+    width: 3px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+    position: relative;
+    top: -1px;
+  }
+
+  /* Open eyes */
+  .eyes-open {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+  }
+  .eyes-open .eye {
+    width: 4px;
+    height: 5px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+  }
+  .eyes-open .eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 3px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  /* Surprised eyes */
+  .eyes-surprise {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+  }
+  .eyes-surprise .eye {
+    width: 5px;
+    height: 6px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+  }
+  .eyes-surprise .eye::after {
+    content: '';
+    position: absolute;
+    top: 0.5px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .mouth-smile {
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 3px;
+    border-bottom: 1.5px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+  }
+
+  .mouth-small {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 2px;
+    background: #3a3226;
+    border-radius: 0 0 2px 2px;
+  }
+
+  .mouth-open-round {
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .person-body {
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 10px 10px 6px 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .arm {
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .leg {
+    background: #6b5f4e;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    position: absolute;
+    z-index: 0;
+    width: 10px;
+    height: 20px;
+  }
+
+  /* Blush */
+  .blush {
+    position: absolute;
+    top: 12px;
+    width: 6px;
+    height: 3px;
+    background: rgba(224,85,61,0.25);
+    border-radius: 50%;
+    z-index: 5;
+  }
+  .blush-l { left: 2px; }
+  .blush-r { right: 2px; }
+
+  /* ---------- CSS Cat: Orange (default) ---------- */
+  .cat-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 24px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    z-index: 3;
+  }
+
+  .cat-head::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 11px solid var(--cat-orange);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+
+  .cat-head::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 11px solid var(--cat-orange);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+
+  .cat-eyes {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 4;
+  }
+
+  .cat-eyes .cat-eye {
+    width: 6px;
+    height: 7px;
+    background: #fff;
+    border: 1.5px solid #3a3226;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-eyes .cat-eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0.5px;
+    width: 3px;
+    height: 4px;
+    background: #3a3226;
+    border-radius: 50%;
+  }
+
+  .cat-nose {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 4px;
+    background: var(--cat-nose);
+    border: 1px solid #3a3226;
+    border-radius: 50%;
+    z-index: 4;
+  }
+
+  .cat-mouth {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 3px;
+    border-bottom: 1.5px solid #3a3226;
+    border-radius: 0 0 50% 50%;
+    z-index: 4;
+  }
+
+  .cat-body {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 26px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 20px 20px 8px 8px;
+    z-index: 2;
+  }
+
+  .cat-body::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 9px;
+    background: var(--cat-light);
+    border-radius: 6px;
+  }
+
+  .cat-paw {
+    position: absolute;
+    bottom: -2px;
+    width: 12px;
+    height: 8px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 50% 50% 40% 40%;
+    z-index: 3;
+  }
+  .cat-paw-l { left: 10px; }
+  .cat-paw-r { right: 10px; }
+
+  .cat-tail {
+    position: absolute;
+    bottom: 6px;
+    right: 2px;
+    width: 18px;
+    height: 7px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 9px 9px 2px 2px;
+    transform: rotate(25deg);
+    transform-origin: left center;
+    z-index: 1;
+    animation: tailWag 1.5s ease-in-out infinite;
+  }
+
+  @keyframes tailWag {
+    0%, 100% { transform: rotate(20deg); }
+    50% { transform: rotate(40deg); }
+  }
+
+  .cat-whisker {
+    position: absolute;
+    height: 1.5px;
+    background: #3a3226;
+    z-index: 4;
+    border-radius: 1px;
+  }
+  .cw-l1 { top: 13px; left: 2px; width: 10px; transform: rotate(-8deg); }
+  .cw-l2 { top: 15px; left: 1px; width: 8px; transform: rotate(3deg); }
+  .cw-r1 { top: 13px; right: 2px; width: 10px; transform: rotate(8deg); }
+  .cw-r2 { top: 15px; right: 1px; width: 8px; transform: rotate(-3deg); }
+
+  /* ---------- CSS Cat: White variant ---------- */
+  .cat-white .cat-head {
+    background: var(--cat-white);
+  }
+  .cat-white .cat-head::before {
+    border-bottom-color: var(--cat-white);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+  .cat-white .cat-head::after {
+    border-bottom-color: var(--cat-white);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+  .cat-white .cat-nose {
+    background: var(--cat-pink);
+  }
+  .cat-white .cat-body {
+    background: var(--cat-white);
+  }
+  .cat-white .cat-body::after {
+    background: #f5f2ee;
+  }
+  .cat-white .cat-paw {
+    background: var(--cat-white);
+  }
+  .cat-white .cat-tail {
+    background: var(--cat-white);
+  }
+
+  /* ---------- CSS Cat: Angry variant ---------- */
+  .cat-angry .cat-head::before {
+    top: -2px;
+    left: -9px;
+    transform: rotate(-80deg);
+    border-bottom-color: var(--cat-orange);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+  .cat-angry .cat-head::after {
+    top: -2px;
+    right: -9px;
+    transform: rotate(80deg);
+    border-bottom-color: var(--cat-orange);
+    filter: drop-shadow(0 -1.5px 0 #3a3226);
+  }
+  .cat-angry .cat-eye-angry {
+    width: 3px;
+    height: 6px;
+    background: #e8d830;
+    border: 1.5px solid #3a3226;
+    border-radius: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cat-angry .cat-eye-angry::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1.5px;
+    height: 5px;
+    background: #3a3226;
+    border-radius: 1px;
+  }
+  .cat-angry .cat-mouth-angry {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    gap: 2px;
+  }
+  .cat-angry .fang {
+    width: 0;
+    height: 0;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+    border-top: 4px solid #fff;
+    filter: drop-shadow(0 0 0 1px #3a3226);
+  }
+  .cat-angry .cat-tail-furious {
+    position: absolute;
+    bottom: 6px;
+    right: 2px;
+    width: 22px;
+    height: 14px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 4px;
+    transform: rotate(35deg);
+    transform-origin: left center;
+    z-index: 1;
+    animation: tailFurious 0.3s ease-in-out infinite;
+    clip-path: polygon(0% 20%, 20% 0%, 40% 15%, 60% 0%, 80% 15%, 100% 0%, 100% 80%, 80% 65%, 60% 95%, 40% 65%, 20% 95%, 0% 80%);
+  }
+
+  @keyframes tailFurious {
+    0%, 100% { transform: rotate(30deg); }
+    25% { transform: rotate(45deg); }
+    75% { transform: rotate(25deg); }
+  }
+
+  /* Anger marks */
+  .anger-mark {
+    position: absolute;
+    font-size: 14px;
+    font-weight: 900;
+    color: #e0553d;
+    z-index: 10;
+    animation: angerPulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes angerPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+  }
+
+  /* ---------- Panel 1: Person petting white cat, orange cat watching ---------- */
+  .intro-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .intro-group {
+    position: relative;
+    width: 100%;
+    height: 130px;
+  }
+
+  .intro-person {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-30%);
+    z-index: 2;
+  }
+
+  .intro-person .person-head {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .intro-person .person-body {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 14px 14px 8px 8px;
+  }
+
+  /* Arm reaching to pet white cat */
+  .pet-arm {
+    position: absolute;
+    top: 2px;
+    right: -15px;
+    width: 24px;
+    height: 8px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    z-index: 4;
+    transform: rotate(-15deg);
+  }
+
+  /* Hand */
+  .pet-hand {
+    position: absolute;
+    top: -1px;
+    right: -8px;
+    width: 10px;
+    height: 10px;
+    background: var(--skin);
+    border: 2px solid #3a3226;
+    border-radius: 50%;
+    z-index: 5;
+  }
+
+  /* White cat on lap */
+  .white-cat-lap {
+    position: absolute;
+    bottom: 32px;
+    left: 55%;
+    transform: translateX(-20%);
+    width: 55px;
+    height: 44px;
+  }
+
+  .white-cat-lap .cat-head {
+    width: 24px;
+    height: 20px;
+  }
+
+  .white-cat-lap .cat-body {
+    width: 36px;
+    height: 22px;
+  }
+
+  .white-cat-lap .cat-paw {
+    width: 10px;
+    height: 7px;
+  }
+  .white-cat-lap .cat-paw-l { left: 8px; }
+  .white-cat-lap .cat-paw-r { right: 8px; }
+
+  /* Closed happy eyes for white cat */
+  .cat-eyes-closed {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 4;
+  }
+  .cat-eyes-closed span {
+    width: 5px;
+    height: 2px;
+    background: #3a3226;
+    border-radius: 1px;
+    margin-top: 3px;
+  }
+
+  /* Orange cat watching from corner */
+  .orange-cat-corner {
+    position: absolute;
+    bottom: 4px;
+    left: 8px;
+    width: 50px;
+    height: 42px;
+    z-index: 1;
+  }
+
+  .orange-cat-corner .cat-head {
+    width: 22px;
+    height: 18px;
+  }
+
+  .orange-cat-corner .cat-body {
+    width: 32px;
+    height: 20px;
+  }
+
+  .orange-cat-corner .cat-paw {
+    width: 9px;
+    height: 6px;
+  }
+  .orange-cat-corner .cat-paw-l { left: 6px; }
+  .orange-cat-corner .cat-paw-r { right: 6px; }
+
+  /* One ear slightly turned */
+  .ear-turned::before {
+    transform: rotate(-15deg) !important;
+  }
+
+  /* Heart particles */
+  .heart-particle {
+    position: absolute;
+    font-size: 12px;
+    z-index: 6;
+    animation: heartFloat 1.5s ease-in-out infinite;
+  }
+  .hp1 { top: -8px; right: 8px; animation-delay: 0s; }
+  .hp2 { top: -4px; right: 20px; animation-delay: 0.5s; font-size: 10px; }
+  .hp3 { top: 2px; right: 30px; animation-delay: 1s; font-size: 8px; }
+
+  @keyframes heartFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.8; }
+    50% { transform: translateY(-8px); opacity: 0.3; }
+  }
+
+  /* Observe lines */
+  .observe-line {
+    position: absolute;
+    background: rgba(58,50,38,0.15);
+    z-index: 3;
+    border-radius: 2px;
+  }
+  .obs1 { top: 20px; left: 36px; width: 40px; height: 1px; transform: rotate(-5deg); }
+  .obs2 { top: 24px; left: 34px; width: 44px; height: 1px; transform: rotate(2deg); }
+  .obs3 { top: 28px; left: 36px; width: 38px; height: 1px; transform: rotate(-2deg); }
+
+  /* ---------- Panel 2: Close-up angry orange cat ---------- */
+  .angry-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .angry-cat-big {
+    position: relative;
+    width: 90px;
+    height: 74px;
+  }
+
+  .angry-cat-big .cat-head {
+    width: 36px;
+    height: 30px;
+  }
+
+  .angry-cat-big .cat-head::before {
+    top: -2px;
+    left: -8px;
+    border-left-width: 7px;
+    border-right-width: 7px;
+    border-bottom-width: 13px;
+    transform: rotate(-75deg);
+  }
+
+  .angry-cat-big .cat-head::after {
+    top: -2px;
+    right: -8px;
+    border-left-width: 7px;
+    border-right-width: 7px;
+    border-bottom-width: 13px;
+    transform: rotate(75deg);
+  }
+
+  .angry-cat-big .cat-eye-angry {
+    width: 4px;
+    height: 8px;
+    background: #f5e56c;
+    border: 1.5px solid #3a3226;
+    border-radius: 1px;
+    position: relative;
+  }
+  .angry-cat-big .cat-eye-angry::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0.5px;
+    width: 2px;
+    height: 6px;
+    background: #3a3226;
+    border-radius: 1px;
+  }
+
+  .angry-cat-big .cat-body {
+    width: 52px;
+    height: 34px;
+    bottom: 0;
+  }
+
+  .angry-cat-big .cat-body::after {
+    width: 20px;
+    height: 12px;
+  }
+
+  .angry-cat-big .cat-paw {
+    width: 15px;
+    height: 10px;
+  }
+  .angry-cat-big .cat-paw-l { left: 10px; }
+  .angry-cat-big .cat-paw-r { right: 10px; }
+
+  /* Fur standing up on back */
+  .fur-spikes {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .fur-spike {
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 8px solid var(--cat-orange);
+    filter: drop-shadow(0 -1px 0 #3a3226);
+    animation: furBristle 0.4s ease-in-out infinite;
+  }
+  .fur-spike:nth-child(2) { animation-delay: 0.1s; border-bottom-width: 10px; }
+  .fur-spike:nth-child(3) { animation-delay: 0.2s; border-bottom-width: 9px; }
+  .fur-spike:nth-child(4) { animation-delay: 0.15s; }
+  .fur-spike:nth-child(5) { animation-delay: 0.05s; border-bottom-width: 8px; }
+
+  @keyframes furBristle {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.5); }
+  }
+
+  /* Anger veins */
+  .anger-vein {
+    position: absolute;
+    font-size: 10px;
+    z-index: 10;
+    animation: veinPulse 0.6s ease-in-out infinite;
+  }
+
+  @keyframes veinPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  /* ---------- Panel 3: Attack scene ---------- */
+  .attack-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .attack-group {
+    position: relative;
+    width: 100%;
+    height: 140px;
+  }
+
+  /* Pouncing orange cat from left */
+  .pounce-cat {
+    position: absolute;
+    bottom: 16px;
+    left: 6px;
+    width: 55px;
+    height: 50px;
+    z-index: 4;
+    transform: rotate(-12deg);
+  }
+
+  .pounce-cat .cat-head {
+    width: 26px;
+    height: 22px;
+  }
+
+  .pounce-cat .cat-head::before {
+    top: -3px;
+    left: -4px;
+    transform: rotate(-60deg);
+  }
+  .pounce-cat .cat-head::after {
+    top: -3px;
+    right: -4px;
+    transform: rotate(60deg);
+  }
+
+  .pounce-cat .cat-body {
+    width: 44px;
+    height: 30px;
+    border-radius: 22px 22px 10px 10px;
+    transform: rotate(-5deg);
+  }
+
+  .pounce-cat .cat-paw {
+    width: 14px;
+    height: 9px;
+  }
+  .pounce-cat .cat-paw-l { left: 6px; }
+  .pounce-cat .cat-paw-r { right: 6px; }
+
+  /* Extended paw swiping */
+  .swipe-paw {
+    position: absolute;
+    top: 20px;
+    right: -8px;
+    width: 20px;
+    height: 10px;
+    background: var(--cat-orange);
+    border: 2px solid #3a3226;
+    border-radius: 6px;
+    z-index: 6;
+    transform: rotate(-25deg);
+    animation: pawSwipe 0.3s ease-in-out infinite;
+  }
+
+  @keyframes pawSwipe {
+    0%, 100% { transform: rotate(-25deg) translateX(0); }
+    50% { transform: rotate(-25deg) translateX(4px); }
+  }
+
+  /* Claw marks */
+  .claw-mark {
+    position: absolute;
+    font-size: 11px;
+    color: #e0553d;
+    z-index: 7;
+    font-weight: 900;
+    animation: clawFlash 0.4s ease-in-out infinite;
+  }
+
+  @keyframes clawFlash {
+    0%, 100% { opacity: 1; transform: translateX(0); }
+    50% { opacity: 0.4; transform: translateX(-3px); }
+  }
+
+  /* White cat fleeing */
+  .flee-cat {
+    position: absolute;
+    bottom: 16px;
+    right: 4px;
+    width: 45px;
+    height: 40px;
+    z-index: 3;
+    transform: rotate(8deg);
+    animation: fleeShake 0.15s ease-in-out infinite;
+  }
+
+  @keyframes fleeShake {
+    0%, 100% { transform: rotate(8deg) translateX(0); }
+    50% { transform: rotate(8deg) translateX(-2px); }
+  }
+
+  .flee-cat .cat-head {
+    width: 22px;
+    height: 18px;
+  }
+
+  .flee-cat .cat-body {
+    width: 34px;
+    height: 22px;
+  }
+
+  .flee-cat .cat-paw {
+    width: 9px;
+    height: 6px;
+  }
+  .flee-cat .cat-paw-l { left: 5px; }
+  .flee-cat .cat-paw-r { right: 5px; }
+
+  /* Surprise mark above white cat */
+  .surprise-mark {
+    position: absolute;
+    font-size: 18px;
+    font-weight: 900;
+    z-index: 8;
+    animation: surpriseBounce 0.5s ease-in-out infinite;
+  }
+
+  @keyframes surpriseBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.2); }
+  }
+
+  /* Speed lines behind pouncing cat */
+  .speed-line {
+    position: absolute;
+    background: rgba(58,50,38,0.2);
+    z-index: 2;
+    border-radius: 3px;
+  }
+
+  /* Impact burst */
+  .impact-burst {
+    position: absolute;
+    font-size: 28px;
+    font-weight: 900;
+    color: #e0553d;
+    z-index: 5;
+    animation: impactPulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes impactPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+  }
+
+  /* Person reacting in middle */
+  .react-person {
+    position: absolute;
+    bottom: 20px;
+    left: 44%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .react-person .person-head {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-8deg);
+  }
+
+  .react-person .person-body {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 34px;
+  }
+
+  /* ---------- Panel 4: Victory scene ---------- */
+  .victory-scene {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .victory-group {
+    position: relative;
+    width: 100%;
+    height: 140px;
+  }
+
+  /* Person sitting with orange cat on lap */
+  .victory-person {
+    position: absolute;
+    bottom: 28px;
+    left: 42%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .victory-person .person-head {
+    position: absolute;
+    top: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 24px;
+  }
+
+  .victory-person .person-body {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 30px;
+    border-radius: 16px 16px 10px 10px;
+  }
+
+  .victory-person .arm-l {
+    position: absolute;
+    top: 4px;
+    left: -14px;
+    width: 18px;
+    height: 8px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(-20deg);
+    z-index: 1;
+  }
+
+  .victory-person .arm-r {
+    position: absolute;
+    top: 4px;
+    right: -14px;
+    width: 18px;
+    height: 8px;
+    background: #8bacbd;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    transform: rotate(20deg);
+    z-index: 1;
+  }
+
+  /* Orange cat on lap - content */
+  .lap-cat {
+    position: absolute;
+    bottom: 34px;
+    left: 52%;
+    transform: translateX(-40%);
+    width: 56px;
+    height: 46px;
+    z-index: 3;
+  }
+
+  .lap-cat .cat-head {
+    width: 26px;
+    height: 22px;
+  }
+
+  .lap-cat .cat-body {
+    width: 40px;
+    height: 26px;
+  }
+
+  .lap-cat .cat-paw {
+    width: 12px;
+    height: 7px;
+  }
+  .lap-cat .cat-paw-l { left: 8px; }
+  .lap-cat .cat-paw-r { right: 8px; }
+
+  /* Kneading paws animation */
+  .knead-paw {
+    position: absolute;
+    width: 10px;
+    height: 6px;
+    background: var(--cat-orange);
+    border: 1.5px solid #3a3226;
+    border-radius: 50% 50% 40% 40%;
+    z-index: 4;
+    animation: knead 0.6s ease-in-out infinite;
+  }
+
+  .knead-paw.kn-l { bottom: 2px; left: 12px; animation-delay: 0s; }
+  .knead-paw.kn-r { bottom: 2px; right: 12px; animation-delay: 0.3s; }
+
+  @keyframes knead {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-4px) scaleY(0.6); }
+  }
+
+  /* Purr marks */
+  .purr-mark {
+    position: absolute;
+    font-size: 10px;
+    z-index: 5;
+    animation: purrFloat 1s ease-in-out infinite;
+    opacity: 0.7;
+    color: #8a7e6e;
+  }
+
+  @keyframes purrFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50% { transform: translateY(-5px); opacity: 0.3; }
+  }
+
+  /* White cat confused on floor */
+  .confused-cat {
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    width: 44px;
+    height: 36px;
+    z-index: 1;
+  }
+
+  .confused-cat .cat-head {
+    width: 20px;
+    height: 17px;
+  }
+
+  .confused-cat .cat-body {
+    width: 30px;
+    height: 18px;
+  }
+
+  .confused-cat .cat-paw {
+    width: 9px;
+    height: 6px;
+  }
+  .confused-cat .cat-paw-l { left: 5px; }
+  .confused-cat .cat-paw-r { right: 5px; }
+
+  /* Question mark above confused cat */
+  .confuse-q {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    font-weight: 900;
+    color: #b8a894;
+    z-index: 5;
+    animation: qBounce 0.8s ease-in-out infinite;
+  }
+
+  @keyframes qBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+  }
+
+  /* Sweat drop on confused cat */
+  .confuse-sweat {
+    position: absolute;
+    top: -2px;
+    right: 2px;
+    width: 5px;
+    height: 8px;
+    background: #8ec8e8;
+    border: 1.5px solid #5a9ab8;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    z-index: 6;
+    animation: sweatDrop 1s ease-in-out infinite;
+  }
+
+  @keyframes sweatDrop {
+    0%, 100% { transform: translateY(0); opacity: 0.8; }
+    50% { transform: translateY(3px); opacity: 1; }
+  }
+
+  /* Hearts around orange cat */
+  .bliss-heart {
+    position: absolute;
+    font-size: 14px;
+    z-index: 5;
+    animation: blissFloat 1.5s ease-in-out infinite;
+  }
+  .bh1 { top: 6px; right: 10px; animation-delay: 0s; }
+  .bh2 { top: -2px; right: 20px; animation-delay: 0.4s; font-size: 11px; }
+  .bh3 { top: 12px; right: 24px; animation-delay: 0.8s; font-size: 9px; }
+
+  @keyframes blissFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.9; }
+    50% { transform: translateY(-6px); opacity: 0.4; }
+  }
+
+  /* ---------- Shared: Panel caption ---------- */
+  .panel-caption {
+    font-size: 10px;
+    color: #a09382;
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Final title inside panel 4 */
+  .panel4-title {
+    font-size: 11px;
+    font-weight: 900;
+    color: #e0553d;
+    text-align: center;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+
+  /* Bottom footer */
+  .footer {
+    text-align: center;
+    padding-top: 14px;
+    border-top: 2px dashed #d8cebe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #8a7e6e;
+    letter-spacing: 0.05em;
+  }
+
+  .footer .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--cat-orange);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .footer .paw-icon {
+    font-size: 14px;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 760px) {
+    .comic-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .panel {
+      min-height: 250px;
+    }
+    .poster {
+      padding: 20px 14px 18px;
+    }
+    .main-title {
+      font-size: 20px;
+    }
+    .scene-base, .intro-scene, .angry-scene, .attack-scene, .victory-scene {
+      height: 140px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .comic-grid {
+      grid-template-columns: 1fr;
+    }
+    .panel {
+      min-height: 220px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- Title -->
+  <div class="title-area">
+    <div class="title-label">✦ 久久小镇 · 四格漫画 ✦</div>
+    <div class="main-title">
+      😾 猫主子的占有欲是认真的
+    </div>
+    <div class="subtitle">—— 又名：你竟敢摸别的猫？！——</div>
+  </div>
+
+  <!-- Comic Grid - 4 panels horizontal -->
+  <div class="comic-grid">
+
+    <!-- Panel 1: 主人开心撸别人家的白猫，橘猫远处盯 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 01</div>
+      <div class="panel-time">🏠 下午</div>
+
+      <div class="speech-bubble" style="top:2px;right:4px;font-size:12px;color:#6b5f4e;">好可爱呀～</div>
+
+      <div class="intro-scene">
+        <div class="floor-shadow wide"></div>
+
+        <div class="intro-group">
+          <!-- Person sitting -->
+          <div class="intro-person">
+            <div class="person-head hair">
+              <div class="eyes-happy">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+              <div class="mouth-smile"></div>
+            </div>
+            <div class="person-body"></div>
+            <div class="pet-arm"></div>
+            <div class="pet-hand"></div>
+          </div>
+
+          <!-- White cat on lap -->
+          <div class="white-cat-lap cat-white">
+            <div class="cat-head">
+              <div class="cat-eyes-closed">
+                <span></span><span></span>
+              </div>
+              <div class="cat-nose"></div>
+              <div class="cat-mouth"></div>
+            </div>
+            <div class="cat-body"></div>
+            <div class="cat-paw cat-paw-l"></div>
+            <div class="cat-paw cat-paw-r"></div>
+          </div>
+
+          <!-- Orange cat watching from corner -->
+          <div class="orange-cat-corner">
+            <div class="cat-head ear-turned">
+              <div class="cat-eyes">
+                <div class="cat-eye"></div>
+                <div class="cat-eye"></div>
+              </div>
+              <div class="cat-nose"></div>
+              <div class="cat-mouth"></div>
+            </div>
+            <div class="cat-body"></div>
+            <div class="cat-paw cat-paw-l"></div>
+            <div class="cat-paw cat-paw-r"></div>
+          </div>
+
+          <!-- Observe lines from orange cat to white cat -->
+          <div class="observe-line obs1"></div>
+          <div class="observe-line obs2"></div>
+          <div class="observe-line obs3"></div>
+
+          <!-- Hearts around person+white cat -->
+          <div class="heart-particle hp1">💕</div>
+          <div class="heart-particle hp2">💖</div>
+          <div class="heart-particle hp3">✨</div>
+        </div>
+      </div>
+      <div class="panel-caption">主人正开心地撸朋友家的小白猫…</div>
+    </div>
+
+    <!-- Panel 2: 橘猫炸毛，吃醋爆发 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 02</div>
+      <div class="panel-time">😾 察觉</div>
+
+      <div class="thought-cloud" style="top:2px;right:4px;color:#e0553d;font-size:13px;">我的位置！！</div>
+
+      <div class="angry-scene">
+        <!-- Anger marks radiating -->
+        <div class="anger-mark" style="top:10px;left:8px;animation-delay:0s;">💢</div>
+        <div class="anger-mark" style="top:4px;right:6px;animation-delay:0.2s;">💢</div>
+        <div class="anger-mark" style="top:18px;right:10px;animation-delay:0.4s;font-size:11px;">💢</div>
+        <div class="anger-vein" style="top:8px;left:18px;animation-delay:0.1s;">╬</div>
+        <div class="anger-vein" style="top:6px;right:20px;animation-delay:0.3s;">╬</div>
+
+        <!-- Big angry orange cat -->
+        <div class="angry-cat-big cat-angry">
+          <div class="cat-head">
+            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:4;">
+              <div class="cat-eye-angry"></div>
+              <div class="cat-eye-angry"></div>
+            </div>
+            <div class="cat-mouth-angry" style="top:14px;gap:3px;">
+              <div class="fang"></div>
+              <div style="width:4px;height:2px;background:#3a3226;border-radius:1px;"></div>
+              <div class="fang"></div>
+            </div>
+          </div>
+          <div class="cat-body"></div>
+          <div class="cat-paw cat-paw-l"></div>
+          <div class="cat-paw cat-paw-r"></div>
+
+          <!-- Furious tail -->
+          <div class="cat-tail-furious"></div>
+
+          <!-- Fur spikes on back -->
+          <div class="fur-spikes">
+            <div class="fur-spike"></div>
+            <div class="fur-spike"></div>
+            <div class="fur-spike"></div>
+            <div class="fur-spike"></div>
+            <div class="fur-spike"></div>
+          </div>
+        </div>
+
+        <!-- Shock wave lines -->
+        <div style="position:absolute;top:26px;left:50%;transform:translateX(-50%);width:80px;height:80px;border:2px solid rgba(224,85,61,0.3);border-radius:50%;animation:angerPulse 0.8s ease-in-out infinite;z-index:0;"></div>
+        <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);width:90px;height:90px;border:1.5px solid rgba(224,85,61,0.15);border-radius:50%;animation:angerPulse 0.8s ease-in-out 0.2s infinite;z-index:0;"></div>
+      </div>
+      <div class="panel-caption">瞳孔地震！飞机耳 + 炸毛 + 尾巴狂摇——</div>
+    </div>
+
+    <!-- Panel 3: 橘猫冲过去，哈走白猫 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 03</div>
+      <div class="panel-time">💥 开战</div>
+
+      <div class="speech-bubble" style="top:2px;left:50%;transform:translateX(-50%);font-size:13px;color:#e0553d;">哈——！！</div>
+
+      <div class="attack-scene">
+        <div class="floor-shadow wide" style="top:auto;bottom:2px;"></div>
+
+        <div class="attack-group">
+          <!-- Speed lines behind pounce -->
+          <div class="speed-line" style="top:34px;left:0;width:22px;height:2px;"></div>
+          <div class="speed-line" style="top:40px;left:3px;width:18px;height:2px;"></div>
+          <div class="speed-line" style="top:46px;left:1px;width:24px;height:2px;"></div>
+
+          <!-- Pouncing orange cat -->
+          <div class="pounce-cat cat-angry">
+            <div class="cat-head">
+              <div style="position:absolute;top:5px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:4;">
+                <div class="cat-eye-angry" style="width:3px;height:6px;"></div>
+                <div class="cat-eye-angry" style="width:3px;height:6px;"></div>
+              </div>
+              <div class="cat-mouth-angry" style="top:12px;gap:2px;">
+                <div class="fang"></div>
+                <div style="width:3px;height:2px;background:#3a3226;border-radius:1px;"></div>
+                <div class="fang"></div>
+              </div>
+            </div>
+            <div class="cat-body"></div>
+            <div class="cat-paw cat-paw-l"></div>
+            <div class="cat-paw cat-paw-r"></div>
+            <!-- Swipe paw extended -->
+            <div class="swipe-paw"></div>
+          </div>
+
+          <!-- Impact burst -->
+          <div class="impact-burst" style="top:8px;left:40%;">💥</div>
+
+          <!-- Claw marks -->
+          <div class="claw-mark" style="top:24px;left:38%;">〰</div>
+          <div class="claw-mark" style="top:32px;left:36%;animation-delay:0.15s;">〰</div>
+          <div class="claw-mark" style="top:40px;left:39%;animation-delay:0.3s;">〰</div>
+
+          <!-- White cat fleeing right -->
+          <div class="flee-cat cat-white">
+            <div class="cat-head">
+              <div class="eyes-surprise" style="top:4px;">
+                <div class="eye" style="width:4px;height:5px;"></div>
+                <div class="eye" style="width:4px;height:5px;"></div>
+              </div>
+              <div class="cat-mouth" style="top:12px;width:7px;height:4px;border-radius:50%;background:#3a3226;border-bottom:none;"></div>
+            </div>
+            <div class="cat-body"></div>
+            <div class="cat-paw cat-paw-l"></div>
+            <div class="cat-paw cat-paw-r"></div>
+          </div>
+
+          <!-- Surprise mark -->
+          <div class="surprise-mark" style="top:0px;right:22px;">❗</div>
+
+          <!-- Person reacting -->
+          <div class="react-person">
+            <div class="person-head">
+              <div class="eyes-surprise" style="top:5px;">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+              <div class="mouth-open-round"></div>
+            </div>
+            <div class="person-body"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-caption">橘猫猛冲！一爪拍飞入侵者——</div>
+    </div>
+
+    <!-- Panel 4: 橘猫独占主人，一脸满足 -->
+    <div class="panel">
+      <div class="panel-number">PANEL 04</div>
+      <div class="panel-time">😌 胜利</div>
+
+      <div class="speech-bubble" style="top:2px;left:50%;transform:translateX(-50%);font-size:13px;color:#5a8a4a;">只能摸我。</div>
+
+      <div class="victory-scene">
+        <div class="floor-shadow wide"></div>
+
+        <div class="victory-group">
+          <!-- Person -->
+          <div class="victory-person">
+            <div class="person-head">
+              <div class="eyes-open" style="top:6px;">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+              <div class="mouth-small"></div>
+              <div class="blush blush-l"></div>
+              <div class="blush blush-r"></div>
+            </div>
+            <div class="person-body"></div>
+            <div class="arm-l"></div>
+            <div class="arm-r"></div>
+          </div>
+
+          <!-- Orange cat on lap, purring -->
+          <div class="lap-cat">
+            <div class="cat-head">
+              <div class="cat-eyes-closed">
+                <span></span><span></span>
+              </div>
+              <div class="cat-nose"></div>
+              <div class="cat-mouth"></div>
+              <div class="cat-whisker cw-l1"></div>
+              <div class="cat-whisker cw-l2"></div>
+              <div class="cat-whisker cw-r1"></div>
+              <div class="cat-whisker cw-r2"></div>
+            </div>
+            <div class="cat-body"></div>
+            <div class="cat-paw cat-paw-l"></div>
+            <div class="cat-paw cat-paw-r"></div>
+            <!-- Kneading paws -->
+            <div class="knead-paw kn-l"></div>
+            <div class="knead-paw kn-r"></div>
+            <!-- Tail wagging happily -->
+            <div class="cat-tail" style="bottom:4px;right:0px;width:16px;height:6px;animation:tailWag 1s ease-in-out infinite;"></div>
+          </div>
+
+          <!-- White cat confused on floor -->
+          <div class="confused-cat cat-white">
+            <div class="cat-head">
+              <div class="eyes-open" style="top:5px;gap:3px;">
+                <div class="eye" style="width:3px;height:4px;"></div>
+                <div class="eye" style="width:3px;height:4px;"></div>
+              </div>
+              <div class="cat-mouth" style="top:10px;width:5px;height:3px;border-radius:50%;background:#3a3226;border-bottom:none;"></div>
+            </div>
+            <div class="cat-body"></div>
+            <div class="cat-paw cat-paw-l"></div>
+            <div class="cat-paw cat-paw-r"></div>
+            <div class="confuse-q">？</div>
+            <div class="confuse-sweat"></div>
+          </div>
+
+          <!-- Bliss hearts -->
+          <div class="bliss-heart bh1">💕</div>
+          <div class="bliss-heart bh2">💖</div>
+          <div class="bliss-heart bh3">💗</div>
+
+          <!-- Purr marks -->
+          <div class="purr-mark" style="top:14px;left:56%;">♨</div>
+          <div class="purr-mark" style="top:20px;left:60%;animation-delay:0.5s;">♨</div>
+        </div>
+      </div>
+      <div class="panel-caption">成功占领宝座。踩奶+呼噜，一脸得意。</div>
+      <div class="panel4-title">✦ 猫主子的占有欲<br>是认真的 ✦</div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="paw-icon">🐾</span>
+    <span>久久小镇 · 阿画 作品</span>
+    <span class="dot"></span>
+    <span>纯CSS手绘 · 四格漫画</span>
+    <span class="paw-icon">🐾</span>
+  </div>
+
+</div>
+
+</body>
+</html>

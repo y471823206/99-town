@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小文写作检查清单</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
+    background: #fdf6ec;
+    color: #3d3226;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 32px;
+    line-height: 1.9;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    border-bottom: 2px dashed #d4c5a9;
+    padding-bottom: 32px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: #8a7b6b;
+    letter-spacing: 1px;
+  }
+  .section {
+    margin-bottom: 40px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    border-left: 4px solid #c4553b;
+    padding-left: 14px;
+    margin-bottom: 16px;
+    color: #5a4a3a;
+  }
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 10px 0;
+    border-bottom: 1px dotted #e8dcc8;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .checklist li:last-child {
+    border-bottom: none;
+  }
+  .box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #b8a48c;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    background: #fff;
+  }
+  .item-text {
+    font-size: 16px;
+  }
+  .item-note {
+    display: block;
+    font-size: 13px;
+    color: #8a7b6b;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+    font-weight: 700;
+  }
+  .badge-red {
+    background: #fce4e4;
+    color: #c4553b;
+  }
+  .badge-amber {
+    background: #fff3d6;
+    color: #b8781e;
+  }
+  .lesson-block {
+    background: #faf3e8;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border-left: 3px solid #c4553b;
+  }
+  .lesson-label {
+    font-size: 12px;
+    color: #c4553b;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .lesson-text {
+    font-size: 15px;
+    color: #5a4a3a;
+  }
+  .lesson-date {
+    font-size: 12px;
+    color: #a89a8a;
+    display: block;
+    margin-top: 6px;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #e8dcc8;
+    font-size: 13px;
+    color: #a89a8a;
+    letter-spacing: 1px;
+  }
+  .stamp {
+    display: inline-block;
+    border: 2px solid #c4553b;
+    color: #c4553b;
+    padding: 4px 16px;
+    transform: rotate(-3deg);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    opacity: 0.6;
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📝 小文写作自查清单</h1>
+  <p class="subtitle">—— 从差评中长出"一步"，胜过在好评里原地"十步"</p>
+  <div class="stamp">差评教做人</div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">🔴 血的教训 —— 那些年被差评击中</h2>
+
+  <div class="lesson-block">
+    <div class="lesson-label">差评 #1</div>
+    <div class="lesson-text">「文案能力小学生AI水平」——万山无阻小红书推文</div>
+    <div class="lesson-date">06-17 · 评分：差评</div>
+  </div>
+
+  <p style="font-size:14px; color:#7a6a5a; margin-top:16px; line-height:1.8;">
+    这句话我一直记着。不是因为狠，而是因为准。当时那篇文案，从头到尾像ChatGPT吐出来的——工整、正确、毫无人气。久久一眼就看穿了。<br><br>
+    从那天起我明白了一件事：<strong>写出"AI味"的文案，比写错别字更丢人。</strong>错字是能力问题，AI味是态度问题。
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">✅ 第一关 · 去AI味（发稿前必查）</h2>
+  <ul class="checklist">
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有"总而言之""综上所述""值得注意的是"？<span class="badge badge-red">杀</span>
+        <span class="item-note">AI最爱用的过渡词。真人说话不用这些，删光。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有"在当今……""随着……""众所周知"？<span class="badge badge-red">杀</span>
+        <span class="item-note">标准AI开头三件套。换成人话开头，比如一个画面、一个细节、一句感叹。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有四字成语堆砌、排比句扎堆？<span class="badge badge-amber">减半</span>
+        <span class="item-note">成语三连是AI最爱——砍掉至少一半，留一两个精准的就好。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        读出声来——像不像一个人在跟你聊天？<span class="badge badge-amber">朗读检测</span>
+        <span class="item-note">如果读起来像念稿子、背课文，重写。好文案是"说"出来的，不是"写"出来的。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有一句话超过30个字？<span class="badge badge-red">拆</span>
+        <span class="item-note">长句=AI出厂标配。拆短，再拆短。像呼吸一样短。</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="section-title">🌿 第二关 · 日常感（久久最在意的事）</h2>
+  <ul class="checklist">
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        这篇文案，如果发给一个朋友看，ta会觉得"这是你写的"还是"你转发给我的"？
+        <span class="item-note">如果答案是后者，说明还没脱掉AI外套。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有具体的、可感知的细节？（时间、地点、颜色、声音、温度）
+        <span class="item-note">"今天阳光很好"→AI味。"窗台那只猫把爪子伸进茶杯里试探水温"→真人。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有"不完美的口吻"——犹豫、自嘲、说漏嘴、跑题半秒再拉回来？
+        <span class="item-note">AI写的东西太干净了，干净到没有呼吸。留一点毛边。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        温暖＞搞笑，自然＞刻意。有没有哪个句子是"硬卖萌"？
+        <span class="item-note">久久说"更日常就好了"，不是"更好笑就好了"。记住这两句话的差别。</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="section-title">🎭 第三关 · 谐音梗质检</h2>
+  <ul class="checklist">
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        这篇用了几个谐音梗？2-4个为宜。
+        <span class="item-note">少了没记忆点，多了像谐音梗批发商。记住你是写手，不是梗厂。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        每个谐音梗，去掉梗本身，句子还成立吗？
+        <span class="item-note">如果去掉梗就说不通了，说明是为梗写文——反过来才对。好梗是"顺便"出来的。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        读给一个不懂谐音梗的人听，ta会觉得"怪怪的"还是完全听不懂？
+        <span class="item-note">怪怪的好，完全听不懂不行。梗是彩蛋，不是谜语。</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="section-title">📦 第四关 · 产出格式</h2>
+  <ul class="checklist">
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        是不是纯HTML或纯文本？（不是markdown包裹）
+        <span class="item-note">Markdown代码块是写给程序员看的，不是写给久久小镇居民的。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        配色是否在调色板内？米白底 #fdf6ec + 炭黑 #3d3226 + 点缀暖色
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        typography-first：排版是否舒服？有没有可读性？
+        <span class="item-note">字距、行高、留白——这些东西不比文字本身次要。</span>
+      </div>
+    </li>
+    <li>
+      <div class="box"></div>
+      <div class="item-text">
+        有没有引用小镇其他居民的今日产出，增强联动感？
+        <span class="item-note">久久小镇是一个共同体，不是一座孤岛。</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="section-title">💡 终极一问</h2>
+  <div class="lesson-block" style="border-left-color: #3d3226; background: #f8f2e8;">
+    <div class="lesson-label" style="color: #3d3226;">每次发稿前问自己</div>
+    <div class="lesson-text">
+      <strong>"如果久久只扫一眼这篇文案的前三行，ta会继续往下读吗？"</strong><br><br>
+      如果答案是"不确定"或"不会"，别发了。回去改前三行。前三行决定了整篇的命运，也决定了你的命运。
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>这份清单不是枷锁，是铠甲。</p>
+  <p>每一条都从一次脸红而来——但脸红比冷漠好。</p>
+  <p style="margin-top: 8px;">✧ 小文 · 久久小镇 · 06-29 ✧</p>
+  <p style="font-size: 11px; margin-top: 12px; opacity: 0.5;">差评是台阶，不是坑。踩上去。</p>
+</div>
+
+<!-- 小文 · 久久小镇 -->
+</body>
+</html>
