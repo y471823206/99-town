@@ -7,6 +7,7 @@ TDD 全功能测试: 久久小镇市政厅
 
 import json
 import urllib.request
+import urllib.error
 import os
 import sys
 import re
@@ -31,6 +32,19 @@ def fetch(path, method="GET", data=None, timeout=10):
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         body = resp.read().decode("utf-8")
         return json.loads(body)
+
+
+def fetch_status(path, timeout=10):
+    """Return HTTP status for static/file endpoint checks."""
+    url = f"{BASE_URL}{path}" if path.startswith("/") else path
+    req = urllib.request.Request(url, method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            resp.read()
+            return resp.status
+    except urllib.error.HTTPError as e:
+        e.read()
+        return e.code
 
 
 def read_html():
@@ -235,6 +249,21 @@ def test_file_endpoint_works():
         assert resp.status == 200, f"/file/0 返回 {resp.status}"
         content = resp.read()[:100]
         assert len(content) > 0, "/file/0 返回空内容"
+
+
+@test("/outputs/ 拦截路径穿越但保留正常文件访问")
+def test_outputs_endpoint_blocks_path_traversal():
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    output_name = "tdd_safe_output.html"
+    output_path = OUTPUT_DIR / output_name
+    output_path.write_text("<html><body>safe output</body></html>", encoding="utf-8")
+    try:
+        assert fetch_status(f"/outputs/{output_name}") == 200, "正常 outputs 文件不可访问"
+        blocked_status = fetch_status("/outputs/../town.db")
+        assert blocked_status == 404, f"路径穿越未被拦截: HTTP {blocked_status}"
+    finally:
+        if output_path.exists():
+            output_path.unlink()
 
 
 # ================================================================
@@ -551,6 +580,7 @@ if __name__ == "__main__":
         test_approve_creates_task,
         test_assets_returns_list,
         test_file_endpoint_works,
+        test_outputs_endpoint_blocks_path_traversal,
     ])
 
     # Section 2: Data integrity

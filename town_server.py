@@ -324,8 +324,14 @@ class TownHandler(BaseHTTPRequestHandler):
 
         elif path.startswith("/outputs/"):
             filename = unquote(path.split("/outputs/", 1)[1])
-            filepath = OUTPUT_DIR / filename
-            if filepath.exists() and filepath.is_file():
+            outputs_root = OUTPUT_DIR.resolve()
+            filepath = (OUTPUT_DIR / filename).resolve()
+            try:
+                filepath.relative_to(outputs_root)
+                allowed = True
+            except ValueError:
+                allowed = False
+            if allowed and filepath.exists() and filepath.is_file():
                 self.send_response(200)
                 content_types = {
                     ".html": "text/html; charset=utf-8",
@@ -355,7 +361,7 @@ class TownHandler(BaseHTTPRequestHandler):
                 else: self._send_json({"error":"not found"}, 404)
             except: self._send_json({"error":"not found"}, 404)
 
-        else:
+        elif path in ("/", "/town.html"):
             html = TOWN_DIR / "town.html"
             if html.exists():
                 # Inject initial state so the page works without async fetch
@@ -384,6 +390,9 @@ class TownHandler(BaseHTTPRequestHandler):
                 self.send_response(200); self.send_header("Content-Type","text/html; charset=utf-8")
                 self.end_headers(); self.wfile.write(injected.encode("utf-8"))
             else: self._send_json({"error":"not found"}, 404)
+
+        else:
+            self._send_json({"error":"not found"}, 404)
 
     def do_POST(self):
         path = urlparse(self.path).path
