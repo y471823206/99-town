@@ -163,6 +163,9 @@ def ensure_schema():
         conn.execute("INSERT OR IGNORE INTO town_state(key,value) VALUES('town_gold','0')")
         # 任务记录以 scores 为事实账本；历史 done 任务若漏写 scores，会在前端消失。
         # 启动和 /api/state 时补齐，保证以往任务记录可见且 /api/rate 能写入 feedback_log。
+        # 历史/外部脚本曾写入 completed；在线口径统一归一为 done，避免 UI 丢单。
+        conn.execute("UPDATE tasks SET status='done' WHERE status='completed'")
+        conn.execute("UPDATE scores SET status='done' WHERE status='completed'")
         conn.execute("""
             INSERT OR IGNORE INTO scores(quest_id,title,agent,agent_name,status,xp,coins,output,completed)
             SELECT id,title,assignee,assignee_name,status,xp,coins,output,completed
